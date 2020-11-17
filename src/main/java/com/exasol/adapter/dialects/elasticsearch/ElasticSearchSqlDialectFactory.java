@@ -4,7 +4,11 @@ import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.dialects.SqlDialect;
 import com.exasol.adapter.dialects.SqlDialectFactory;
 import com.exasol.adapter.jdbc.ConnectionFactory;
+import com.exasol.logging.VersionCollector;
 
+/**
+ * Factory for {@link ElasticSearchSqlDialect}.
+ */
 public class ElasticSearchSqlDialectFactory implements SqlDialectFactory {
 
     @Override
@@ -19,7 +23,7 @@ public class ElasticSearchSqlDialectFactory implements SqlDialectFactory {
 
     @Override
     public String getSqlDialectVersion() {
-        return null;
+        return new VersionCollector("META-INF/maven/com.exasol/elasticsearch-virtual-schema/pom.properties")
+                .getVersionNumber();
     }
-
 }

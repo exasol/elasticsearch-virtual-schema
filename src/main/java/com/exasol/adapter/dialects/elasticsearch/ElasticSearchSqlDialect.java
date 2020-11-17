@@ -12,9 +12,10 @@ import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.capabilities.Capabilities;
 import com.exasol.adapter.dialects.*;
 import com.exasol.adapter.jdbc.*;
+import com.exasol.errorreporting.ExaError;
 
 /**
- * This class implements the PostgreSQL dialect.
+ * Implementation of SQL dialect for ElasticSearch.
  */
 public class ElasticSearchSqlDialect extends AbstractSqlDialect {
 
@@ -36,6 +37,12 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
                 .build();
     }
 
+    /**
+     * Creates a new instance of {@link ElasticSearchSqlDialect}.
+     *
+     * @param connectionFactory factory for JDBC connection to remote data source
+     * @param properties        user defined properties
+     */
     public ElasticSearchSqlDialect(final ConnectionFactory connectionFactory, final AdapterProperties properties) {
         super(connectionFactory, properties, Set.of());
     }
@@ -85,8 +92,8 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
         try {
             return new ElasticSearchMetadataReader(this.connectionFactory.getConnection(), this.properties);
         } catch (final SQLException exception) {
-            throw new RemoteMetadataReaderException("Unable to create ElasticSearch remote metadata reader.",
-                    exception);
+            throw new RemoteMetadataReaderException(ExaError.messageBuilder("E-VSES-1")
+                    .message("Unable to create ElasticSearch remote metadata reader.").toString(), exception);
         }
     }
 

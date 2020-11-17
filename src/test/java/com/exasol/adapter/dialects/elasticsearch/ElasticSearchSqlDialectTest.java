@@ -5,10 +5,10 @@ import static com.exasol.adapter.capabilities.LiteralCapability.*;
 import static com.exasol.adapter.capabilities.MainCapability.*;
 import static com.exasol.adapter.capabilities.PredicateCapability.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
@@ -26,6 +26,7 @@ import com.exasol.adapter.dialects.BaseQueryRewriter;
 import com.exasol.adapter.dialects.SqlDialect.NullSorting;
 import com.exasol.adapter.dialects.SqlDialect.StructureElementSupport;
 import com.exasol.adapter.jdbc.ConnectionFactory;
+import com.exasol.adapter.jdbc.RemoteMetadataReaderException;
 
 @ExtendWith(MockitoExtension.class)
 public class ElasticSearchSqlDialectTest {
@@ -91,6 +92,14 @@ public class ElasticSearchSqlDialectTest {
     void testCreateRemoteMetadataReader(@Mock final Connection connectionMock) throws SQLException {
         when(this.connectionFactoryMock.getConnection()).thenReturn(connectionMock);
         assertThat(this.dialect.createRemoteMetadataReader(), instanceOf(ElasticSearchMetadataReader.class));
+    }
+
+    @Test
+    void testCreateRemoteMetadataReaderConnectionFails(@Mock final Connection connectionMock) throws SQLException {
+        when(this.connectionFactoryMock.getConnection()).thenThrow(new SQLException());
+        final RemoteMetadataReaderException exception = assertThrows(RemoteMetadataReaderException.class,
+                this.dialect::createRemoteMetadataReader);
+        assertThat(exception.getMessage(), containsString("E-VSES-1"));
     }
 
     @Test
