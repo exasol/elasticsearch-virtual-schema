@@ -16,7 +16,7 @@ import com.exasol.adapter.dialects.*;
 import com.exasol.adapter.jdbc.BaseColumnMetadataReader;
 import com.exasol.adapter.jdbc.BaseTableMetadataReader;
 
-public class ElasticSearchMetadataReaderTest {
+class ElasticSearchMetadataReaderTest {
     private ElasticSearchMetadataReader reader;
     @Mock
     private Connection connectionMock;

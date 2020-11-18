@@ -29,8 +29,7 @@ import com.exasol.adapter.jdbc.ConnectionFactory;
 import com.exasol.adapter.jdbc.RemoteMetadataReaderException;
 
 @ExtendWith(MockitoExtension.class)
-public class ElasticSearchSqlDialectTest {
-
+class ElasticSearchSqlDialectTest {
     private ElasticSearchSqlDialect dialect;
     @Mock
     private ConnectionFactory connectionFactoryMock;
