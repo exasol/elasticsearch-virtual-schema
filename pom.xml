@@ -9,8 +9,9 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11</java.version>
 		<surefire.and.failsafe.plugin.version>3.0.0-M3</surefire.and.failsafe.plugin.version>
-		<vscjdbc.version>6.0.0</vscjdbc.version>
+		<vscjdbc.version>8.0.0</vscjdbc.version>
 		<elasticsearch.version>7.9.3</elasticsearch.version>
+		<org.testcontainers.version>1.15.0</org.testcontainers.version>
 		<sonar.coverage.jacoco.xmlReportPaths>target/site/jacoco/jacoco.xml,target/site/jacoco-it/jacoco.xml
 		</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
@@ -70,6 +71,57 @@
 			<version>3.5.13</version>
 			<scope>test</scope>
 		</dependency>
+		<!--Integration test dependencies -->
+		<dependency>
+			<groupId>org.elasticsearch.client</groupId>
+			<artifactId>elasticsearch-rest-high-level-client</artifactId>
+			<version>${elasticsearch.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.elasticsearch.plugin</groupId>
+			<artifactId>x-pack-sql-jdbc</artifactId>
+			<version>${elasticsearch.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>${org.testcontainers.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.testcontainers</groupId>
+			<artifactId>elasticsearch</artifactId>
+			<version>${org.testcontainers.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.exasol</groupId>
+			<artifactId>exasol-testcontainers</artifactId>
+			<version>3.3.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.exasol</groupId>
+			<artifactId>test-db-builder-java</artifactId>
+			<version>2.0.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.exasol</groupId>
+			<artifactId>hamcrest-resultset-matcher</artifactId>
+			<version>1.2.1</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- Overrides Junit 4.12 which is used in test containers but contains 
+			a security issue: https://ossindex.sonatype.org/vuln/7ea56ad4-8a8b-4e51-8ed9-5aad83d8efb1 -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.1</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -95,10 +147,23 @@
 						</goals>
 					</execution>
 					<execution>
+						<id>prepare-agent-integration</id>
+						<goals>
+							<goal>prepare-agent-integration</goal>
+						</goals>
+					</execution>
+					<execution>
 						<id>report</id>
 						<phase>test</phase>
 						<goals>
 							<goal>report</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report-integration</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report-integration</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -140,12 +205,12 @@
 				<configuration>
 					<!-- Set the highest log level for coverage testing, so that we have 
 						a chance to reach branches <property> in the logging lambdas too. -->
-					<argLine>-Djava.util.logging.config.file=src/test/resources/logging.properties
-						${argLine}</argLine>
+					<argLine>-Djava.util.logging.config.file=src/test/resources/logging.properties ${argLine}</argLine>
 				</configuration>
 				<executions>
 					<execution>
 						<goals>
+							<goal>integration-test</goal>
 							<goal>verify</goal>
 						</goals>
 					</execution>
@@ -219,6 +284,7 @@
 				<configuration>
 					<modules>
 						<module>jar_artifact</module>
+						<module>integration_tests</module>
 					</modules>
 				</configuration>
 			</plugin>
@@ -234,6 +300,13 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<excludeVulnerabilityIds>
+						<!-- Ignores CVE-2020-15250, because we use Java 11 and Junit 4.13.1 
+							which contains a fix: https://ossindex.sonatype.org/vuln/7ea56ad4-8a8b-4e51-8ed9-5aad83d8efb1 -->
+						<exclude>7ea56ad4-8a8b-4e51-8ed9-5aad83d8efb1</exclude>
+					</excludeVulnerabilityIds>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

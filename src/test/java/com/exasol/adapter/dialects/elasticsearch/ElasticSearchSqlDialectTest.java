@@ -22,7 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.capabilities.Capabilities;
-import com.exasol.adapter.dialects.BaseQueryRewriter;
+import com.exasol.adapter.dialects.ImportFromJDBCQueryRewriter;
 import com.exasol.adapter.dialects.SqlDialect.NullSorting;
 import com.exasol.adapter.dialects.SqlDialect.StructureElementSupport;
 import com.exasol.adapter.jdbc.ConnectionFactory;
@@ -104,6 +104,6 @@ class ElasticSearchSqlDialectTest {
     @Test
     void testCreateQueryRewriter(@Mock final Connection connectionMock) throws SQLException {
         when(this.connectionFactoryMock.getConnection()).thenReturn(connectionMock);
-        assertThat(this.dialect.createQueryRewriter(), instanceOf(BaseQueryRewriter.class));
+        assertThat(this.dialect.createQueryRewriter(), instanceOf(ImportFromJDBCQueryRewriter.class));
     }
 }

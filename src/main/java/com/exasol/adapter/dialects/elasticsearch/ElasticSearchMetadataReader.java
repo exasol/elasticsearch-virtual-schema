@@ -23,7 +23,7 @@ public class ElasticSearchMetadataReader extends AbstractRemoteMetadataReader {
 
     @Override
     protected ColumnMetadataReader createColumnMetadataReader() {
-        return new BaseColumnMetadataReader(this.connection, this.properties, this.identifierConverter);
+        return new ElasticSearchColumnMetadataReader(this.connection, this.properties, this.identifierConverter);
     }
 
     @Override
