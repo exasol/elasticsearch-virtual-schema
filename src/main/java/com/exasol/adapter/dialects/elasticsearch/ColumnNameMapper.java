@@ -3,7 +3,7 @@ package com.exasol.adapter.dialects.elasticsearch;
 /**
  * Map Exasol column names to ElasticSearchSQL column names and vice versa.
  *
- * NOTE: This is necessary because ElasticSearch nested column names are case sensitive dot-separated names, as in
+ * NOTE: This is necessary because ElasticSearch nested column names are case-sensitive dot-separated names, as in
  * `book.author.name`. We cannot use this identifier in the Exasol database when performing queries, as the Exasol SQL
  * dialect doesn't allow dots(.) in quoted identifiers.
  */
