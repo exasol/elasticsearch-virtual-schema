@@ -8,7 +8,6 @@ import com.exasol.adapter.sql.SqlColumn;
  * Implementation of {@link SqlGenerationVisitor} for generating ElasticSearchSQL queries.
  */
 public class ElasticSearchSqlGenerationVisitor extends SqlGenerationVisitor {
-
     /**
      * Construct a new instance of {@link ElasticSearchSqlGenerationVisitor}.
      *
