@@ -22,7 +22,7 @@ public final class ColumnNameMapper {
      * @return Exasol representation of the passed column name
      */
     public static String mapToExasolDialect(final String columnName) {
-        return columnName.replace(ES_COLUMN_NAME_PUNCTUATION_CHAR, EXASOL_COLUMN_NAME_PUNCTUATION_CHAR);
+        return columnName.replace(ELASTICSEARCH_COLUMN_NAME_PUNCTUATION_CHAR, EXASOL_COLUMN_NAME_PUNCTUATION_CHAR);
     }
 
     /**
@@ -32,6 +32,6 @@ public final class ColumnNameMapper {
      * @return ElasticSearchSQL representation of the passed columnName
      */
     public static String mapToESDialect(final String columnName) {
-        return columnName.replace(EXASOL_COLUMN_NAME_PUNCTUATION_CHAR, ES_COLUMN_NAME_PUNCTUATION_CHAR);
+        return columnName.replace(EXASOL_COLUMN_NAME_PUNCTUATION_CHAR, ELASTICSEARCH_COLUMN_NAME_PUNCTUATION_CHAR);
     }
 }

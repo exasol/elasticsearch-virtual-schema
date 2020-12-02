@@ -20,29 +20,25 @@ public class ElasticSearchSqlGenerationVisitor extends SqlGenerationVisitor {
 
     @Override
     public String visit(final SqlColumn column) throws AdapterException {
-        return this.getTablePrefix(column) + this.getColumnName(column);
+        final String tablePrefix = this.getTablePrefix(column);
+        if (!tablePrefix.isBlank()) {
+            return tablePrefix + this.getDialect().getTableCatalogAndSchemaSeparator() + this.getColumnName(column);
+        }
+        return this.getColumnName(column);
     }
 
     private String getTablePrefix(final SqlColumn column) {
         if (column.hasTableAlias()) {
-            return this.getTablePrefixWithAlias(column.getTableAlias());
+            return this.getDialect().applyQuote(column.getTableAlias());
         }
         if (this.hasTableName(column)) {
-            return this.getTablePrefixWithName(column.getTableName());
+            return this.getDialect().applyQuote(column.getTableName());
         }
         return "";
     }
 
-    private String getTablePrefixWithAlias(final String tableAlias) {
-        return this.getDialect().applyQuote(tableAlias) + this.getDialect().getTableCatalogAndSchemaSeparator();
-    }
-
     private boolean hasTableName(final SqlColumn column) {
         return (column.getTableName() != null) && !column.getTableName().isEmpty();
-    }
-
-    private String getTablePrefixWithName(final String tableName) {
-        return this.getDialect().applyQuote(tableName) + this.getDialect().getTableCatalogAndSchemaSeparator();
     }
 
     private String getColumnName(final SqlColumn column) {

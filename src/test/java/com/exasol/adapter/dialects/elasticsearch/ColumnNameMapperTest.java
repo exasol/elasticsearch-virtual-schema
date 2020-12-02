@@ -17,7 +17,13 @@ class ColumnNameMapperTest {
         return Stream.of(//
                 Arguments.of("book", "book"), //
                 Arguments.of("book.author", "book/author"), //
-                Arguments.of("book.author.name", "book/author/name") //
+                Arguments.of("book.author.name", "book/author/name"), //
+                Arguments.of("book..author", "book//author"), //
+                Arguments.of("book.", "book/"), //
+                Arguments.of("book..", "book//"), //
+                Arguments.of(".book", "/book"), //
+                Arguments.of(".", "/"), //
+                Arguments.of("", "") //
         );
     }
 
