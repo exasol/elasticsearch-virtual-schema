@@ -19,7 +19,7 @@ public final class ColumnNameMapper {
      * Map the passed columnName to an Exasol column name.
      *
      * @param columnName column name to be mapped
-     * @returnan Exasol representation of the passed columnName
+     * @return Exasol representation of the passed column name
      */
     public static String mapToExasolDialect(final String columnName) {
         return columnName.replace(ES_COLUMN_NAME_PUNCTUATION_CHAR, EXASOL_COLUMN_NAME_PUNCTUATION_CHAR);
