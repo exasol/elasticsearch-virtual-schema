@@ -7,7 +7,7 @@ package com.exasol.adapter.dialects.elasticsearch;
  * `book.author.name`. We cannot use this identifier in the Exasol database when performing queries, as the Exasol SQL
  * dialect doesn't allow dots(.) in quoted identifiers.
  */
-public class ColumnNameMapper {
+public final class ColumnNameMapper {
     private static final String EXASOL_COLUMN_NAME_PUNCTUATION_CHAR = "/";
     private static final String ES_COLUMN_NAME_PUNCTUATION_CHAR = ".";
 
