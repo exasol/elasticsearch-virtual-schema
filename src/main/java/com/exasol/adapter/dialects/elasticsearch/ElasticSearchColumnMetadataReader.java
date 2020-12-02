@@ -26,5 +26,4 @@ public class ElasticSearchColumnMetadataReader extends BaseColumnMetadataReader 
     protected String mapColumnName(final String columnName) {
         return ColumnNameMapper.mapToExasolDialect(columnName);
     }
-
 }
