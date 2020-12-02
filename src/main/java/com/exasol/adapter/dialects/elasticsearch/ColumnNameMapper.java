@@ -9,7 +9,7 @@ package com.exasol.adapter.dialects.elasticsearch;
  */
 public final class ColumnNameMapper {
     private static final String EXASOL_COLUMN_NAME_PUNCTUATION_CHAR = "/";
-    private static final String ES_COLUMN_NAME_PUNCTUATION_CHAR = ".";
+    private static final String ELASTICSEARCH_COLUMN_NAME_PUNCTUATION_CHAR = ".";
 
     private ColumnNameMapper() {
         // empty constructor to avoid instantiation
