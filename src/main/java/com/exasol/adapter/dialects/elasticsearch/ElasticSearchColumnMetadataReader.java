@@ -10,7 +10,6 @@ import com.exasol.adapter.jdbc.BaseColumnMetadataReader;
  * This class implements ElasticSearch-specific reading of column metadata.
  */
 public class ElasticSearchColumnMetadataReader extends BaseColumnMetadataReader {
-
     /**
      * Create a new instance of the {@link ElasticSearchColumnMetadataReader}.
      *
