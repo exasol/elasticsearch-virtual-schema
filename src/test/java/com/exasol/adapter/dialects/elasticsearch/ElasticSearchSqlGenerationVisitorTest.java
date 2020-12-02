@@ -81,5 +81,4 @@ class ElasticSearchSqlGenerationVisitorTest {
             return new SqlColumn(1, columnMetadata, this.tableName, this.tableAlias);
         }
     }
-
 }
