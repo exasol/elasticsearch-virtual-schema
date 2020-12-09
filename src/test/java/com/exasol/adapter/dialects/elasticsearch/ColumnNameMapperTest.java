@@ -36,6 +36,6 @@ class ColumnNameMapperTest {
     @ParameterizedTest
     @MethodSource("mappedColumnNames")
     void testMapToElasticSearch(final String elasticSearchColumnName, final String exasolColumnName) {
-        assertEquals(ColumnNameMapper.mapToESDialect(exasolColumnName), elasticSearchColumnName);
+        assertEquals(ColumnNameMapper.mapToElasticSearchDialect(exasolColumnName), elasticSearchColumnName);
     }
 }

@@ -31,7 +31,7 @@ public final class ColumnNameMapper {
      * @param columnName column name to be mapped
      * @return ElasticSearchSQL representation of the passed columnName
      */
-    public static String mapToESDialect(final String columnName) {
+    public static String mapToElasticSearchDialect(final String columnName) {
         return columnName.replace(EXASOL_COLUMN_NAME_PUNCTUATION_CHAR, ELASTICSEARCH_COLUMN_NAME_PUNCTUATION_CHAR);
     }
 }

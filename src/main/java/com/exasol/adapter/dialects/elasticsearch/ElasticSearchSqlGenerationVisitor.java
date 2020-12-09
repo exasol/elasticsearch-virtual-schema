@@ -45,7 +45,7 @@ public class ElasticSearchSqlGenerationVisitor extends SqlGenerationVisitor {
     }
 
     private String getColumnName(final SqlColumn column) {
-        final String columnName = ColumnNameMapper.mapToESDialect(column.getName());
+        final String columnName = ColumnNameMapper.mapToElasticSearchDialect(column.getName());
         return this.getDialect().applyQuote(columnName);
     }
 }
