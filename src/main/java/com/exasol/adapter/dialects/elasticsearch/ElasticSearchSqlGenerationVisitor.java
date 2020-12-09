@@ -24,7 +24,10 @@ public class ElasticSearchSqlGenerationVisitor extends SqlGenerationVisitor {
         if (!tablePrefix.isBlank()) {
             return tablePrefix + this.getDialect().getTableCatalogAndSchemaSeparator() + this.getColumnName(column);
         }
-        return this.getColumnName(column);
+        else
+        {
+            return this.getColumnName(column);
+        }
     }
 
     private String getTablePrefix(final SqlColumn column) {
