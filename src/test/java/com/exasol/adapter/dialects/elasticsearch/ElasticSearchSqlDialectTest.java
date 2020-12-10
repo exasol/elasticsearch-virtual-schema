@@ -13,16 +13,20 @@ import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.capabilities.Capabilities;
-import com.exasol.adapter.dialects.BaseQueryRewriter;
+import com.exasol.adapter.dialects.ImportFromJDBCQueryRewriter;
 import com.exasol.adapter.dialects.SqlDialect.NullSorting;
 import com.exasol.adapter.dialects.SqlDialect.StructureElementSupport;
 import com.exasol.adapter.jdbc.ConnectionFactory;
@@ -104,6 +108,28 @@ class ElasticSearchSqlDialectTest {
     @Test
     void testCreateQueryRewriter(@Mock final Connection connectionMock) throws SQLException {
         when(this.connectionFactoryMock.getConnection()).thenReturn(connectionMock);
-        assertThat(this.dialect.createQueryRewriter(), instanceOf(BaseQueryRewriter.class));
+        assertThat(this.dialect.createQueryRewriter(), instanceOf(ImportFromJDBCQueryRewriter.class));
+    }
+
+    @Test
+    void testGetSqlGenerationVisitor() throws SQLException {
+        assertThat(this.dialect.getSqlGenerationVisitor(null), instanceOf(ElasticSearchSqlGenerationVisitor.class));
+    }
+
+    /**
+     * @return A stream of arguments with a literal string on the left, and its valid SQL syntax on the right.
+     */
+    static Stream<Arguments> getMappedStringLiterals() {
+        return Stream.of(//
+                Arguments.of(null, "NULL"), //
+                Arguments.of("string_literal_no_inner_quotes", "'string_literal_no_inner_quotes'"), //
+                Arguments.of("string_literal_with_'inner_quotes'", "'string_literal_with_''inner_quotes'''") //
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("getMappedStringLiterals")
+    void getStringLiteral(final String value, final String expected) throws SQLException {
+        assertThat(this.dialect.getStringLiteral(value), equalTo(expected));
     }
 }

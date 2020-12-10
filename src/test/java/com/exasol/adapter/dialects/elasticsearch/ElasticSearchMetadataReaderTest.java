@@ -13,7 +13,6 @@ import org.mockito.Mock;
 
 import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.dialects.*;
-import com.exasol.adapter.jdbc.BaseColumnMetadataReader;
 import com.exasol.adapter.jdbc.BaseTableMetadataReader;
 
 class ElasticSearchMetadataReaderTest {
@@ -33,7 +32,7 @@ class ElasticSearchMetadataReaderTest {
 
     @Test
     void testGetColumnMetadataReader() {
-        assertThat(this.reader.getColumnMetadataReader(), instanceOf(BaseColumnMetadataReader.class));
+        assertThat(this.reader.getColumnMetadataReader(), instanceOf(ElasticSearchColumnMetadataReader.class));
     }
 
     @Test

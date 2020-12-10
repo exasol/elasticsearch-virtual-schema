@@ -12,6 +12,7 @@ import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.capabilities.Capabilities;
 import com.exasol.adapter.dialects.*;
 import com.exasol.adapter.jdbc.*;
+import com.exasol.adapter.sql.SqlNodeVisitor;
 import com.exasol.errorreporting.ExaError;
 
 /**
@@ -99,6 +100,16 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
 
     @Override
     protected QueryRewriter createQueryRewriter() {
-        return new BaseQueryRewriter(this, createRemoteMetadataReader(), this.connectionFactory);
+        return new ImportFromJDBCQueryRewriter(this, createRemoteMetadataReader());
+    }
+
+    @Override
+    public SqlNodeVisitor<String> getSqlGenerationVisitor(final SqlGenerationContext context) {
+        return new ElasticSearchSqlGenerationVisitor(this, context);
+    }
+
+    @Override
+    public String getStringLiteral(final String value) {
+        return this.quoteLiteralStringWithSingleQuote(value);
     }
 }
