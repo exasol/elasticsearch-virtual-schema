@@ -8,12 +8,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class ColumnNameMapperTest {
+class ElasticSearchIdentifierConverterTest {
     /**
-     * @return A stream of arguments with the ElasticSearch column name representation on the left, and Exasol's on the
+     * @return A stream of arguments with the ElasticSearch identifier representation on the left, and Exasol's on the
      *         right.
      */
-    static Stream<Arguments> mappedColumnNames() {
+    static Stream<Arguments> mappedIdentifiers() {
         return Stream.of(//
                 Arguments.of("book", "book"), //
                 Arguments.of("book.author", "book/author"), //
@@ -28,14 +28,16 @@ class ColumnNameMapperTest {
     }
 
     @ParameterizedTest
-    @MethodSource("mappedColumnNames")
-    void testMapToExasol(final String elasticSearchColumnName, final String exasolColumnName) {
-        assertEquals(ColumnNameMapper.mapToExasolDialect(elasticSearchColumnName), exasolColumnName);
+    @MethodSource("mappedIdentifiers")
+    void testMapToExasol(final String elasticSearchIdentifier, final String exasolIdentifier) {
+        assertEquals(ElasticSearchIdentifierConverter.convertToExasolDialect(elasticSearchIdentifier),
+                exasolIdentifier);
     }
 
     @ParameterizedTest
-    @MethodSource("mappedColumnNames")
-    void testMapToElasticSearch(final String elasticSearchColumnName, final String exasolColumnName) {
-        assertEquals(ColumnNameMapper.mapToElasticSearchDialect(exasolColumnName), elasticSearchColumnName);
+    @MethodSource("mappedIdentifiers")
+    void testMapToElasticSearch(final String elasticSearchIdentifier, final String exasolIdentifier) {
+        assertEquals(ElasticSearchIdentifierConverter.convertToElasticSearchDialect(exasolIdentifier),
+                elasticSearchIdentifier);
     }
 }
