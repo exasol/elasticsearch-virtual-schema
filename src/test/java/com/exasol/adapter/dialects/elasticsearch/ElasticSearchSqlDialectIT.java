@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.IOException;
 import java.sql.*;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Logger;
 
 import javax.json.JsonObject;
 
@@ -26,10 +27,13 @@ import com.exasol.containers.ExasolContainer;
 import com.exasol.dbbuilder.dialects.DatabaseObject;
 import com.exasol.dbbuilder.dialects.exasol.*;
 import com.exasol.dbbuilder.dialects.exasol.AdapterScript.Language;
+import com.exasol.errorreporting.ExaError;
+import com.exasol.udfdebugging.UdfTestSetup;
 
 @Tag("integration")
 @Testcontainers
 class ElasticSearchSqlDialectIT {
+    private static final Logger LOGGER = Logger.getLogger(ElasticSearchSqlDialectIT.class.getName());
     @Container
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
             getExasolDockerImageReference()).withReuse(true);
@@ -50,14 +54,20 @@ class ElasticSearchSqlDialectIT {
     @BeforeAll
     static void beforeAll() throws BucketAccessException, InterruptedException, TimeoutException, IOException,
             NoDriverFoundException, SQLException {
-        connection = EXASOL.createConnection("");
-        objectFactory = new ExasolObjectFactory(connection);
+        connection = EXASOL.createConnection();
+        objectFactory = setupObjectFactory();
         adapterSchema = objectFactory.createSchema("ADAPTER_SCHEMA");
         adapterScript = installVirtualSchemaAdapter(adapterSchema);
         ES_CONTAINER.start();
         esGateway = ElasticSearchGateway.connectTo(ES_CONTAINER.getHttpHostAddress());
         esGateway.startTrial();
         esGateway.closeConnection();
+    }
+
+    private static ExasolObjectFactory setupObjectFactory() {
+        final UdfTestSetup udfTestSetup = new UdfTestSetup(DOCKER_IP_ADDRESS, EXASOL.getDefaultBucket());
+        return new ExasolObjectFactory(connection,
+                ExasolObjectConfiguration.builder().withJvmOptions(udfTestSetup.getJvmOptions()).build());
     }
 
     private static AdapterScript installVirtualSchemaAdapter(final ExasolSchema adapterSchema)
@@ -71,10 +81,19 @@ class ElasticSearchSqlDialectIT {
     }
 
     private static void uploadDriverToBucket(final Bucket bucket)
-            throws InterruptedException, BucketAccessException, TimeoutException {
-        bucket.uploadFile(SETTINGS_FILE_PATH, JDBC_DRIVERS_IN_BUCKET_PATH + SETTINGS_FILE_NAME);
-        bucket.uploadFile(JDBC_DRIVER_PATH, JDBC_DRIVERS_IN_BUCKET_PATH + JDBC_DRIVER_NAME);
-        bucket.uploadFile(JDBC_DRIVER_PATH, JDBC_DRIVER_NAME);
+            throws InterruptedException, TimeoutException, BucketAccessException {
+        try {
+            bucket.uploadFile(SETTINGS_FILE_PATH, JDBC_DRIVERS_IN_BUCKET_PATH + SETTINGS_FILE_NAME);
+            bucket.uploadFile(JDBC_DRIVER_PATH, JDBC_DRIVERS_IN_BUCKET_PATH + JDBC_DRIVER_NAME);
+            bucket.uploadFile(JDBC_DRIVER_PATH, JDBC_DRIVER_NAME);
+        } catch (final BucketAccessException e) {
+            LOGGER.severe(ExaError.messageBuilder("S-ESVS-IT-1")
+                    .message("An error occured while uploading the jdbc driver to the bucket.")
+                    .mitigation("Make sure the {{JDBC_DRIVER_PATH}} file exists.")
+                    .parameter("JDBC_DRIVER_PATH", JDBC_DRIVER_PATH)
+                    .mitigation("You can generate it by executing the integration test with maven.").toString());
+            throw e;
+        }
     }
 
     private static String getAdapterScriptContent() {
@@ -131,8 +150,8 @@ class ElasticSearchSqlDialectIT {
     @Test
     void testSelectListWithExpressions() throws IOException {
         this.indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 1).build());
-        final String query = "SELECT ucase(\"str_field\"), \"int_field\"+1 FROM " + getVirtualTableName();
-        assertVirtualTableContentsByQuery(query, table().row("STR", 2).matchesFuzzily());
+        final String query = "SELECT \"int_field\"+1 FROM " + getVirtualTableName();
+        assertVirtualTableContentsByQuery(query, table().row(2).matchesFuzzily());
     }
 
     @Test
@@ -248,11 +267,11 @@ class ElasticSearchSqlDialectIT {
     @Test
     void testOrderByExpression() throws IOException {
         this.indexDocument(createObjectBuilder().add("int_field", 1).build());
-        this.indexDocument(createObjectBuilder().add("int_field", -3).build());
+        this.indexDocument(createObjectBuilder().add("int_field", 3).build());
         final String query = "SELECT \"int_field\"" //
                 + " FROM " + getVirtualTableName() //
-                + " ORDER BY abs(\"int_field\") DESC";
-        assertVirtualTableContentsByQuery(query, table().row(-3).row(1).matchesFuzzily());
+                + " ORDER BY \"int_field\"+1 DESC";
+        assertVirtualTableContentsByQuery(query, table().row(3).row(1).matchesFuzzily());
     }
 
     @Test
