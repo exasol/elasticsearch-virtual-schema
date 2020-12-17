@@ -19,7 +19,6 @@ import com.exasol.errorreporting.ExaError;
  * Implementation of SQL dialect for ElasticSearch.
  */
 public class ElasticSearchSqlDialect extends AbstractSqlDialect {
-
     static final String NAME = "ES";
     private static final Capabilities CAPABILITIES = createCapabilityList();
 

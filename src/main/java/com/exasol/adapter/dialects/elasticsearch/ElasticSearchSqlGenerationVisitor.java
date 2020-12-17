@@ -23,9 +23,7 @@ public class ElasticSearchSqlGenerationVisitor extends SqlGenerationVisitor {
         final String tablePrefix = this.getTablePrefix(column);
         if (!tablePrefix.isBlank()) {
             return tablePrefix + this.getDialect().getTableCatalogAndSchemaSeparator() + this.getColumnName(column);
-        }
-        else
-        {
+        } else {
             return this.getColumnName(column);
         }
     }
@@ -45,7 +43,7 @@ public class ElasticSearchSqlGenerationVisitor extends SqlGenerationVisitor {
     }
 
     private String getColumnName(final SqlColumn column) {
-        final String columnName = ColumnNameMapper.mapToElasticSearchDialect(column.getName());
+        final String columnName = ElasticSearchIdentifierConverter.convertToElasticSearchDialect(column.getName());
         return this.getDialect().applyQuote(columnName);
     }
 }

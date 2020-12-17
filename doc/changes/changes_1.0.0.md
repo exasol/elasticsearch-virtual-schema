@@ -6,3 +6,4 @@ Code name:
 
 * #1: Initial commit
 * #7: Add support for nested fields
+* #3: Add integration tests for `main capabilities`
