@@ -27,8 +27,8 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
         return Capabilities //
                 .builder() //
                 .addMain(SELECTLIST_PROJECTION, SELECTLIST_EXPRESSIONS, FILTER_EXPRESSIONS, AGGREGATE_SINGLE_GROUP,
-                        AGGREGATE_GROUP_BY_COLUMN, AGGREGATE_GROUP_BY_EXPRESSION, AGGREGATE_GROUP_BY_TUPLE,
-                        AGGREGATE_HAVING, ORDER_BY_COLUMN, ORDER_BY_EXPRESSION, LIMIT) //
+                        AGGREGATE_GROUP_BY_COLUMN, AGGREGATE_GROUP_BY_TUPLE, AGGREGATE_HAVING, ORDER_BY_COLUMN,
+                        ORDER_BY_EXPRESSION, LIMIT) //
                 .addPredicate(AND, OR, NOT, NOTEQUAL, LESS, LESSEQUAL, BETWEEN, IN_CONSTLIST, IS_NULL, IS_NOT_NULL,
                         LIKE) //
                 .addLiteral(NULL, BOOL, DOUBLE, EXACTNUMERIC, STRING, INTERVAL) //

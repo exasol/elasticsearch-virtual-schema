@@ -47,10 +47,11 @@ class ElasticSearchSqlDialectTest {
     @Test
     void testExasolSqlDialectSupportsAllCapabilities() {
         final Capabilities capabilities = this.dialect.getCapabilities();
-        assertAll(() -> assertThat(capabilities.getMainCapabilities(),
-                containsInAnyOrder(SELECTLIST_PROJECTION, SELECTLIST_EXPRESSIONS, FILTER_EXPRESSIONS,
-                        AGGREGATE_SINGLE_GROUP, AGGREGATE_GROUP_BY_COLUMN, AGGREGATE_GROUP_BY_EXPRESSION,
-                        AGGREGATE_GROUP_BY_TUPLE, AGGREGATE_HAVING, ORDER_BY_COLUMN, ORDER_BY_EXPRESSION, LIMIT)),
+        assertAll(
+                () -> assertThat(capabilities.getMainCapabilities(),
+                        containsInAnyOrder(SELECTLIST_PROJECTION, SELECTLIST_EXPRESSIONS, FILTER_EXPRESSIONS,
+                                AGGREGATE_SINGLE_GROUP, AGGREGATE_GROUP_BY_COLUMN, AGGREGATE_GROUP_BY_TUPLE,
+                                AGGREGATE_HAVING, ORDER_BY_COLUMN, ORDER_BY_EXPRESSION, LIMIT)),
                 () -> assertThat(capabilities.getPredicateCapabilities(),
                         containsInAnyOrder(AND, OR, NOT, NOTEQUAL, LESS, LESSEQUAL, BETWEEN, IN_CONSTLIST, IS_NULL,
                                 IS_NOT_NULL, LIKE)),
