@@ -4,6 +4,7 @@ import static com.exasol.adapter.capabilities.AggregateFunctionCapability.*;
 import static com.exasol.adapter.capabilities.LiteralCapability.*;
 import static com.exasol.adapter.capabilities.MainCapability.*;
 import static com.exasol.adapter.capabilities.PredicateCapability.*;
+import static com.exasol.adapter.capabilities.ScalarFunctionCapability.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
@@ -46,10 +47,11 @@ class ElasticSearchSqlDialectTest {
     @Test
     void testExasolSqlDialectSupportsAllCapabilities() {
         final Capabilities capabilities = this.dialect.getCapabilities();
-        assertAll(() -> assertThat(capabilities.getMainCapabilities(),
-                containsInAnyOrder(SELECTLIST_PROJECTION, SELECTLIST_EXPRESSIONS, FILTER_EXPRESSIONS,
-                        AGGREGATE_SINGLE_GROUP, AGGREGATE_GROUP_BY_COLUMN, AGGREGATE_GROUP_BY_EXPRESSION,
-                        AGGREGATE_GROUP_BY_TUPLE, AGGREGATE_HAVING, ORDER_BY_COLUMN, ORDER_BY_EXPRESSION, LIMIT)),
+        assertAll(
+                () -> assertThat(capabilities.getMainCapabilities(),
+                        containsInAnyOrder(SELECTLIST_PROJECTION, SELECTLIST_EXPRESSIONS, FILTER_EXPRESSIONS,
+                                AGGREGATE_SINGLE_GROUP, AGGREGATE_GROUP_BY_COLUMN, AGGREGATE_GROUP_BY_TUPLE,
+                                AGGREGATE_HAVING, ORDER_BY_COLUMN, ORDER_BY_EXPRESSION, LIMIT)),
                 () -> assertThat(capabilities.getPredicateCapabilities(),
                         containsInAnyOrder(AND, OR, NOT, NOTEQUAL, LESS, LESSEQUAL, BETWEEN, IN_CONSTLIST, IS_NULL,
                                 IS_NOT_NULL, LIKE)),
@@ -58,7 +60,14 @@ class ElasticSearchSqlDialectTest {
                 () -> assertThat(capabilities.getAggregateFunctionCapabilities(),
                         containsInAnyOrder(COUNT, COUNT_STAR, COUNT_DISTINCT, SUM, SUM_DISTINCT, MIN, MAX, AVG,
                                 AVG_DISTINCT, FIRST_VALUE, LAST_VALUE, STDDEV_POP, STDDEV_POP_DISTINCT, STDDEV_SAMP,
-                                STDDEV_SAMP_DISTINCT, VAR_POP, VAR_POP_DISTINCT, VAR_SAMP, VAR_SAMP_DISTINCT)));
+                                STDDEV_SAMP_DISTINCT, VAR_POP, VAR_POP_DISTINCT, VAR_SAMP, VAR_SAMP_DISTINCT)),
+                () -> assertThat(capabilities.getScalarFunctionCapabilities(),
+                        containsInAnyOrder(ADD, SUB, MULT, FLOAT_DIV, NEG, ABS, ACOS, ASIN, ATAN, ATAN2, CEIL, COS,
+                                COSH, COT, DEGREES, EXP, FLOOR, GREATEST, LEAST, LOG, MOD, POWER, RADIANS, RAND, ROUND,
+                                SIGN, SIN, SINH, SQRT, TAN, TRUNC, ASCII, BIT_LENGTH, CHR, CONCAT, INSERT, LENGTH,
+                                LOCATE, LTRIM, OCTET_LENGTH, REPEAT, REPLACE, RIGHT, RTRIM, SPACE, TRIM, CURRENT_DATE,
+                                CURRENT_TIMESTAMP, DATE_TRUNC, DAY, EXTRACT, HOUR, MINUTE, MONTH, SECOND, WEEK, YEAR,
+                                ST_X, ST_Y, CAST, CASE)));
     }
 
     @Test

@@ -183,16 +183,6 @@ class ElasticSearchSqlDialectIT {
     }
 
     @Test
-    void testAggregateGroupByExpression() throws IOException {
-        this.indexDocument(createObjectBuilder().add("int_field", 1).add("int_field_2", 2).build());
-        this.indexDocument(createObjectBuilder().add("int_field", 2).add("int_field_2", 2).build());
-        final String query = "SELECT min(\"int_field\"), \"int_field_2\"+1" //
-                + " FROM " + getVirtualTableName() //
-                + " GROUP BY \"int_field_2\"+1";
-        assertVirtualTableContentsByQuery(query, table().row(1, 3).matchesFuzzily());
-    }
-
-    @Test
     void testAggregateGroupByTuple() throws IOException {
         this.indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
         this.indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
