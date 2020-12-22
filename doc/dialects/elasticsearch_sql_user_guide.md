@@ -71,9 +71,9 @@ ElasticSearch is a document based database. Among other things, it means you can
 {
 	"book_title": "Effective Java",
 	"pages_count": 377,
-	"author":{
-				"first_name": "Joshua",
-				"last_name": "Bloch"
+	"author": {
+			"first_name": "Joshua",
+			"last_name": "Bloch"
 	}
 }
 ```
