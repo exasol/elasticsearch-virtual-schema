@@ -78,11 +78,11 @@ ElasticSearch is a document based database. Among other things, it means you can
 }
 ```
 
-You can see the `Author` field consists of the `first_name` and `last_name` fields. This are called "nested fields".
+You can see the `Author` field consists of the `first_name` and `last_name` fields. These are called "nested fields".
 
 For referencing nested fields in the ElasticSearchSQL dialect, you use dot(.) as identifier separator, so if you want to refer to the first name of the author, you would do it as `author.first_name`.
 
-In Exasol however the dot(.) can not be used inside quoted identifiers, which means that `author.first_name` is not allowed. However, as explained above, you should always use quoted identifiers given the case sensitive nature of ElasticSearch.
+In Exasol however the dot(.) can not be used inside quoted identifiers, which means that `author.first_name` is not allowed. On the other hand, as explained above, you should always use quoted identifiers given the case sensitive nature of ElasticSearch.
 
 To overcome this situation, every nested field from ElasticSearch is automatically converted to the virtual schema in the Exasol database using the slash(/) as identifier separator. Hence, `author.first_name` becomes `author/first_name`, as in the following example query:
 
