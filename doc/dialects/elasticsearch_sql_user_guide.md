@@ -13,7 +13,7 @@ First download the [ElasticSearch JDBC driver](https://www.elastic.co/downloads/
 
 ## Installing the Adapter Script
 
-Upload the latest available release of [ElasticSearch Virtual Schema](https://github.com/exasol/elasticsearch-virtual-schema/releases) to Bucket FS.
+Upload the latest available release of [ElasticSearch Virtual Schema adapter](https://github.com/exasol/elasticsearch-virtual-schema/releases) to Bucket FS.
 
 Then create a schema to hold the adapter script.
 
