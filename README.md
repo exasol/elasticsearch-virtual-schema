@@ -1,5 +1,22 @@
 # ElasticSearch Virtual Schema
 
+[![Build Status](https://api.travis-ci.com/exasol/elasticsearch-virtual-schema.svg?branch=main)](https://travis-ci.com/exasol/elasticsearch-virtual-schema)
+[![Maven Central](https://img.shields.io/maven-central/v/com.exasol/elasticsearch-virtual-schema)](https://search.maven.org/artifact/com.exasol/elasticsearch-virtual-schema)
+
+SonarCloud results:
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aelasticsearch-virtual-schema&metric=alert_status)](https://sonarcloud.io/dashboard?id=com.exasol%3Aelasticsearch-virtual-schema)
+
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aelasticsearch-virtual-schema&metric=security_rating)](https://sonarcloud.io/dashboard?id=com.exasol%3Aelasticsearch-virtual-schema)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aelasticsearch-virtual-schema&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=com.exasol%3Aelasticsearch-virtual-schema)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aelasticsearch-virtual-schema&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=com.exasol%3Aelasticsearch-virtual-schema)
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aelasticsearch-virtual-schema&metric=sqale_index)](https://sonarcloud.io/dashboard?id=com.exasol%3Aelasticsearch-virtual-schema)
+
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aelasticsearch-virtual-schema&metric=code_smells)](https://sonarcloud.io/dashboard?id=com.exasol%3Aelasticsearch-virtual-schema)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aelasticsearch-virtual-schema&metric=coverage)](https://sonarcloud.io/dashboard?id=com.exasol%3Aelasticsearch-virtual-schema)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aelasticsearch-virtual-schema&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=com.exasol%3Aelasticsearch-virtual-schema)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aelasticsearch-virtual-schema&metric=ncloc)](https://sonarcloud.io/dashboard?id=com.exasol%3Aelasticsearch-virtual-schema)
+
 An implementation of the [ElasticSearchSQL](https://www.elastic.co/what-is/elasticsearch-sql) dialect for the [Exasol Virtual Schema JDBC][virtual-schema-common-jdbc] project.
 Use this dialect if you want to create a Virtual Schema based on an ElasticSearch database.
 
@@ -7,7 +24,7 @@ If you want to set up a Virtual Schema for a different database system, please h
 
 ## Features
 
-* Access data from an ElasticSearch database just like regular Exasol tables.
+* Access ElasticSearch database using Virtual Schema.
 
 ## Table of Contents
 
