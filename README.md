@@ -24,7 +24,7 @@ If you want to set up a Virtual Schema for a different database system, please h
 
 ## Features
 
-* Access ElasticSearch database using Virtual Schema.
+* Access an ElasticSearch database from an Exasol database, using Virtual Schema.
 
 ## Table of Contents
 
