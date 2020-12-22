@@ -1,4 +1,4 @@
-# ElasticSearchSQL SQL Dialect
+# ElasticSearchSQL Dialect User Guide
 
 [ElasticSearch](https://www.elastic.co/) is a distributed, open source search and analytics engine that allows to store and query documents in JSON format, and it provides a SQL dialect called [ElasticSearchSQL](https://www.elastic.co/what-is/elasticsearch-sql) for performing SQL queries.
 
