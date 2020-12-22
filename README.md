@@ -30,8 +30,8 @@ If you want to set up a Virtual Schema for a different database system, please h
 
 ### Information for Users
 
-* [ElasticSearchSQL dialect](doc/dialects/elasticsearchsql.md)
-* [User Guide][user-guide]
+* [ElasticSearchSQL Dialect User Guide](doc/dialects/elasticsearch_sql_user_guide.md)
+* [Virtual Schemas User Guide][user-guide]
 * [Changelog](doc/changes/changelog.md)
 
 Find all the documentation in the [Virtual Schemas project][vs-doc].
