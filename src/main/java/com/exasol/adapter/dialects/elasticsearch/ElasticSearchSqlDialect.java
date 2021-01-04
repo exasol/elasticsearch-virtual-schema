@@ -29,9 +29,9 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
                 .addMain(SELECTLIST_PROJECTION, SELECTLIST_EXPRESSIONS, FILTER_EXPRESSIONS, AGGREGATE_SINGLE_GROUP,
                         AGGREGATE_GROUP_BY_COLUMN, AGGREGATE_GROUP_BY_TUPLE, AGGREGATE_HAVING, ORDER_BY_COLUMN,
                         ORDER_BY_EXPRESSION, LIMIT) //
-                .addPredicate(AND, OR, NOT, NOTEQUAL, LESS, LESSEQUAL, BETWEEN, IN_CONSTLIST, IS_NULL, IS_NOT_NULL,
-                        LIKE) //
-                .addLiteral(NULL, BOOL, DOUBLE, EXACTNUMERIC, STRING, INTERVAL) //
+                .addPredicate(AND, OR, NOT, EQUAL, NOTEQUAL, LESS, LESSEQUAL, BETWEEN, IN_CONSTLIST, IS_NULL,
+                        IS_NOT_NULL, LIKE) //
+                .addLiteral(BOOL, DOUBLE, EXACTNUMERIC, STRING) //
                 .addAggregateFunction(COUNT, COUNT_STAR, COUNT_DISTINCT, SUM, SUM_DISTINCT, MIN, MAX, AVG, AVG_DISTINCT,
                         FIRST_VALUE, LAST_VALUE, STDDEV_POP, STDDEV_POP_DISTINCT, STDDEV_SAMP, STDDEV_SAMP_DISTINCT,
                         VAR_POP, VAR_POP_DISTINCT, VAR_SAMP, VAR_SAMP_DISTINCT) //

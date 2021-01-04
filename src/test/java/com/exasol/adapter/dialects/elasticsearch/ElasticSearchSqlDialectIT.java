@@ -12,6 +12,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsNull;
@@ -43,6 +44,21 @@ class ElasticSearchSqlDialectIT {
     private static final String ES_DIALECT_NAME = "ES";
     private static final String VIRTUAL_SCHEMA_NAME = "VIRTUAL_SCHEMA_ES";
     private static final String INDEX_NAME = "index";
+    private static final String TEST_FIELD = "TEST_FIELD";
+    private static final String TEST_VALUE = "TEST_VALUE";
+
+    private static Matcher<ResultSet> EMPTY_TABLE_MATCHER = getEmptyTableMatcher();
+
+    private static Matcher<ResultSet> getEmptyTableMatcher() {
+        return table("VARCHAR").matchesFuzzily();
+    }
+
+    private static Matcher<ResultSet> SINGLE_ROW_TABLE_MATCHER = getSingleRowTableMatcher();
+
+    private static Matcher<ResultSet> getSingleRowTableMatcher() {
+        return table().row(TEST_VALUE).matchesFuzzily();
+    }
+
     private static Connection connection;
     private static ExasolObjectFactory objectFactory;
     private static ExasolSchema adapterSchema;
@@ -141,140 +157,6 @@ class ElasticSearchSqlDialectIT {
     }
 
     @Test
-    void testSelectListProjection() throws IOException {
-        this.indexDocument(createObjectBuilder().add("str_field", "str").build());
-        final String query = "SELECT \"str_field\" FROM " + getVirtualTableName();
-        assertVirtualTableContentsByQuery(query, table().row("str").matchesFuzzily());
-    }
-
-    @Test
-    void testSelectListWithExpressions() throws IOException {
-        this.indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 1).build());
-        final String query = "SELECT \"int_field\"+1 FROM " + getVirtualTableName();
-        assertVirtualTableContentsByQuery(query, table().row(2).matchesFuzzily());
-    }
-
-    @Test
-    void testFilterExpressions() throws IOException {
-        this.indexDocument(createObjectBuilder().add("int_field", 1).build());
-        this.indexDocument(createObjectBuilder().add("int_field", 2).build());
-        final String query = "SELECT \"int_field\"" //
-                + " FROM " + getVirtualTableName() //
-                + " WHERE \"int_field\" = 1";
-        assertVirtualTableContentsByQuery(query, table().row(1).matchesFuzzily());
-    }
-
-    @Test
-    void testAggregateSingleGroup() throws IOException {
-        this.indexDocument(createObjectBuilder().add("int_field", 1).build());
-        this.indexDocument(createObjectBuilder().add("int_field", 2).build());
-        final String query = "SELECT min(\"int_field\") FROM " + getVirtualTableName();
-        assertVirtualTableContentsByQuery(query, table().row(1).matchesFuzzily());
-    }
-
-    @Test
-    void testAggregateGroupByColumn() throws IOException {
-        this.indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 1).build());
-        this.indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
-        final String query = "SELECT \"str_field\", min(\"int_field\")" //
-                + " FROM " + getVirtualTableName() //
-                + " GROUP BY \"str_field\"";
-        assertVirtualTableContentsByQuery(query, table().row("str", 1).matchesFuzzily());
-    }
-
-    @Test
-    void testAggregateGroupByTuple() throws IOException {
-        this.indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
-        this.indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
-        final String query = "SELECT \"str_field\"" //
-                + " FROM " + getVirtualTableName() //
-                + " GROUP BY \"str_field\", \"int_field\"";
-        assertVirtualTableContentsByQuery(query, table().row("str").matchesFuzzily());
-    }
-
-    @Test
-    void testAggregateHaving() throws IOException {
-        this.indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 1).build());
-        this.indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
-        final String query = "SELECT \"str_field\", min(\"int_field\")" //
-                + " FROM " + getVirtualTableName() //
-                + " GROUP BY \"str_field\"" //
-                + " HAVING min(\"int_field\") = 1";
-        assertVirtualTableContentsByQuery(query, table().row("str", 1).matchesFuzzily());
-    }
-
-    @Test
-    void testOrderByColumnASC() throws IOException {
-        this.indexDocument(createObjectBuilder().add("int_field", 1).build());
-        this.indexDocument(createObjectBuilder().add("int_field", 2).build());
-        final String query = "SELECT \"int_field\"" //
-                + " FROM " + getVirtualTableName() //
-                + " ORDER BY \"int_field\" ASC";
-        assertVirtualTableContentsByQuery(query, table().row(1).row(2).matchesFuzzily());
-    }
-
-    @Test
-    void testOrderByColumnDESC() throws IOException {
-        this.indexDocument(createObjectBuilder().add("int_field", 1).build());
-        this.indexDocument(createObjectBuilder().add("int_field", 2).build());
-        final String query = "SELECT \"int_field\"" //
-                + " FROM " + getVirtualTableName() //
-                + " ORDER BY \"int_field\" DESC";
-        assertVirtualTableContentsByQuery(query, table().row(2).row(1).matchesFuzzily());
-    }
-
-    @Test
-    void testOrderByMultipleColumnASC() throws IOException {
-        this.indexDocument(createObjectBuilder().add("str_field", "a").add("int_field", 1).build());
-        this.indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
-        this.indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 3).build());
-        final String query = "SELECT \"str_field\", \"int_field\"" //
-                + " FROM " + getVirtualTableName() //
-                + " ORDER BY \"str_field\", \"int_field\"";
-        assertVirtualTableContentsByQuery(query, table().row("a", 1).row("str", 2).row("str", 3).matchesFuzzily());
-    }
-
-    @Test
-    void testOrderByColumnNullsLastASC() throws IOException {
-        this.indexDocument(createObjectBuilder().add("int_field", 1).build());
-        this.indexDocument(createObjectBuilder().addNull("int_field").build());
-        final String query = "SELECT \"int_field\"" //
-                + " FROM " + getVirtualTableName() //
-                + " ORDER BY \"int_field\" ASC NULLS LAST";
-        assertVirtualTableContentsByQuery(query, table().row(1).row(IsNull.nullValue()).matchesFuzzily());
-    }
-
-    @Test
-    void testOrderByColumnNullsFirstASC() throws IOException {
-        this.indexDocument(createObjectBuilder().add("int_field", 1).build());
-        this.indexDocument(createObjectBuilder().addNull("int_field").build());
-        final String query = "SELECT \"int_field\"" //
-                + " FROM " + getVirtualTableName() //
-                + " ORDER BY \"int_field\" ASC NULLS FIRST";
-        assertVirtualTableContentsByQuery(query, table().row(IsNull.nullValue()).row(1).matchesFuzzily());
-    }
-
-    @Test
-    void testOrderByExpression() throws IOException {
-        this.indexDocument(createObjectBuilder().add("int_field", 1).build());
-        this.indexDocument(createObjectBuilder().add("int_field", 3).build());
-        final String query = "SELECT \"int_field\"" //
-                + " FROM " + getVirtualTableName() //
-                + " ORDER BY \"int_field\"+1 DESC";
-        assertVirtualTableContentsByQuery(query, table().row(3).row(1).matchesFuzzily());
-    }
-
-    @Test
-    void testLimit() throws IOException {
-        this.indexDocument(createObjectBuilder().add("str_field", "str").build());
-        this.indexDocument(createObjectBuilder().add("str_field", "str").build());
-        final String query = "SELECT \"str_field\"" //
-                + " FROM " + getVirtualTableName() //
-                + " LIMIT 1";
-        assertVirtualTableContentsByQuery(query, table().row("str").matchesFuzzily());
-    }
-
-    @Test
     void testDocumentWithBooleanProperty() throws IOException {
         this.indexDocument(createObjectBuilder().add("bool_field", Boolean.TRUE).build());
         final String query = "SELECT \"bool_field\"" //
@@ -310,17 +192,321 @@ class ElasticSearchSqlDialectIT {
         assertVirtualTableContentsByQuery(query, table().row("str", "inner_str").matchesFuzzily());
     }
 
+    @Nested
+    @DisplayName("Main Capabilities test")
+    class MainCapabilitiesTest {
+        @Test
+        void testSelectListProjection() throws IOException {
+            indexDocument(createObjectBuilder().add("str_field", "str").build());
+            final String query = "SELECT \"str_field\" FROM " + getVirtualTableName();
+            assertVirtualTableContentsByQuery(query, table().row("str").matchesFuzzily());
+        }
+
+        @Test
+        void testSelectListWithExpressions() throws IOException {
+            indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 1).build());
+            final String query = "SELECT \"int_field\"+1 FROM " + getVirtualTableName();
+            assertVirtualTableContentsByQuery(query, table().row(2).matchesFuzzily());
+        }
+
+        @Test
+        void testFilterExpressions() throws IOException {
+            indexDocument(createObjectBuilder().add("int_field", 1).build());
+            indexDocument(createObjectBuilder().add("int_field", 2).build());
+            final String query = "SELECT \"int_field\"" //
+                    + " FROM " + getVirtualTableName() //
+                    + " WHERE \"int_field\" <= 1";
+            assertVirtualTableContentsByQuery(query, table().row(1).matchesFuzzily());
+        }
+
+        @Test
+        void testAggregateSingleGroup() throws IOException {
+            indexDocument(createObjectBuilder().add("int_field", 1).build());
+            indexDocument(createObjectBuilder().add("int_field", 2).build());
+            final String query = "SELECT min(\"int_field\") FROM " + getVirtualTableName();
+            assertVirtualTableContentsByQuery(query, table().row(1).matchesFuzzily());
+        }
+
+        @Test
+        void testAggregateGroupByColumn() throws IOException {
+            indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 1).build());
+            indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
+            final String query = "SELECT \"str_field\", min(\"int_field\")" //
+                    + " FROM " + getVirtualTableName() //
+                    + " GROUP BY \"str_field\"";
+            assertVirtualTableContentsByQuery(query, table().row("str", 1).matchesFuzzily());
+        }
+
+        @Test
+        void testAggregateGroupByTuple() throws IOException {
+            indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
+            indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
+            final String query = "SELECT \"str_field\"" //
+                    + " FROM " + getVirtualTableName() //
+                    + " GROUP BY \"str_field\", \"int_field\"";
+            assertVirtualTableContentsByQuery(query, table().row("str").matchesFuzzily());
+        }
+
+        @Test
+        void testAggregateHaving() throws IOException {
+            indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 1).build());
+            indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
+            final String query = "SELECT \"str_field\", min(\"int_field\")" //
+                    + " FROM " + getVirtualTableName() //
+                    + " GROUP BY \"str_field\"" //
+                    + " HAVING min(\"int_field\") = 1";
+            assertVirtualTableContentsByQuery(query, table().row("str", 1).matchesFuzzily());
+        }
+
+        @Test
+        void testOrderByColumnASC() throws IOException {
+            indexDocument(createObjectBuilder().add("int_field", 1).build());
+            indexDocument(createObjectBuilder().add("int_field", 2).build());
+            final String query = "SELECT \"int_field\"" //
+                    + " FROM " + getVirtualTableName() //
+                    + " ORDER BY \"int_field\" ASC";
+            assertVirtualTableContentsByQuery(query, table().row(1).row(2).matchesFuzzily());
+        }
+
+        @Test
+        void testOrderByColumnDESC() throws IOException {
+            indexDocument(createObjectBuilder().add("int_field", 1).build());
+            indexDocument(createObjectBuilder().add("int_field", 2).build());
+            final String query = "SELECT \"int_field\"" //
+                    + " FROM " + getVirtualTableName() //
+                    + " ORDER BY \"int_field\" DESC";
+            assertVirtualTableContentsByQuery(query, table().row(2).row(1).matchesFuzzily());
+        }
+
+        @Test
+        void testOrderByMultipleColumnASC() throws IOException {
+            indexDocument(createObjectBuilder().add("str_field", "a").add("int_field", 1).build());
+            indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
+            indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 3).build());
+            final String query = "SELECT \"str_field\", \"int_field\"" //
+                    + " FROM " + getVirtualTableName() //
+                    + " ORDER BY \"str_field\", \"int_field\"";
+            assertVirtualTableContentsByQuery(query, table().row("a", 1).row("str", 2).row("str", 3).matchesFuzzily());
+        }
+
+        @Test
+        void testOrderByColumnNullsLastASC() throws IOException {
+            indexDocument(createObjectBuilder().add("int_field", 1).build());
+            indexDocument(createObjectBuilder().addNull("int_field").build());
+            final String query = "SELECT \"int_field\"" //
+                    + " FROM " + getVirtualTableName() //
+                    + " ORDER BY \"int_field\" ASC NULLS LAST";
+            assertVirtualTableContentsByQuery(query, table().row(1).row(IsNull.nullValue()).matchesFuzzily());
+        }
+
+        @Test
+        void testOrderByColumnNullsFirstASC() throws IOException {
+            indexDocument(createObjectBuilder().add("int_field", 1).build());
+            indexDocument(createObjectBuilder().addNull("int_field").build());
+            final String query = "SELECT \"int_field\"" //
+                    + " FROM " + getVirtualTableName() //
+                    + " ORDER BY \"int_field\" ASC NULLS FIRST";
+            assertVirtualTableContentsByQuery(query, table().row(IsNull.nullValue()).row(1).matchesFuzzily());
+        }
+
+        @Test
+        void testOrderByExpression() throws IOException {
+            indexDocument(createObjectBuilder().add("int_field", 1).build());
+            indexDocument(createObjectBuilder().add("int_field", 3).build());
+            final String query = "SELECT \"int_field\"" //
+                    + " FROM " + getVirtualTableName() //
+                    + " ORDER BY \"int_field\"+1 DESC";
+            assertVirtualTableContentsByQuery(query, table().row(3).row(1).matchesFuzzily());
+        }
+
+        @Test
+        void testLimit() throws IOException {
+            indexDocument(createObjectBuilder().add("str_field", "str").build());
+            indexDocument(createObjectBuilder().add("str_field", "str").build());
+            final String query = "SELECT \"str_field\"" //
+                    + " FROM " + getVirtualTableName() //
+                    + " LIMIT 1";
+            assertVirtualTableContentsByQuery(query, table().row("str").matchesFuzzily());
+        }
+    }
+
+    @Nested
+    @DisplayName("Predicate Capabilities test")
+    class PredicateCapabilitiesTest {
+        @Test
+        void testAndPredicate() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
+            createVirtualSchema();
+            assertSingleRowResults("WHERE \"int_field\" = 1 AND \"int_field\" = 1");
+            assertEmptyResults("WHERE \"int_field\" = 1 AND \"int_field\" != 1");
+            assertEmptyResults("WHERE \"int_field\" != 1 AND \"int_field\" != 1");
+        }
+
+        @Test
+        void testOrPredicate() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
+            createVirtualSchema();
+            assertSingleRowResults("WHERE \"int_field\" = 1 OR \"int_field\" = 1");
+            assertSingleRowResults("WHERE \"int_field\" = 1 OR \"int_field\" != 1");
+            assertEmptyResults("WHERE \"int_field\" != 1 OR \"int_field\" != 1");
+        }
+
+        @Test
+        void testNotPredicate() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
+            createVirtualSchema();
+            assertEmptyResults("WHERE NOT \"int_field\" = 1");
+            assertSingleRowResults("WHERE NOT \"int_field\" != 1");
+        }
+
+        @Test
+        void testEqualPredicate() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
+            createVirtualSchema();
+            assertEmptyResults("WHERE \"int_field\" = 2");
+            assertSingleRowResults("WHERE \"int_field\" = 1");
+        }
+
+        @Test
+        void testNotEqualPredicate() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
+            createVirtualSchema();
+            assertSingleRowResults("WHERE \"int_field\" != 2");
+            assertEmptyResults("WHERE \"int_field\" != 1");
+        }
+
+        @Test
+        void testLessPredicate() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
+            createVirtualSchema();
+            assertSingleRowResults("WHERE \"int_field\" < 2");
+            assertEmptyResults("WHERE \"int_field\" < 1");
+        }
+
+        @Test
+        void testLessEqualPredicate() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
+            createVirtualSchema();
+            assertSingleRowResults("WHERE \"int_field\" <= 1");
+            assertEmptyResults("WHERE \"int_field\" <= 0");
+        }
+
+        @Test
+        void testBetweenPredicate() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
+            createVirtualSchema();
+            assertSingleRowResults("WHERE \"int_field\" BETWEEN 0 AND 1");
+            assertEmptyResults("WHERE \"int_field\" BETWEEN 2 AND 3");
+            assertSingleRowResults("WHERE NOT \"int_field\" BETWEEN 2 AND 3");
+        }
+
+        @Test
+        void testInConstListPredicate() throws IOException, SQLException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
+            createVirtualSchema();
+            assertSingleRowResults("WHERE \"int_field\" IN (1,2)");
+            assertEmptyResults("WHERE \"int_field\" NOT IN (1,2)");
+            assertEmptyResults("WHERE \"int_field\" IN (3,4)");
+            assertSingleRowResults("WHERE \"int_field\" NOT IN (3,4)");
+        }
+
+        @Test
+        void testIsNullPredicate() throws IOException {
+            indexDocumentWithGenericTestField(
+                    createObjectBuilder().add("not_nullable_str_field", "str").add("nullable_int_field", 1));
+            indexDocumentWithGenericTestField(createObjectBuilder().add("not_nullable_str_field", "str"));
+            createVirtualSchema();
+            assertSingleRowResults("WHERE \"nullable_int_field\" IS NULL");
+            assertEmptyResults("WHERE \"not_nullable_str_field\" IS NULL");
+        }
+
+        @Test
+        void testIsNotNullPredicate() throws IOException {
+            indexDocumentWithGenericTestField(
+                    createObjectBuilder().add("not_nullable_str_field", "str").add("nullable_int_field", 1));
+            indexDocumentWithGenericTestField(createObjectBuilder().add("not_nullable_str_field", "str"));
+            createVirtualSchema();
+            final String selectFromQuery = getSelectTestFieldQuery();
+            assertSingleRowResults("WHERE \"nullable_int_field\" IS NOT NULL");
+            assertQuery(selectFromQuery + " WHERE \"not_nullable_str_field\" IS NOT NULL",
+                    table().row(TEST_VALUE).row(TEST_VALUE).matchesFuzzily());
+        }
+
+        @Test
+        void testLikePredicate() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("str_field", "abcd"));
+            createVirtualSchema();
+            assertEmptyResults("WHERE \"str_field\" LIKE 'a_d'");
+            assertEmptyResults("WHERE \"str_field\" LIKE '\\%%d'");
+            assertSingleRowResults("WHERE \"str_field\" LIKE '%%%cd'");
+            assertEmptyResults("WHERE \"str_field\" LIKE 'xyz'");
+        }
+    }
+
+    @Nested
+    @DisplayName("Literal Capabilities test")
+    class LiteralCapabilitiesTest {
+        @Test
+        void testBoolLiteral() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("bool_field", Boolean.TRUE));
+            createVirtualSchema();
+            assertSingleRowResults("WHERE \"bool_field\" = true");
+            assertEmptyResults("WHERE \"bool_field\" =  false");
+        }
+
+        @Test
+        void testDoubleLiteral() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("double_field", 100.23));
+            createVirtualSchema();
+            assertSingleRowResults("WHERE \"double_field\" = 100.23");
+            assertEmptyResults("WHERE \"double_field\" =  0.01");
+            assertEmptyResults("WHERE \"double_field\" = 0.0");
+            assertEmptyResults("WHERE \"double_field\" = -0.13");
+        }
+
+        @Test
+        void testExactNumericLiteral() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
+            createVirtualSchema();
+            assertEmptyResults("WHERE \"int_field\" = 5");
+            assertEmptyResults("WHERE \"int_field\" = -1");
+            assertSingleRowResults("WHERE \"int_field\" = 1");
+        }
+
+        @Test
+        void testStringLiteral() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("str_field", "str"));
+            createVirtualSchema();
+            assertEmptyResults("WHERE \"str_field\" = 'abc'");
+            assertEmptyResults("WHERE \"str_field\" = ''");
+            assertEmptyResults("WHERE \"str_field\" = ' '");
+            assertSingleRowResults("WHERE \"str_field\" = 'str'");
+        }
+    }
+
+    private void indexDocumentWithGenericTestField(final JsonObjectBuilder documentBuilder) throws IOException {
+        indexDocument(documentBuilder.add(TEST_FIELD, TEST_VALUE).build());
+    }
+
     private void indexDocument(final JsonObject document) throws IOException {
         esGateway.indexDocument(INDEX_NAME, document.toString());
     }
 
     private void assertVirtualTableContentsByQuery(final String query, final Matcher<ResultSet> matcher) {
         createVirtualSchema();
+        assertQuery(query, matcher);
+    }
+
+    private void assertQuery(final String query, final Matcher<ResultSet> matcher) {
         try {
             assertThat(query(query), matcher);
         } catch (final SQLException exception) {
             fail("Unable to execute assertion query. Caused by: " + exception.getMessage());
         }
+    }
+
+    private ResultSet query(final String sql) throws SQLException {
+        return connection.createStatement().executeQuery(sql);
     }
 
     private void createVirtualSchema() {
@@ -331,11 +517,23 @@ class ElasticSearchSqlDialectIT {
                 .build();
     }
 
-    private String getVirtualTableName() {
-        return VIRTUAL_SCHEMA_NAME + ".\"" + INDEX_NAME + "\"";
+    private void assertSingleRowResults(final String extraQuery) {
+        assertGenericTestFieldQuery(extraQuery, SINGLE_ROW_TABLE_MATCHER);
     }
 
-    private ResultSet query(final String sql) throws SQLException {
-        return connection.createStatement().executeQuery(sql);
+    private void assertEmptyResults(final String extraQuery) {
+        assertGenericTestFieldQuery(extraQuery, EMPTY_TABLE_MATCHER);
+    }
+
+    private void assertGenericTestFieldQuery(final String extraQuery, final Matcher<ResultSet> matcher) {
+        assertQuery(getSelectTestFieldQuery() + " " + extraQuery, matcher);
+    }
+
+    private String getSelectTestFieldQuery() {
+        return "SELECT \"" + TEST_FIELD + "\" FROM " + getVirtualTableName();
+    }
+
+    private String getVirtualTableName() {
+        return VIRTUAL_SCHEMA_NAME + ".\"" + INDEX_NAME + "\"";
     }
 }
