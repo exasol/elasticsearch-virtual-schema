@@ -32,9 +32,8 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
                 .addPredicate(AND, OR, NOT, EQUAL, NOTEQUAL, LESS, LESSEQUAL, BETWEEN, IN_CONSTLIST, IS_NULL,
                         IS_NOT_NULL, LIKE) //
                 .addLiteral(BOOL, DOUBLE, EXACTNUMERIC, STRING) //
-                .addAggregateFunction(COUNT, COUNT_STAR, COUNT_DISTINCT, SUM, SUM_DISTINCT, MIN, MAX, AVG, AVG_DISTINCT,
-                        FIRST_VALUE, LAST_VALUE, STDDEV_POP, STDDEV_POP_DISTINCT, STDDEV_SAMP, STDDEV_SAMP_DISTINCT,
-                        VAR_POP, VAR_POP_DISTINCT, VAR_SAMP, VAR_SAMP_DISTINCT) //
+                .addAggregateFunction(COUNT, COUNT_STAR, COUNT_DISTINCT, SUM, MIN, MAX, AVG, FIRST_VALUE, LAST_VALUE,
+                        STDDEV_POP, STDDEV_SAMP, VAR_POP, VAR_SAMP) //
                 .addScalarFunction(ADD, SUB, MULT, FLOAT_DIV, NEG, ABS, ACOS, ASIN, ATAN, ATAN2, CEIL, COS, COSH, COT,
                         DEGREES, EXP, FLOOR, GREATEST, LEAST, LOG, MOD, POWER, RADIANS, RAND, ROUND, SIGN, SIN, SINH,
                         SQRT, TAN, TRUNC, ASCII, BIT_LENGTH, CHR, CONCAT, INSERT, LENGTH, LOCATE, LTRIM, OCTET_LENGTH,
