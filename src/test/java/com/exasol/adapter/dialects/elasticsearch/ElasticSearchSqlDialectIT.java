@@ -564,22 +564,22 @@ class ElasticSearchSqlDialectIT {
                 this.aggregateFunction = aggregateFunction;
             }
 
-            public AggregateFunctionVerifier withValues(final int... values) {
+            private AggregateFunctionVerifier withValues(final int... values) {
                 this.values = values;
                 return this;
             }
 
-            public AggregateFunctionVerifier applyToStar() {
+            private AggregateFunctionVerifier applyToStar() {
                 this.useStar = true;
                 return this;
             }
 
-            public AggregateFunctionVerifier distinct() {
+            private AggregateFunctionVerifier distinct() {
                 this.distinct = "DISTINCT ";
                 return this;
             }
 
-            public AggregateFunctionVerifier withResult(final Object result) {
+            private AggregateFunctionVerifier withResult(final Object result) {
                 this.result = result;
                 return this;
             }
