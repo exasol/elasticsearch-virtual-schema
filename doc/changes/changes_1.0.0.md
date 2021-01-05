@@ -5,10 +5,11 @@ Code name:
 ## Features / Enhancements
 
 * #1: Initial commit
-* #3: Added integration tests for `main capabilities`
+* #3: Added integration tests for `main` capabilities
 * #5: Added user guide documentation
 * #6: Added support for `scalar functions`
 * #7: Added support for nested fields
+* #9: Added integration tests for `literal` and `predicates` capabilities
 
 ## Runtime Dependencies
 
