@@ -495,7 +495,7 @@ class ElasticSearchSqlDialectIT {
 
         @Test
         void testCountDistinct() throws IOException {
-            assertAggregateNumericFunction("COUNT").distinct().withValues(1, 1).withResult(2).verify();
+            assertAggregateNumericFunction("COUNT").distinct().withValues(1, 2).withResult(2).verify();
         }
 
         @Test
