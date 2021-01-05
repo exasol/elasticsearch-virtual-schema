@@ -397,7 +397,6 @@ class ElasticSearchSqlDialectIT {
             createVirtualSchema();
             assertSingleRowResults("\"int_field\" BETWEEN 0 AND 1");
             assertEmptyResults("\"int_field\" BETWEEN 2 AND 3");
-            assertSingleRowResults("NOT \"int_field\" BETWEEN 2 AND 3");
         }
 
         @Test
@@ -405,9 +404,7 @@ class ElasticSearchSqlDialectIT {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
             assertSingleRowResults("\"int_field\" IN (1,2)");
-            assertEmptyResults("\"int_field\" NOT IN (1,2)");
             assertEmptyResults("\"int_field\" IN (3,4)");
-            assertSingleRowResults("\"int_field\" NOT IN (3,4)");
         }
 
         @Test
