@@ -337,77 +337,77 @@ class ElasticSearchSqlDialectIT {
         void testAndPredicate() throws IOException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
-            assertSingleRowResults("WHERE \"int_field\" = 1 AND \"int_field\" = 1");
-            assertEmptyResults("WHERE \"int_field\" = 1 AND \"int_field\" != 1");
-            assertEmptyResults("WHERE \"int_field\" != 1 AND \"int_field\" != 1");
+            assertSingleRowResults("\"int_field\" = 1 AND \"int_field\" = 1");
+            assertEmptyResults("\"int_field\" = 1 AND \"int_field\" != 1");
+            assertEmptyResults("\"int_field\" != 1 AND \"int_field\" != 1");
         }
 
         @Test
         void testOrPredicate() throws IOException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
-            assertSingleRowResults("WHERE \"int_field\" = 1 OR \"int_field\" = 1");
-            assertSingleRowResults("WHERE \"int_field\" = 1 OR \"int_field\" != 1");
-            assertEmptyResults("WHERE \"int_field\" != 1 OR \"int_field\" != 1");
+            assertSingleRowResults("\"int_field\" = 1 OR \"int_field\" = 1");
+            assertSingleRowResults("\"int_field\" = 1 OR \"int_field\" != 1");
+            assertEmptyResults("\"int_field\" != 1 OR \"int_field\" != 1");
         }
 
         @Test
         void testNotPredicate() throws IOException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
-            assertEmptyResults("WHERE NOT \"int_field\" = 1");
-            assertSingleRowResults("WHERE NOT \"int_field\" != 1");
+            assertEmptyResults("NOT \"int_field\" = 1");
+            assertSingleRowResults("NOT \"int_field\" != 1");
         }
 
         @Test
         void testEqualPredicate() throws IOException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
-            assertEmptyResults("WHERE \"int_field\" = 2");
-            assertSingleRowResults("WHERE \"int_field\" = 1");
+            assertEmptyResults("\"int_field\" = 2");
+            assertSingleRowResults("\"int_field\" = 1");
         }
 
         @Test
         void testNotEqualPredicate() throws IOException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
-            assertSingleRowResults("WHERE \"int_field\" != 2");
-            assertEmptyResults("WHERE \"int_field\" != 1");
+            assertSingleRowResults("\"int_field\" != 2");
+            assertEmptyResults("\"int_field\" != 1");
         }
 
         @Test
         void testLessPredicate() throws IOException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
-            assertSingleRowResults("WHERE \"int_field\" < 2");
-            assertEmptyResults("WHERE \"int_field\" < 1");
+            assertSingleRowResults("\"int_field\" < 2");
+            assertEmptyResults("\"int_field\" < 1");
         }
 
         @Test
         void testLessEqualPredicate() throws IOException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
-            assertSingleRowResults("WHERE \"int_field\" <= 1");
-            assertEmptyResults("WHERE \"int_field\" <= 0");
+            assertSingleRowResults("\"int_field\" <= 1");
+            assertEmptyResults("\"int_field\" <= 0");
         }
 
         @Test
         void testBetweenPredicate() throws IOException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
-            assertSingleRowResults("WHERE \"int_field\" BETWEEN 0 AND 1");
-            assertEmptyResults("WHERE \"int_field\" BETWEEN 2 AND 3");
-            assertSingleRowResults("WHERE NOT \"int_field\" BETWEEN 2 AND 3");
+            assertSingleRowResults("\"int_field\" BETWEEN 0 AND 1");
+            assertEmptyResults("\"int_field\" BETWEEN 2 AND 3");
+            assertSingleRowResults("NOT \"int_field\" BETWEEN 2 AND 3");
         }
 
         @Test
         void testInConstListPredicate() throws IOException, SQLException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
-            assertSingleRowResults("WHERE \"int_field\" IN (1,2)");
-            assertEmptyResults("WHERE \"int_field\" NOT IN (1,2)");
-            assertEmptyResults("WHERE \"int_field\" IN (3,4)");
-            assertSingleRowResults("WHERE \"int_field\" NOT IN (3,4)");
+            assertSingleRowResults("\"int_field\" IN (1,2)");
+            assertEmptyResults("\"int_field\" NOT IN (1,2)");
+            assertEmptyResults("\"int_field\" IN (3,4)");
+            assertSingleRowResults("\"int_field\" NOT IN (3,4)");
         }
 
         @Test
@@ -416,8 +416,8 @@ class ElasticSearchSqlDialectIT {
                     createObjectBuilder().add("not_nullable_str_field", "str").add("nullable_int_field", 1));
             indexDocumentWithGenericTestField(createObjectBuilder().add("not_nullable_str_field", "str"));
             createVirtualSchema();
-            assertSingleRowResults("WHERE \"nullable_int_field\" IS NULL");
-            assertEmptyResults("WHERE \"not_nullable_str_field\" IS NULL");
+            assertSingleRowResults("\"nullable_int_field\" IS NULL");
+            assertEmptyResults("\"not_nullable_str_field\" IS NULL");
         }
 
         @Test
@@ -426,9 +426,8 @@ class ElasticSearchSqlDialectIT {
                     createObjectBuilder().add("not_nullable_str_field", "str").add("nullable_int_field", 1));
             indexDocumentWithGenericTestField(createObjectBuilder().add("not_nullable_str_field", "str"));
             createVirtualSchema();
-            final String selectFromQuery = getSelectTestFieldQuery();
-            assertSingleRowResults("WHERE \"nullable_int_field\" IS NOT NULL");
-            assertQuery(selectFromQuery + " WHERE \"not_nullable_str_field\" IS NOT NULL",
+            assertSingleRowResults("\"nullable_int_field\" IS NOT NULL");
+            assertQuery(getSelectTestFieldQuery() + " WHERE \"not_nullable_str_field\" IS NOT NULL",
                     table().row(TEST_VALUE).row(TEST_VALUE).matchesFuzzily());
         }
 
@@ -436,10 +435,10 @@ class ElasticSearchSqlDialectIT {
         void testLikePredicate() throws IOException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("str_field", "abcd"));
             createVirtualSchema();
-            assertEmptyResults("WHERE \"str_field\" LIKE 'a_d'");
-            assertEmptyResults("WHERE \"str_field\" LIKE '\\%%d'");
-            assertSingleRowResults("WHERE \"str_field\" LIKE '%%%cd'");
-            assertEmptyResults("WHERE \"str_field\" LIKE 'xyz'");
+            assertEmptyResults("\"str_field\" LIKE 'a_d'");
+            assertEmptyResults("\"str_field\" LIKE '\\%%d'");
+            assertSingleRowResults("\"str_field\" LIKE '%%%cd'");
+            assertEmptyResults("\"str_field\" LIKE 'xyz'");
         }
     }
 
@@ -450,37 +449,37 @@ class ElasticSearchSqlDialectIT {
         void testBoolLiteral() throws IOException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("bool_field", Boolean.TRUE));
             createVirtualSchema();
-            assertSingleRowResults("WHERE \"bool_field\" = true");
-            assertEmptyResults("WHERE \"bool_field\" =  false");
+            assertSingleRowResults("\"bool_field\" = true");
+            assertEmptyResults("\"bool_field\" =  false");
         }
 
         @Test
         void testDoubleLiteral() throws IOException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("double_field", 100.23));
             createVirtualSchema();
-            assertSingleRowResults("WHERE \"double_field\" = 100.23");
-            assertEmptyResults("WHERE \"double_field\" =  0.01");
-            assertEmptyResults("WHERE \"double_field\" = 0.0");
-            assertEmptyResults("WHERE \"double_field\" = -0.13");
+            assertSingleRowResults("\"double_field\" = 100.23");
+            assertEmptyResults("\"double_field\" =  0.01");
+            assertEmptyResults("\"double_field\" = 0.0");
+            assertEmptyResults("\"double_field\" = -0.13");
         }
 
         @Test
         void testExactNumericLiteral() throws IOException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
-            assertEmptyResults("WHERE \"int_field\" = 5");
-            assertEmptyResults("WHERE \"int_field\" = -1");
-            assertSingleRowResults("WHERE \"int_field\" = 1");
+            assertEmptyResults("\"int_field\" = 5");
+            assertEmptyResults("\"int_field\" = -1");
+            assertSingleRowResults("\"int_field\" = 1");
         }
 
         @Test
         void testStringLiteral() throws IOException {
             indexDocumentWithGenericTestField(createObjectBuilder().add("str_field", "str"));
             createVirtualSchema();
-            assertEmptyResults("WHERE \"str_field\" = 'abc'");
-            assertEmptyResults("WHERE \"str_field\" = ''");
-            assertEmptyResults("WHERE \"str_field\" = ' '");
-            assertSingleRowResults("WHERE \"str_field\" = 'str'");
+            assertEmptyResults("\"str_field\" = 'abc'");
+            assertEmptyResults("\"str_field\" = ''");
+            assertEmptyResults("\"str_field\" = ' '");
+            assertSingleRowResults("\"str_field\" = 'str'");
         }
     }
 
@@ -517,12 +516,16 @@ class ElasticSearchSqlDialectIT {
                 .build();
     }
 
-    private void assertSingleRowResults(final String extraQuery) {
-        assertGenericTestFieldQuery(extraQuery, SINGLE_ROW_TABLE_MATCHER);
+    private void assertSingleRowResults(final String conditions) {
+        assertGenericTestFieldQueryWithWhereClause(conditions, SINGLE_ROW_TABLE_MATCHER);
     }
 
-    private void assertEmptyResults(final String extraQuery) {
-        assertGenericTestFieldQuery(extraQuery, EMPTY_TABLE_MATCHER);
+    private void assertEmptyResults(final String conditions) {
+        assertGenericTestFieldQueryWithWhereClause(conditions, EMPTY_TABLE_MATCHER);
+    }
+
+    private void assertGenericTestFieldQueryWithWhereClause(final String conditions, final Matcher<ResultSet> matcher) {
+        assertGenericTestFieldQuery("WHERE " + conditions, matcher);
     }
 
     private void assertGenericTestFieldQuery(final String extraQuery, final Matcher<ResultSet> matcher) {
