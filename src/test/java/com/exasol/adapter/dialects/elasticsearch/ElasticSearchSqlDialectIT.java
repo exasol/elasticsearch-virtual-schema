@@ -485,70 +485,70 @@ class ElasticSearchSqlDialectIT {
     class AggregateFunctionCapabilitiesTest {
         @Test
         void testCount() throws IOException {
-            assertAggregateNumericFunction("COUNT").withValues(1, 1).withResult(2).verify();
+            assertAggregateFunction("COUNT").withValues(1, 1).withResult(2).verify();
         }
 
         @Test
         void testCountStar() throws IOException {
-            assertAggregateNumericFunction("COUNT").withValues(1, 1).applyToStar().withResult(2).verify();
+            assertAggregateFunction("COUNT").withValues(1, 1).applyToStar().withResult(2).verify();
         }
 
         @Test
         void testCountDistinct() throws IOException {
-            assertAggregateNumericFunction("COUNT").distinct().withValues(1, 2).withResult(2).verify();
+            assertAggregateFunction("COUNT").distinct().withValues(1, 2).withResult(2).verify();
         }
 
         @Test
         void testSum() throws IOException {
-            assertAggregateNumericFunction("SUM").withValues(1, 2).withResult(3).verify();
+            assertAggregateFunction("SUM").withValues(1, 2).withResult(3).verify();
         }
 
         @Test
         void testMin() throws IOException {
-            assertAggregateNumericFunction("MIN").withValues(1, 2).withResult(1).verify();
+            assertAggregateFunction("MIN").withValues(1, 2).withResult(1).verify();
         }
 
         @Test
         void testMax() throws IOException {
-            assertAggregateNumericFunction("MAX").withValues(1, 2).withResult(2).verify();
+            assertAggregateFunction("MAX").withValues(1, 2).withResult(2).verify();
         }
 
         @Test
         void testAvg() throws IOException {
-            assertAggregateNumericFunction("AVG").withValues(1, 2).withResult(1.5).verify();
+            assertAggregateFunction("AVG").withValues(1, 2).withResult(1.5).verify();
         }
 
         @Test
         void testFirstValue() throws IOException {
-            assertAggregateNumericFunction("FIRST_VALUE").withValues(1, 2).withResult(1).verify();
+            assertAggregateFunction("FIRST_VALUE").withValues(1, 2).withResult(1).verify();
         }
 
         @Test
         void testLastValue() throws IOException {
-            assertAggregateNumericFunction("LAST_VALUE").withValues(1, 2).withResult(2).verify();
+            assertAggregateFunction("LAST_VALUE").withValues(1, 2).withResult(2).verify();
         }
 
         @Test
         void testStdDevPop() throws IOException {
-            assertAggregateNumericFunction("STDDEV_POP").withValues(1, 2).withResult(0.5).verify();
+            assertAggregateFunction("STDDEV_POP").withValues(1, 2).withResult(0.5).verify();
         }
 
         @Test
         void testStdDevSamp() throws IOException {
-            assertAggregateNumericFunction("STDDEV_SAMP").withValues(1, 2).withResult(0.7071067811865476).verify();
+            assertAggregateFunction("STDDEV_SAMP").withValues(1, 2).withResult(0.7071067811865476).verify();
         }
 
         @Test
         void testVarPop() throws IOException {
-            assertAggregateNumericFunction("VAR_POP").withValues(1, 2).withResult(0.25).verify();
+            assertAggregateFunction("VAR_POP").withValues(1, 2).withResult(0.25).verify();
         }
 
         @Test
         void testVarSamp() throws IOException {
-            assertAggregateNumericFunction("VAR_SAMP").withValues(1, 2).withResult(0.5).verify();
+            assertAggregateFunction("VAR_SAMP").withValues(1, 2).withResult(0.5).verify();
         }
 
-        AggregateFunctionVerifier assertAggregateNumericFunction(final String aggregateFunction) {
+        AggregateFunctionVerifier assertAggregateFunction(final String aggregateFunction) {
             return new AggregateFunctionVerifier(aggregateFunction);
         }
 
