@@ -480,6 +480,131 @@ class ElasticSearchSqlDialectIT {
         }
     }
 
+    @Nested
+    @DisplayName("Aggregate Function Capabilities test")
+    class AggregateFunctionCapabilitiesTest {
+        @Test
+        void testCount() throws IOException {
+            assertAggregateNumericFunction("COUNT").withValues(1, 1).withResult(2).verify();
+        }
+
+        @Test
+        void testCountStar() throws IOException {
+            assertAggregateNumericFunction("COUNT").withValues(1, 1).applyToStar().withResult(2).verify();
+        }
+
+        @Test
+        void testCountDistinct() throws IOException {
+            assertAggregateNumericFunction("COUNT").distinct().withValues(1, 1).withResult(2).verify();
+        }
+
+        @Test
+        void testSum() throws IOException {
+            assertAggregateNumericFunction("SUM").withValues(1, 2).withResult(3).verify();
+        }
+
+        @Test
+        void testMin() throws IOException {
+            assertAggregateNumericFunction("MIN").withValues(1, 2).withResult(1).verify();
+        }
+
+        @Test
+        void testMax() throws IOException {
+            assertAggregateNumericFunction("MAX").withValues(1, 2).withResult(2).verify();
+        }
+
+        @Test
+        void testAvg() throws IOException {
+            assertAggregateNumericFunction("AVG").withValues(1, 2).withResult(1.5).verify();
+        }
+
+        @Test
+        void testFirstValue() throws IOException {
+            assertAggregateNumericFunction("FIRST_VALUE").withValues(1, 2).withResult(1).verify();
+        }
+
+        @Test
+        void testLastValue() throws IOException {
+            assertAggregateNumericFunction("LAST_VALUE").withValues(1, 2).withResult(2).verify();
+        }
+
+        @Test
+        void testStdDevPop() throws IOException {
+            assertAggregateNumericFunction("STDDEV_POP").withValues(1, 2).withResult(0.5).verify();
+        }
+
+        @Test
+        void testStdDevSamp() throws IOException {
+            assertAggregateNumericFunction("STDDEV_SAMP").withValues(1, 2).withResult(0.7071067811865476).verify();
+        }
+
+        @Test
+        void testVarPop() throws IOException {
+            assertAggregateNumericFunction("VAR_POP").withValues(1, 2).withResult(0.25).verify();
+        }
+
+        @Test
+        void testVarSamp() throws IOException {
+            assertAggregateNumericFunction("VAR_SAMP").withValues(1, 2).withResult(0.5).verify();
+        }
+
+        AggregateFunctionVerifier assertAggregateNumericFunction(final String aggregateFunction) {
+            return new AggregateFunctionVerifier(aggregateFunction);
+        }
+
+        private class AggregateFunctionVerifier {
+            private static final String NUMERIC_TEST_FIELD = "NUMERIC_TEST_FIELD";
+            private final String aggregateFunction;
+            private int[] values;
+            private Object result;
+            private boolean useStar = false;
+            private String distinct = "";
+
+            private AggregateFunctionVerifier(final String aggregateFunction) {
+                this.aggregateFunction = aggregateFunction;
+            }
+
+            public AggregateFunctionVerifier withValues(final int... values) {
+                this.values = values;
+                return this;
+            }
+
+            public AggregateFunctionVerifier applyToStar() {
+                this.useStar = true;
+                return this;
+            }
+
+            public AggregateFunctionVerifier distinct() {
+                this.distinct = "DISTINCT ";
+                return this;
+            }
+
+            public AggregateFunctionVerifier withResult(final Object result) {
+                this.result = result;
+                return this;
+            }
+
+            private void verify() throws IOException {
+                for (final int value : this.values) {
+                    indexDocumentWithGenericTestField(createObjectBuilder().add(NUMERIC_TEST_FIELD, value));
+                }
+                assertVirtualTableContentsByQuery(this.getQuery(),
+                        table().row(TEST_VALUE, this.result).matchesFuzzily());
+            }
+
+            private String getQuery() {
+                return "SELECT \"" + TEST_FIELD + "\", " + this.aggregateFunction + "(" + this.distinct
+                        + this.getFunctionArgument() + ")" //
+                        + " FROM " + getVirtualTableName() //
+                        + " GROUP BY \"" + TEST_FIELD + "\"";
+            }
+
+            private String getFunctionArgument() {
+                return this.useStar ? "*" : "\"" + NUMERIC_TEST_FIELD + "\"";
+            }
+        }
+    }
+
     private void indexDocumentWithGenericTestField(final JsonObjectBuilder documentBuilder) throws IOException {
         indexDocument(documentBuilder.add(TEST_FIELD, TEST_VALUE).build());
     }

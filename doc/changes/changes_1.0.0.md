@@ -10,6 +10,7 @@ Code name:
 * #6: Added support for `scalar functions`
 * #7: Added support for nested fields
 * #9: Added integration tests for `literal` and `predicates` capabilities
+* #18: Added integration tests for `aggregate functions` capabilities
 
 ## Runtime Dependencies
 
