@@ -8,8 +8,11 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -17,6 +20,7 @@ import javax.json.JsonObjectBuilder;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.*;
+import org.junit.platform.commons.util.StringUtils;
 import org.testcontainers.containers.JdbcDatabaseContainer.NoDriverFoundException;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -44,8 +48,8 @@ class ElasticSearchSqlDialectIT {
     private static final String ES_DIALECT_NAME = "ES";
     private static final String VIRTUAL_SCHEMA_NAME = "VIRTUAL_SCHEMA_ES";
     private static final String INDEX_NAME = "index";
-    private static final String TEST_FIELD = "TEST_FIELD";
-    private static final String TEST_VALUE = "TEST_VALUE";
+    private static final String ASSERT_FIELD = "ASSERT_FIELD";
+    private static final String ASSERT_VALUE = "ASSERT_VALUE";
 
     private static Matcher<ResultSet> EMPTY_TABLE_MATCHER = getEmptyTableMatcher();
 
@@ -56,7 +60,7 @@ class ElasticSearchSqlDialectIT {
     private static Matcher<ResultSet> SINGLE_ROW_TABLE_MATCHER = getSingleRowTableMatcher();
 
     private static Matcher<ResultSet> getSingleRowTableMatcher() {
-        return table().row(TEST_VALUE).matchesFuzzily();
+        return table().row(ASSERT_VALUE).matchesFuzzily();
     }
 
     private static Connection connection;
@@ -425,7 +429,7 @@ class ElasticSearchSqlDialectIT {
             createVirtualSchema();
             assertSingleRowResults("\"nullable_int_field\" IS NOT NULL");
             assertQuery(getSelectTestFieldQuery() + " WHERE \"not_nullable_str_field\" IS NOT NULL",
-                    table().row(TEST_VALUE).row(TEST_VALUE).matchesFuzzily());
+                    table().row(ASSERT_VALUE).row(ASSERT_VALUE).matchesFuzzily());
         }
 
         @Test
@@ -589,14 +593,14 @@ class ElasticSearchSqlDialectIT {
                     indexDocumentWithGenericTestField(createObjectBuilder().add(NUMERIC_TEST_FIELD, value));
                 }
                 assertVirtualTableContentsByQuery(this.getQuery(),
-                        table().row(TEST_VALUE, this.result).matchesFuzzily());
+                        table().row(ASSERT_VALUE, this.result).matchesFuzzily());
             }
 
             private String getQuery() {
-                return "SELECT \"" + TEST_FIELD + "\", " + this.aggregateFunction + "(" + this.distinct
+                return "SELECT \"" + ASSERT_FIELD + "\", " + this.aggregateFunction + "(" + this.distinct
                         + this.getFunctionArgument() + ")" //
                         + " FROM " + getVirtualTableName() //
-                        + " GROUP BY \"" + TEST_FIELD + "\"";
+                        + " GROUP BY \"" + ASSERT_FIELD + "\"";
             }
 
             private String getFunctionArgument() {
@@ -605,8 +609,390 @@ class ElasticSearchSqlDialectIT {
         }
     }
 
+    @Nested
+    @DisplayName("Scalar Function Capabilities test")
+    class ScalarFunctionCapabilitiesTest {
+        @Test
+        void testAdd() throws IOException {
+            assertScalarFunction("+").asBinaryOperator().withValues(1, 1).withResult(2).verify();
+        }
+
+        @Test
+        void testSub() throws IOException {
+            assertScalarFunction("-").asBinaryOperator().withValues(1, 1).withResult(0).verify();
+        }
+
+        @Test
+        void testMult() throws IOException {
+            assertScalarFunction("*").asBinaryOperator().withValues(1, 2).withResult(2).verify();
+        }
+
+        @Test
+        void testNeg() throws IOException {
+            assertScalarFunction("*").asBinaryOperator().withValues(1, -2).withResult(-2).verify();
+        }
+
+        @Test
+        void testAbs() throws IOException {
+            assertScalarFunction("ABS").withValues(-1).withResult(1).verify();
+        }
+
+        @Test
+        void testACos() throws IOException {
+            assertScalarFunction("ACOS").withValues(0.5).withResult(1.0471975511965979).verify();
+        }
+
+        @Test
+        void testASin() throws IOException {
+            assertScalarFunction("ASIN").withValues(1).withResult(1.5707963267948966).verify();
+        }
+
+        @Test
+        void testATan() throws IOException {
+            assertScalarFunction("ATAN").withValues(1).withResult(0.7853981633974483).verify();
+        }
+
+        @Test
+        void testATan2() throws IOException {
+            assertScalarFunction("ATAN2").withValues(1, 1).withResult(0.7853981633974483).verify();
+        }
+
+        @Test
+        void testCeil() throws IOException {
+            assertScalarFunction("CEIL").withValues(0.234).withResult(1).verify();
+        }
+
+        @Test
+        void testCos() throws IOException {
+            assertScalarFunction("COS").withValues(0.5).withResult(0.8775825618903728).verify();
+        }
+
+        @Test
+        void testCosh() throws IOException {
+            assertScalarFunction("COSH").withValues(1).withResult(1.543080634815244).verify();
+        }
+
+        @Test
+        void testCot() throws IOException {
+            assertScalarFunction("COT").withValues(1).withResult(0.6420926159343306).verify();
+        }
+
+        @Test
+        void testDegrees() throws IOException {
+            assertScalarFunction("DEGREES").withValues(0.5).withResult(28.64788975654116).verify();
+        }
+
+        @Test
+        void testExp() throws IOException {
+            assertScalarFunction("EXP").withValues(1).withResult(2.718281828459045).verify();
+        }
+
+        @Test
+        void testFloor() throws IOException {
+            assertScalarFunction("FLOOR").withValues(4.567).withResult(4).verify();
+        }
+
+        @Test
+        void testGreatest() throws IOException {
+            assertScalarFunction("GREATEST").withValues(1, 5, 3).withResult(5).verify();
+        }
+
+        @Test
+        void testLeast() throws IOException {
+            assertScalarFunction("LEAST").withValues(1, 5, 3).withResult(1).verify();
+        }
+
+        @Test
+        void testMod() throws IOException {
+            assertScalarFunction("MOD").withValues(15, 6).withResult(3).verify();
+        }
+
+        @Test
+        void testPower() throws IOException {
+            assertScalarFunction("POWER").withValues(2, 10).withResult(1024.0).verify();
+        }
+
+        @Test
+        void testRadians() throws IOException {
+            assertScalarFunction("RADIANS").withValues(180).withResult(3.141592653589793).verify();
+        }
+
+        @Test
+        void testRound() throws IOException {
+            assertScalarFunction("ROUND").withValues(123.456, 2).withResult(123.46).verify();
+        }
+
+        @Test
+        void testSign() throws IOException {
+            assertScalarFunction("SIGN").withValues(-123).withResult(-1).verify();
+        }
+
+        @Test
+        void testSin() throws IOException {
+            assertScalarFunction("SIN").withValues(1).withResult(0.8414709848078965).verify();
+        }
+
+        @Test
+        void testSinh() throws IOException {
+            assertScalarFunction("SINH").withValues(0).withResult(0.0).verify();
+        }
+
+        @Test
+        void testSqrt() throws IOException {
+            assertScalarFunction("SQRT").withValues(2).withResult(1.4142135623730951).verify();
+        }
+
+        @Test
+        void testTan() throws IOException {
+            assertScalarFunction("TAN").withValues(4).withResult(1.1578212823495775).verify();
+        }
+
+        @Test
+        void testTrunc() throws IOException {
+            assertScalarFunction("TRUNC").withValues(123.456, 2).withResult(123.45).verify();
+        }
+
+        @Test
+        void testAscii() throws IOException {
+            assertScalarFunction("ASCII").withValues("X").withResult(88).verify();
+        }
+
+        @Test
+        void testBitLength() throws IOException {
+            assertScalarFunction("BIT_LENGTH").withValues("aou").withResult(24).verify();
+        }
+
+        @Test
+        void testBitLengthSpecialChars() throws IOException {
+            assertScalarFunction("BIT_LENGTH").withValues("äöü").withResult(48).verify();
+        }
+
+        @Test
+        void testConcat() throws IOException {
+            assertScalarFunction("CONCAT").withValues("abc", "def").withResult("abcdef").verify();
+        }
+
+        @Test
+        void testInsertLongerThanString() throws IOException {
+            assertScalarFunction("INSERT").withValues("abc", 2, 2, "xxx").withResult("axxx").verify();
+        }
+
+        @Test
+        void testInsertShorterThanString() throws IOException {
+            assertScalarFunction("INSERT").withValues("abcdef", 3, 2, "CD").withResult("abCDef").verify();
+        }
+
+        @Test
+        void testLength() throws IOException {
+            assertScalarFunction("LENGTH").withValues("abc").withResult(3).verify();
+        }
+
+        @Test
+        void testOctetLength() throws IOException {
+            assertScalarFunction("OCTET_LENGTH").withValues("abcd").withResult(4).verify();
+        }
+
+        @Test
+        void testOctetLengthSpecialChars() throws IOException {
+            assertScalarFunction("OCTET_LENGTH").withValues("äöü").withResult(6).verify();
+        }
+
+        @Test
+        void testRepeat() throws IOException {
+            assertScalarFunction("REPEAT").withValues("abc", 3).withResult("abcabcabc").verify();
+        }
+
+        @Test
+        void testReplace() throws IOException {
+            assertScalarFunction("REPLACE").withValues("Apple juice is great", "Apple", "Orange")
+                    .withResult("Orange juice is great").verify();
+        }
+
+        @Test
+        void testRight() throws IOException {
+            assertScalarFunction("RIGHT").withValues("abcdef", 3).withResult("def").verify();
+        }
+
+        @Test
+        void testSpace() throws IOException {
+            assertScalarFunction("SPACE").withValues(5).withResult("     ").verify();
+        }
+
+        @Test
+        void testDateTruncMonth() throws IOException {
+            assertScalarFunction("DATE_TRUNC").withValues("month", "2006-12-31")
+                    .withResult(Timestamp.valueOf("2006-12-01 00:00:00.0")).verify();
+        }
+
+        @Test
+        void testDateTruncMinute() throws IOException {
+            assertScalarFunction("DATE_TRUNC").withValues("minute", "2018-02-19T10:23:27Z")
+                    .withResult(Timestamp.valueOf("2018-02-19 11:23:00.0")).verify();
+        }
+
+        @Test
+        void testDay() throws IOException {
+            assertScalarFunction("DAY").withValues("2010-10-20").withResult(20).verify();
+        }
+
+        @Test
+        void testExtractSecond() throws IOException {
+            assertExtract("SECOND").withValues("2018-02-19T10:23:27Z").withResult(27).verify();
+        }
+
+        @Test
+        void testExtractMonth() throws IOException {
+            assertExtract("MONTH").withValues("2000-10-01").withResult(10).verify();
+        }
+
+        @Test
+        void testHour() throws IOException {
+            assertScalarFunction("HOUR").withValues("2018-02-19T10:23:27Z").withResult(11).verify();
+        }
+
+        @Test
+        void testMinute() throws IOException {
+            assertScalarFunction("MINUTE").withValues("2018-02-19T10:23:27Z").withResult(23).verify();
+        }
+
+        @Test
+        void testMonth() throws IOException {
+            assertScalarFunction("MONTH").withValues("2010-10-20").withResult(10).verify();
+        }
+
+        @Test
+        void testWeek() throws IOException {
+            assertScalarFunction("WEEK").withValues("2012-01-05").withResult(1).verify();
+        }
+
+        @Test
+        void testYear() throws IOException {
+            assertScalarFunction("YEAR").withValues("2010-10-20").withResult(2010).verify();
+        }
+
+        @Test
+        void testCastToDate() throws IOException {
+            assertCastTo("DATE").withValues("2006-01-01").withResult(Date.valueOf("2006-01-01")).verify();
+        }
+
+        @Test
+        void testCase() throws IOException {
+            indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
+            indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 2));
+            indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 3));
+            final String query = "SELECT CASE \"int_field\" " //
+                    + "WHEN 1 THEN 'A' " //
+                    + "WHEN 2 THEN 'B' "//
+                    + "ELSE 'C' "//
+                    + "END FROM " + getVirtualTableName();
+            assertVirtualTableContentsByQuery(query, table().row("A").row("B").row("C").matchesFuzzily());
+        }
+
+        ScalarFunctionVerifier assertExtract(final String extractUnit) {
+            return new ScalarFunctionVerifier("EXTRACT").extractUnit(extractUnit);
+        }
+
+        ScalarFunctionVerifier assertCastTo(final String castType) {
+            return new ScalarFunctionVerifier("CAST").withCastType(castType);
+        }
+
+        ScalarFunctionVerifier assertScalarFunction(final String scalarFunction) {
+            return new ScalarFunctionVerifier(scalarFunction);
+        }
+
+        private class ScalarFunctionVerifier {
+            private static final String TEST_FIELD = "TEST_FIELD";
+            private final String scalarFunction;
+            private boolean isBinaryOperator = false;
+            private Object[] values = {};
+            private Object result;
+            private String castType = "";
+            private String extractUnit = "";
+
+            private ScalarFunctionVerifier(final String scalarFunction) {
+                this.scalarFunction = scalarFunction;
+            }
+
+            public ScalarFunctionVerifier extractUnit(final String extractUnit) {
+                this.extractUnit = extractUnit;
+                return this;
+            }
+
+            public ScalarFunctionVerifier withCastType(final String castType) {
+                this.castType = castType;
+                return this;
+            }
+
+            public ScalarFunctionVerifier asBinaryOperator() {
+                this.isBinaryOperator = true;
+                return this;
+            }
+
+            private ScalarFunctionVerifier withValues(final Object... values) {
+                this.values = values;
+                return this;
+            }
+
+            private ScalarFunctionVerifier withResult(final Object result) {
+                this.result = result;
+                return this;
+            }
+
+            private void verify() throws IOException {
+                this.indexDocument();
+                assertVirtualTableContentsByQuery(this.getQuery(),
+                        table().row(ASSERT_VALUE, this.result).matchesFuzzily());
+            }
+
+            private void indexDocument() throws IOException {
+                int fieldNumber = 0;
+                final JsonObjectBuilder objectBuilder = createObjectBuilder();
+                for (final Object value : this.values) {
+                    if (value instanceof String) {
+                        objectBuilder.add(TEST_FIELD + fieldNumber, (String) value);
+                    }
+                    if (value instanceof Integer) {
+                        objectBuilder.add(TEST_FIELD + fieldNumber, (Integer) value);
+                    }
+                    if (value instanceof Double) {
+                        objectBuilder.add(TEST_FIELD + fieldNumber, (Double) value);
+                    }
+                    fieldNumber++;
+                }
+                indexDocumentWithGenericTestField(objectBuilder);
+            }
+
+            private String getQuery() {
+                return "SELECT \"" + ASSERT_FIELD + "\", " + this.getScalarFunction() //
+                        + " FROM " + getVirtualTableName();
+            }
+
+            private String getScalarFunction() {
+                final List<String> arguments = this.getFunctionArguments();
+                if (arguments.isEmpty()) {
+                    return this.scalarFunction;
+                } else if (!StringUtils.isBlank(this.castType)) {
+                    return this.scalarFunction + "(" + String.join(",", this.getFunctionArguments()) + " AS "
+                            + this.castType + ")";
+                } else if (!StringUtils.isBlank(this.extractUnit)) {
+                    return this.scalarFunction + "(" + this.extractUnit + " FROM "
+                            + String.join(",", this.getFunctionArguments()) + ")";
+                } else if (this.isBinaryOperator) {
+                    return String.join(this.scalarFunction, this.getFunctionArguments());
+                } else {
+                    return this.scalarFunction + "(" + String.join(",", this.getFunctionArguments()) + ")";
+                }
+            }
+
+            private List<String> getFunctionArguments() {
+                return IntStream.range(0, this.values.length).mapToObj(i -> "\"" + TEST_FIELD + i + "\"")
+                        .collect(Collectors.toList());
+            }
+        }
+    }
+
     private void indexDocumentWithGenericTestField(final JsonObjectBuilder documentBuilder) throws IOException {
-        indexDocument(documentBuilder.add(TEST_FIELD, TEST_VALUE).build());
+        indexDocument(documentBuilder.add(ASSERT_FIELD, ASSERT_VALUE).build());
     }
 
     private void indexDocument(final JsonObject document) throws IOException {
@@ -655,7 +1041,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     private String getSelectTestFieldQuery() {
-        return "SELECT \"" + TEST_FIELD + "\" FROM " + getVirtualTableName();
+        return "SELECT \"" + ASSERT_FIELD + "\" FROM " + getVirtualTableName();
     }
 
     private String getVirtualTableName() {
