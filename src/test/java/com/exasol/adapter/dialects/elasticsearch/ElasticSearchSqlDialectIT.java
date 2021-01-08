@@ -106,13 +106,13 @@ class ElasticSearchSqlDialectIT {
             bucket.uploadFile(SETTINGS_FILE_PATH, JDBC_DRIVERS_IN_BUCKET_PATH + SETTINGS_FILE_NAME);
             bucket.uploadFile(JDBC_DRIVER_PATH, JDBC_DRIVERS_IN_BUCKET_PATH + JDBC_DRIVER_NAME);
             bucket.uploadFile(JDBC_DRIVER_PATH, JDBC_DRIVER_NAME);
-        } catch (final BucketAccessException e) {
+        } catch (final BucketAccessException exception) {
             LOGGER.severe(ExaError.messageBuilder("S-ESVS-IT-1")
                     .message("An error occured while uploading the jdbc driver to the bucket.")
                     .mitigation("Make sure the {{JDBC_DRIVER_PATH}} file exists.")
                     .parameter("JDBC_DRIVER_PATH", JDBC_DRIVER_PATH)
                     .mitigation("You can generate it by executing the integration test with maven.").toString());
-            throw e;
+            throw exception;
         }
     }
 
