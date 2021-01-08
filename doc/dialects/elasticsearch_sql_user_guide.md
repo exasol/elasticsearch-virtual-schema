@@ -1,4 +1,4 @@
-# ElasticSearchSQL Dialect User Guide
+ ElasticSearchSQL Dialect User Guide
 
 [ElasticSearch](https://www.elastic.co/) is a distributed, open source search and analytics engine that allows to store and query documents in JSON format, and it provides a SQL dialect called [ElasticSearchSQL](https://www.elastic.co/what-is/elasticsearch-sql) for performing SQL queries.
 
@@ -108,7 +108,23 @@ ElasticSearch allows [dynamic mapping](https://www.elastic.co/guide/en/elasticse
 If the new fields are added after creating VirtualSchema, those fields will not be available, as the VirtualSchema is not up to date at this point, but it can be updated by executing the following command:
 
 ```sql
-ALTER VIRTUAL SCHEMA "<elastic_search_virtual_schema_name>" REFRESHSELECT;
+ALTER VIRTUAL SCHEMA "<elastic_search_virtual_schema_name>" REFRESH;
 ```
 
 Given the previously described situation, we recommend to not use the dynamic mapping feature of ElasticSearch, and instead define the mappings explicitly.
+
+### Known issues
+
+At the moment for querying all the contents of a table in the virtual schema it is not possible to use the `*` wild card, as in:
+
+```sql
+SELECT * FROM "<elastic_search_virtual_schema_name>"."<table_name>";
+```
+
+Instead the columns to query needs to be explicitly specified, as in:
+
+```sql
+SELECT "<column_name_1>","<column_name_2>",...,"<column_name_n>" FROM "<elastic_search_virtual_schema_name>"."<table_name>";
+```
+
+A new feature to avoid this issue will be added in the future.

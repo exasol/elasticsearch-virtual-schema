@@ -17,14 +17,15 @@ SonarCloud results:
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aelasticsearch-virtual-schema&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=com.exasol%3Aelasticsearch-virtual-schema)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=com.exasol%3Aelasticsearch-virtual-schema&metric=ncloc)](https://sonarcloud.io/dashboard?id=com.exasol%3Aelasticsearch-virtual-schema)
 
-An implementation of the [ElasticSearchSQL](https://www.elastic.co/what-is/elasticsearch-sql) dialect for the [Exasol Virtual Schema JDBC][virtual-schema-common-jdbc] project.
-Use this dialect if you want to create a Virtual Schema based on an ElasticSearch database.
+# Overview
+
+The **ElasticSearch Virtual Schema** provides an abstraction layer that makes an external [ElasticSearch](https://www.elastic.co/) data source accessible from an Exasol database through regular SQL commands. The contents of the external ElasticSearch data source are mapped to virtual tables which look like and can be queried as any regular Exasol table.
 
 If you want to set up a Virtual Schema for a different database system, please head over to the [Virtual Schemas Repository][virtual-schemas].
 
 ## Features
 
-* Access an ElasticSearch database from an Exasol database, using Virtual Schema.
+* Access an ElasticSearch data source in read only mode from an Exasol database, using Virtual Schema.
 
 ## Table of Contents
 
