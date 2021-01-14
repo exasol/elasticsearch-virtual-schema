@@ -1,4 +1,4 @@
-#Virtual Schema for ElasticSearch 1.0.0, released 2021-01-08
+# Virtual Schema for ElasticSearch 1.0.0, released 2021-01-08
 
 Code name: Initial Release 
 

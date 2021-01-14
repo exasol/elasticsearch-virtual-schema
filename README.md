@@ -1,7 +1,6 @@
 # ElasticSearch Virtual Schema
 
 [![Build Status](https://api.travis-ci.com/exasol/elasticsearch-virtual-schema.svg?branch=main)](https://travis-ci.com/exasol/elasticsearch-virtual-schema)
-[![Maven Central](https://img.shields.io/maven-central/v/com.exasol/elasticsearch-virtual-schema)](https://search.maven.org/artifact/com.exasol/elasticsearch-virtual-schema)
 
 SonarCloud results:
 
