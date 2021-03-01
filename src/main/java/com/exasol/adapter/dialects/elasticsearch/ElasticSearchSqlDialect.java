@@ -12,8 +12,9 @@ import java.util.Set;
 import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.capabilities.Capabilities;
 import com.exasol.adapter.dialects.*;
+import com.exasol.adapter.dialects.rewriting.ImportFromJDBCQueryRewriter;
+import com.exasol.adapter.dialects.rewriting.SqlGenerationContext;
 import com.exasol.adapter.jdbc.*;
-import com.exasol.adapter.sql.SqlNodeVisitor;
 import com.exasol.errorreporting.ExaError;
 
 /**
@@ -108,7 +109,7 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
     }
 
     @Override
-    public SqlNodeVisitor<String> getSqlGenerationVisitor(final SqlGenerationContext context) {
+    public SqlGenerator getSqlGenerator(final SqlGenerationContext context) {
         return new ElasticSearchSqlGenerationVisitor(this, context);
     }
 

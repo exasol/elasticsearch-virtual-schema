@@ -1,0 +1,16 @@
+# Virtual Schema for ElasticSearch 1.0.1, released 2021-??-??
+
+Code name:
+
+## Summary
+
+The `SQL_DIALECT` property used when executing a `CREATE VIRTUAL SCHEMA` from the Exasol database is obsolete from this version. Please, do not provide this property anymore.
+
+## Runtime Dependencies
+
+* Updated `com.exasol:virtual-schema-common-jdbc:8.0.0` to `9.0.1`
+
+## Test Dependencies
+
+* Updated `org.elasticsearch.client:elasticsearch-rest-high-level-client:7.10.1` to `7.10.2`
+* Updated `org.elasticsearch.plugin:x-pack-sql-jdbc:7.10.1` to `7.10.2`

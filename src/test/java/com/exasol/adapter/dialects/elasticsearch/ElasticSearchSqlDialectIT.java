@@ -45,7 +45,6 @@ class ElasticSearchSqlDialectIT {
     @Container
     private static final ElasticsearchContainer ES_CONTAINER = new ElasticsearchContainer(
             ELASTICSEARCH_DOCKER_IMAGE_REFERENCE).withReuse(true);
-    private static final String ES_DIALECT_NAME = "ES";
     private static final String VIRTUAL_SCHEMA_NAME = "VIRTUAL_SCHEMA_ES";
     private static final String INDEX_NAME = "index";
     private static final String ASSERT_FIELD = "ASSERT_FIELD";
@@ -1018,7 +1017,6 @@ class ElasticSearchSqlDialectIT {
 
     private void createVirtualSchema() {
         ElasticSearchSqlDialectIT.virtualSchema = objectFactory.createVirtualSchemaBuilder(VIRTUAL_SCHEMA_NAME)
-                .dialectName(ES_DIALECT_NAME) //
                 .adapterScript(adapterScript) //
                 .connectionDefinition(jdbcConnection) //
                 .build();

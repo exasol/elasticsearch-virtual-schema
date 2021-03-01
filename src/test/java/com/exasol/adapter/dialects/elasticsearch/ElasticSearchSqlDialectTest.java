@@ -27,9 +27,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.capabilities.Capabilities;
-import com.exasol.adapter.dialects.ImportFromJDBCQueryRewriter;
 import com.exasol.adapter.dialects.SqlDialect.NullSorting;
 import com.exasol.adapter.dialects.SqlDialect.StructureElementSupport;
+import com.exasol.adapter.dialects.rewriting.ImportFromJDBCQueryRewriter;
 import com.exasol.adapter.jdbc.ConnectionFactory;
 import com.exasol.adapter.jdbc.RemoteMetadataReaderException;
 
@@ -119,8 +119,8 @@ class ElasticSearchSqlDialectTest {
     }
 
     @Test
-    void testGetSqlGenerationVisitor() throws SQLException {
-        assertThat(this.dialect.getSqlGenerationVisitor(null), instanceOf(ElasticSearchSqlGenerationVisitor.class));
+    void testGetSqlGenerator() throws SQLException {
+        assertThat(this.dialect.getSqlGenerator(null), instanceOf(ElasticSearchSqlGenerationVisitor.class));
     }
 
     /**
