@@ -31,7 +31,7 @@ The SQL statement below creates the adapter script, defines the Java class that 
 ```sql
 CREATE OR REPLACE JAVA ADAPTER SCRIPT <schema_name>.<adapter_name> AS
   %scriptclass com.exasol.adapter.RequestDispatcher;
-  %jar /buckets/<BFS service>/<bucket>/virtual-schema-dist-8.0.0-elasticsearch-1.0.0.jar;
+  %jar /buckets/<BFS service>/<bucket>/virtual-schema-dist-9.0.1-elasticsearch-2.0.0.jar;
   %jar /buckets/<BFS service>/<bucket>/x-pack-sql-jdbc-<elasticsearch_driver_version>.jar;
 /
 ```
@@ -55,7 +55,6 @@ Below you see how an ElasticSearchSQL Virtual Schema is created.
 CREATE VIRTUAL SCHEMA <elastic_search_virtual_schema_name>
 	USING <schema_name>.<adapter_name>
 	WITH
-	SQL_DIALECT = 'ES'
 	CONNECTION_NAME = '<connection_name>'
 	;
 ```
