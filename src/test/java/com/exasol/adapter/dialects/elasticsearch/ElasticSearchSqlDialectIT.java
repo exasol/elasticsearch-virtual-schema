@@ -771,6 +771,16 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
+        void testChr() throws IOException {
+            assertScalarFunction("CHR").withValues(88).withResult("X").verify();
+        }
+
+        @Test
+        void testChar() throws IOException {
+            assertScalarFunction("CHAR").withValues(88).withResult("X").verify();
+        }
+
+        @Test
         void testConcat() throws IOException {
             assertScalarFunction("CONCAT").withValues("abc", "def").withResult("abcdef").verify();
         }

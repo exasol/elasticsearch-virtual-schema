@@ -37,10 +37,10 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
                 .addAggregateFunction(COUNT, COUNT_STAR, COUNT_DISTINCT, SUM, MIN, MAX, AVG, FIRST_VALUE, LAST_VALUE,
                         STDDEV_POP, STDDEV_SAMP, VAR_POP, VAR_SAMP) //
                 .addScalarFunction(ADD, SUB, MULT, NEG, ABS, ACOS, ASIN, ATAN, ATAN2, CEIL, COS, COSH, COT, DEGREES,
-                        EXP, FLOOR, GREATEST, LEAST, LN, MOD, POWER, RADIANS, RAND, ROUND, SIGN, SIN, SINH, SQRT, TAN,
-                        TRUNC, ASCII, BIT_LENGTH, CONCAT, INSERT, LENGTH, OCTET_LENGTH, REPEAT, REPLACE, RIGHT, SPACE,
-                        CURRENT_DATE, CURRENT_TIMESTAMP, DATE_TRUNC, DAY, EXTRACT, HOUR, MINUTE, MONTH, WEEK, YEAR,
-                        ST_X, ST_Y, CAST, CASE) //
+                        EXP, FLOOR, GREATEST, LEAST, LN, CHR, MOD, POWER, RADIANS, RAND, ROUND, SIGN, SIN, SINH, SQRT,
+                        TAN, TRUNC, ASCII, BIT_LENGTH, CONCAT, INSERT, LENGTH, OCTET_LENGTH, REPEAT, REPLACE, RIGHT,
+                        SPACE, CURRENT_DATE, CURRENT_TIMESTAMP, DATE_TRUNC, DAY, EXTRACT, HOUR, MINUTE, MONTH, WEEK,
+                        YEAR, ST_X, ST_Y, CAST, CASE) //
                 .build();
     }
 
@@ -66,9 +66,10 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
 
     @Override
     public Map<ScalarFunction, String> getScalarFunctionAliases() {
-        final Map<ScalarFunction, String> scalarAliases = new EnumMap<>(ScalarFunction.class);
-        scalarAliases.put(ScalarFunction.LN, "LOG");
-        return scalarAliases;
+        final Map<ScalarFunction, String> scalarFunctionAliases = new EnumMap<>(ScalarFunction.class);
+        scalarFunctionAliases.put(ScalarFunction.LN, "LOG");
+        scalarFunctionAliases.put(ScalarFunction.CHR, "CHAR");
+        return scalarFunctionAliases;
     }
 
     @Override
