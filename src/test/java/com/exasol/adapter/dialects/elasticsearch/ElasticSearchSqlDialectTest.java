@@ -14,6 +14,8 @@ import static org.mockito.Mockito.when;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +34,7 @@ import com.exasol.adapter.dialects.SqlDialect.StructureElementSupport;
 import com.exasol.adapter.dialects.rewriting.ImportFromJDBCQueryRewriter;
 import com.exasol.adapter.jdbc.ConnectionFactory;
 import com.exasol.adapter.jdbc.RemoteMetadataReaderException;
+import com.exasol.adapter.sql.ScalarFunction;
 
 @ExtendWith(MockitoExtension.class)
 class ElasticSearchSqlDialectTest {
@@ -66,6 +69,19 @@ class ElasticSearchSqlDialectTest {
                                 SINH, SQRT, TAN, TRUNC, ASCII, BIT_LENGTH, CONCAT, INSERT, LENGTH, OCTET_LENGTH, REPEAT,
                                 REPLACE, RIGHT, SPACE, CURRENT_DATE, CURRENT_TIMESTAMP, DATE_TRUNC, DAY, EXTRACT, HOUR,
                                 MINUTE, MONTH, WEEK, YEAR, ST_X, ST_Y, CAST, CASE)));
+    }
+
+    @Test
+    void testGetScalarFunctionAliases() {
+        final Map<ScalarFunction, String> expectedScalarFunctionAliases = this.getExpectedScalarFunctionAliases();
+        final Map<ScalarFunction, String> scalarFunctionAliases = this.dialect.getScalarFunctionAliases();
+        assertThat(expectedScalarFunctionAliases, equalTo(scalarFunctionAliases));
+    }
+
+    private Map<ScalarFunction, String> getExpectedScalarFunctionAliases() {
+        final Map<ScalarFunction, String> scalarFunctionAliases = new EnumMap<>(ScalarFunction.class);
+        scalarFunctionAliases.put(ScalarFunction.LN, "LOG");
+        return scalarFunctionAliases;
     }
 
     @Test
