@@ -6,6 +6,10 @@ Code name:
 
 The `SQL_DIALECT` property used when executing a `CREATE VIRTUAL SCHEMA` from the Exasol database is obsolete from this version. Please, do not provide this property anymore.
 
+## Features / Enhancements
+
+* #24: Add support for `LN` scalar function
+
 ## Runtime Dependencies
 
 * Updated `com.exasol:virtual-schema-common-jdbc:8.0.0` to `9.0.1`

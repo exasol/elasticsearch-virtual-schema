@@ -7,7 +7,7 @@ import static com.exasol.adapter.capabilities.PredicateCapability.*;
 import static com.exasol.adapter.capabilities.ScalarFunctionCapability.*;
 
 import java.sql.SQLException;
-import java.util.Set;
+import java.util.*;
 
 import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.capabilities.Capabilities;
@@ -15,6 +15,7 @@ import com.exasol.adapter.dialects.*;
 import com.exasol.adapter.dialects.rewriting.ImportFromJDBCQueryRewriter;
 import com.exasol.adapter.dialects.rewriting.SqlGenerationContext;
 import com.exasol.adapter.jdbc.*;
+import com.exasol.adapter.sql.ScalarFunction;
 import com.exasol.errorreporting.ExaError;
 
 /**
@@ -36,7 +37,7 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
                 .addAggregateFunction(COUNT, COUNT_STAR, COUNT_DISTINCT, SUM, MIN, MAX, AVG, FIRST_VALUE, LAST_VALUE,
                         STDDEV_POP, STDDEV_SAMP, VAR_POP, VAR_SAMP) //
                 .addScalarFunction(ADD, SUB, MULT, NEG, ABS, ACOS, ASIN, ATAN, ATAN2, CEIL, COS, COSH, COT, DEGREES,
-                        EXP, FLOOR, GREATEST, LEAST, MOD, POWER, RADIANS, RAND, ROUND, SIGN, SIN, SINH, SQRT, TAN,
+                        EXP, FLOOR, GREATEST, LEAST, LN, MOD, POWER, RADIANS, RAND, ROUND, SIGN, SIN, SINH, SQRT, TAN,
                         TRUNC, ASCII, BIT_LENGTH, CONCAT, INSERT, LENGTH, OCTET_LENGTH, REPEAT, REPLACE, RIGHT, SPACE,
                         CURRENT_DATE, CURRENT_TIMESTAMP, DATE_TRUNC, DAY, EXTRACT, HOUR, MINUTE, MONTH, WEEK, YEAR,
                         ST_X, ST_Y, CAST, CASE) //
@@ -61,6 +62,13 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
     @Override
     public Capabilities getCapabilities() {
         return CAPABILITIES;
+    }
+
+    @Override
+    public Map<ScalarFunction, String> getScalarFunctionAliases() {
+        final Map<ScalarFunction, String> scalarAliases = new EnumMap<>(ScalarFunction.class);
+        scalarAliases.put(ScalarFunction.LN, "LOG");
+        return scalarAliases;
     }
 
     @Override
