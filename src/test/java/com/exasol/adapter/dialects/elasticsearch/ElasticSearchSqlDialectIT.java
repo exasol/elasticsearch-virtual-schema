@@ -20,6 +20,8 @@ import javax.json.JsonObjectBuilder;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.platform.commons.util.StringUtils;
 import org.testcontainers.containers.JdbcDatabaseContainer.NoDriverFoundException;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
@@ -770,14 +772,10 @@ class ElasticSearchSqlDialectIT {
             assertScalarFunction("BIT_LENGTH").withValues("äöü").withResult(48).verify();
         }
 
-        @Test
-        void testChr() throws IOException {
-            assertScalarFunction("CHR").withValues(88).withResult("X").verify();
-        }
-
-        @Test
-        void testChar() throws IOException {
-            assertScalarFunction("CHAR").withValues(88).withResult("X").verify();
+        @ParameterizedTest
+        @CsvSource({ "CHAR", "CHR" })
+        void testChar(final String charScalarFunctionAlias) throws IOException {
+            assertScalarFunction(charScalarFunctionAlias).withValues(88).withResult("X").verify();
         }
 
         @Test
