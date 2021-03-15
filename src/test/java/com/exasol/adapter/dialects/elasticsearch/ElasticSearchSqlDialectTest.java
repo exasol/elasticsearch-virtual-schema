@@ -62,8 +62,8 @@ class ElasticSearchSqlDialectTest {
                                 LAST_VALUE, STDDEV_POP, STDDEV_SAMP, VAR_POP, VAR_SAMP)),
                 () -> assertThat(capabilities.getScalarFunctionCapabilities(),
                         containsInAnyOrder(ADD, SUB, MULT, NEG, ABS, ACOS, ASIN, ATAN, ATAN2, CEIL, COS, COSH, COT,
-                                DEGREES, EXP, FLOOR, GREATEST, LEAST, MOD, POWER, RADIANS, RAND, ROUND, SIGN, SIN, SINH,
-                                SQRT, TAN, TRUNC, ASCII, BIT_LENGTH, CONCAT, INSERT, LENGTH, OCTET_LENGTH, REPEAT,
+                                DEGREES, EXP, FLOOR, GREATEST, LEAST, LN, MOD, POWER, RADIANS, RAND, ROUND, SIGN, SIN,
+                                SINH, SQRT, TAN, TRUNC, ASCII, BIT_LENGTH, CONCAT, INSERT, LENGTH, OCTET_LENGTH, REPEAT,
                                 REPLACE, RIGHT, SPACE, CURRENT_DATE, CURRENT_TIMESTAMP, DATE_TRUNC, DAY, EXTRACT, HOUR,
                                 MINUTE, MONTH, WEEK, YEAR, ST_X, ST_Y, CAST, CASE)));
     }
