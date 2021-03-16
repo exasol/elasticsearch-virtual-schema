@@ -10,6 +10,7 @@ The `SQL_DIALECT` property used when executing a `CREATE VIRTUAL SCHEMA` from th
 
 * #23: Add support for `CHR` scalar function
 * #24: Add support for `LN` scalar function
+* #27: Add support for `DIV` scalar function
 
 ## Runtime Dependencies
 

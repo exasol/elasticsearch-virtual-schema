@@ -683,6 +683,11 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
+        void testDiv() throws IOException {
+            assertScalarFunction("DIV").withValues(15, 6).withResult(2).verify();
+        }
+
+        @Test
         void testExp() throws IOException {
             assertScalarFunction("EXP").withValues(1).withResult(2.718281828459045).verify();
         }
