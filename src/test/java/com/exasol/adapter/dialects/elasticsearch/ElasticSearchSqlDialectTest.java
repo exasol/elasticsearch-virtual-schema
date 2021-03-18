@@ -65,24 +65,41 @@ class ElasticSearchSqlDialectTest {
                                 LAST_VALUE, STDDEV_POP, STDDEV_SAMP, VAR_POP, VAR_SAMP)),
                 () -> assertThat(capabilities.getScalarFunctionCapabilities(),
                         containsInAnyOrder(ADD, SUB, MULT, NEG, ABS, ACOS, ASIN, ATAN, ATAN2, CEIL, COS, COSH, COT,
-                                DEGREES, EXP, FLOOR, GREATEST, LEAST, LN, CHR, MOD, POWER, RADIANS, RAND, ROUND, SIGN,
-                                SIN, SINH, SQRT, TAN, TRUNC, ASCII, BIT_LENGTH, CONCAT, INSERT, LENGTH, OCTET_LENGTH,
-                                REPEAT, REPLACE, RIGHT, SPACE, CURRENT_DATE, CURRENT_TIMESTAMP, DATE_TRUNC, DAY,
-                                EXTRACT, HOUR, MINUTE, MONTH, WEEK, YEAR, ST_X, ST_Y, CAST, CASE)));
+                                DEGREES, DIV, EXP, FLOOR, GREATEST, LEAST, LN, CHR, MOD, POWER, RADIANS, RAND, ROUND,
+                                SIGN, SIN, SINH, SQRT, TAN, TRUNC, ASCII, BIT_LENGTH, CONCAT, INSERT, LENGTH,
+                                OCTET_LENGTH, REPEAT, REPLACE, RIGHT, SPACE, CURRENT_DATE, CURRENT_TIMESTAMP,
+                                DATE_TRUNC, DAY, EXTRACT, HOUR, MINUTE, MONTH, WEEK, YEAR, ST_X, ST_Y, CAST, CASE)));
     }
 
     @Test
     void testGetScalarFunctionAliases() {
-        final Map<ScalarFunction, String> expectedScalarFunctionAliases = this.getExpectedScalarFunctionAliases();
-        final Map<ScalarFunction, String> scalarFunctionAliases = this.dialect.getScalarFunctionAliases();
-        assertThat(expectedScalarFunctionAliases, equalTo(scalarFunctionAliases));
+        final Map<ScalarFunction, String> expectedAliases = this.getExpectedScalarFunctionAliases();
+        final Map<ScalarFunction, String> aliases = this.dialect.getScalarFunctionAliases();
+        assertThat(expectedAliases, equalTo(aliases));
     }
 
     private Map<ScalarFunction, String> getExpectedScalarFunctionAliases() {
-        final Map<ScalarFunction, String> scalarFunctionAliases = new EnumMap<>(ScalarFunction.class);
-        scalarFunctionAliases.put(ScalarFunction.LN, "LOG");
-        scalarFunctionAliases.put(ScalarFunction.CHR, "CHAR");
-        return scalarFunctionAliases;
+        final Map<ScalarFunction, String> aliases = new EnumMap<>(ScalarFunction.class);
+        aliases.put(ScalarFunction.LN, "LOG");
+        aliases.put(ScalarFunction.CHR, "CHAR");
+        return aliases;
+    }
+
+    @Test
+    void testGetBinaryInfixFunctionAliases() {
+        final Map<ScalarFunction, String> expectedAliases = this.getExpectedBinaryInfixFunctionAliase();
+        final Map<ScalarFunction, String> aliases = this.dialect.getBinaryInfixFunctionAliases();
+        assertThat(expectedAliases, equalTo(aliases));
+
+    }
+
+    private Map<ScalarFunction, String> getExpectedBinaryInfixFunctionAliase() {
+        final Map<ScalarFunction, String> aliases = new EnumMap<>(ScalarFunction.class);
+        aliases.put(ScalarFunction.ADD, "+");
+        aliases.put(ScalarFunction.SUB, "-");
+        aliases.put(ScalarFunction.MULT, "*");
+        aliases.put(ScalarFunction.DIV, "/");
+        return aliases;
     }
 
     @Test
