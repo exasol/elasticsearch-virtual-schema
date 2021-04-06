@@ -1,6 +1,6 @@
-# Virtual Schema for ElasticSearch 2.0.0, released 2021-??-??
+# Virtual Schema for ElasticSearch 2.0.0, released 2021-04-06
 
-Code name:
+Code name: Remove SQL_DIALECT property
 
 ## Summary
 
