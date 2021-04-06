@@ -12,10 +12,6 @@ The `SQL_DIALECT` property used when executing a `CREATE VIRTUAL SCHEMA` from th
 * #24: Add support for `LN` scalar function
 * #27: Add support for `DIV` scalar function
 
-## Refactorings
-
-* #23: Add support for `CHR` scalar function
-
 ## Runtime Dependencies
 
 * Updated `com.exasol:virtual-schema-common-jdbc:8.0.0` to `9.0.1`
