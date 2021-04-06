@@ -1,6 +1,6 @@
-# Virtual Schema for ElasticSearch 2.0.0, released 2021-??-??
+# Virtual Schema for ElasticSearch 2.0.0, released 2021-04-06
 
-Code name:
+Code name: Remove SQL_DIALECT property
 
 ## Summary
 
@@ -11,6 +11,10 @@ The `SQL_DIALECT` property used when executing a `CREATE VIRTUAL SCHEMA` from th
 * #23: Add support for `CHR` scalar function
 * #24: Add support for `LN` scalar function
 * #27: Add support for `DIV` scalar function
+
+## Refactorings
+
+* #23: Add support for `CHR` scalar function
 
 ## Runtime Dependencies
 

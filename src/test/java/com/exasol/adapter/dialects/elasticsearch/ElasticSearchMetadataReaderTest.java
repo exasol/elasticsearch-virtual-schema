@@ -5,11 +5,8 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.sql.Connection;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 
 import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.dialects.IdentifierCaseHandling;
@@ -19,12 +16,10 @@ import com.exasol.adapter.jdbc.BaseTableMetadataReader;
 
 class ElasticSearchMetadataReaderTest {
     private ElasticSearchMetadataReader reader;
-    @Mock
-    private Connection connectionMock;
 
     @BeforeEach
     void beforeEach() {
-        this.reader = new ElasticSearchMetadataReader(this.connectionMock, AdapterProperties.emptyProperties());
+        this.reader = new ElasticSearchMetadataReader(null, AdapterProperties.emptyProperties());
     }
 
     @Test
