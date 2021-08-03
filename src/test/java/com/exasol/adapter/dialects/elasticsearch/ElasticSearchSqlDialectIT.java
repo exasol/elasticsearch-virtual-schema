@@ -6,6 +6,7 @@ import static javax.json.Json.createObjectBuilder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
 import java.util.List;
@@ -52,13 +53,13 @@ class ElasticSearchSqlDialectIT {
     private static final String ASSERT_FIELD = "ASSERT_FIELD";
     private static final String ASSERT_VALUE = "ASSERT_VALUE";
 
-    private static Matcher<ResultSet> EMPTY_TABLE_MATCHER = getEmptyTableMatcher();
+    private static final Matcher<ResultSet> EMPTY_TABLE_MATCHER = getEmptyTableMatcher();
 
     private static Matcher<ResultSet> getEmptyTableMatcher() {
         return table("VARCHAR").matchesFuzzily();
     }
 
-    private static Matcher<ResultSet> SINGLE_ROW_TABLE_MATCHER = getSingleRowTableMatcher();
+    private static final Matcher<ResultSet> SINGLE_ROW_TABLE_MATCHER = getSingleRowTableMatcher();
 
     private static Matcher<ResultSet> getSingleRowTableMatcher() {
         return table().row(ASSERT_VALUE).matchesFuzzily();
@@ -73,8 +74,8 @@ class ElasticSearchSqlDialectIT {
     private static ElasticSearchGateway esGateway;
 
     @BeforeAll
-    static void beforeAll() throws BucketAccessException, InterruptedException, TimeoutException, IOException,
-            NoDriverFoundException, SQLException {
+    static void beforeAll()
+            throws BucketAccessException, TimeoutException, IOException, NoDriverFoundException, SQLException {
         connection = EXASOL.createConnection();
         objectFactory = setupObjectFactory();
         adapterSchema = objectFactory.createSchema("ADAPTER_SCHEMA");
@@ -92,7 +93,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     private static AdapterScript installVirtualSchemaAdapter(final ExasolSchema adapterSchema)
-            throws InterruptedException, BucketAccessException, TimeoutException {
+            throws BucketAccessException, TimeoutException, FileNotFoundException {
         final Bucket bucket = EXASOL.getDefaultBucket();
         bucket.uploadFile(VIRTUAL_SCHEMAS_JAR_PATH, VIRTUAL_SCHEMAS_JAR_NAME_AND_VERSION);
         uploadDriverToBucket(bucket);
@@ -102,12 +103,12 @@ class ElasticSearchSqlDialectIT {
     }
 
     private static void uploadDriverToBucket(final Bucket bucket)
-            throws InterruptedException, TimeoutException, BucketAccessException {
+            throws TimeoutException, BucketAccessException, FileNotFoundException {
         try {
             bucket.uploadFile(SETTINGS_FILE_PATH, JDBC_DRIVERS_IN_BUCKET_PATH + SETTINGS_FILE_NAME);
             bucket.uploadFile(JDBC_DRIVER_PATH, JDBC_DRIVERS_IN_BUCKET_PATH + JDBC_DRIVER_NAME);
-        } catch (final BucketAccessException exception) {
-            LOGGER.severe(ExaError.messageBuilder("S-ESVS-IT-1")
+        } catch (final BucketAccessException | FileNotFoundException exception) {
+            LOGGER.severe(ExaError.messageBuilder("F-VS-ES-2")
                     .message("An error occured while uploading the jdbc driver to the bucket.")
                     .mitigation("Make sure the {{JDBC_DRIVER_PATH}} file exists.")
                     .parameter("JDBC_DRIVER_PATH", JDBC_DRIVER_PATH)

@@ -1,0 +1,4 @@
+error-tags:
+  VS-ES:
+    packages:
+      - com.exasol.adapter.dialects.elasticsearch
