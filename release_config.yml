@@ -1,0 +1,12 @@
+release-platforms:
+  - GitHub
+  - Community
+  - Jira
+community-tags:
+  - Virtual Schema
+  - Exasol
+  - Open Source
+  - GitHub
+community-project-name: ElasticSearch Virtual Schema
+community-project-description: |
+  This Virtual Schema provides an abstraction layer that makes an external [ElasticSearch](https://www.elastic.co/) data source accessible from an Exasol database through regular SQL commands. The contents of the external ElasticSearch data source are mapped to virtual tables which look like and can be queried as any regular Exasol table.
