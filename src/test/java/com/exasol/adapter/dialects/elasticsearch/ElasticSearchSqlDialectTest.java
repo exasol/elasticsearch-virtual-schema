@@ -143,7 +143,7 @@ class ElasticSearchSqlDialectTest {
         when(this.connectionFactoryMock.getConnection()).thenThrow(new SQLException());
         final RemoteMetadataReaderException exception = assertThrows(RemoteMetadataReaderException.class,
                 this.dialect::createRemoteMetadataReader);
-        assertThat(exception.getMessage(), containsString("E-VSES-1"));
+        assertThat(exception.getMessage(), containsString("E-VS-ES-1"));
     }
 
     @Test
