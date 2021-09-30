@@ -36,6 +36,7 @@ import com.exasol.dbbuilder.dialects.DatabaseObject;
 import com.exasol.dbbuilder.dialects.exasol.*;
 import com.exasol.dbbuilder.dialects.exasol.AdapterScript.Language;
 import com.exasol.errorreporting.ExaError;
+import com.exasol.matcher.TypeMatchMode;
 import com.exasol.udfdebugging.UdfTestSetup;
 
 @Tag("integration")
@@ -56,13 +57,13 @@ class ElasticSearchSqlDialectIT {
     private static final Matcher<ResultSet> EMPTY_TABLE_MATCHER = getEmptyTableMatcher();
 
     private static Matcher<ResultSet> getEmptyTableMatcher() {
-        return table("VARCHAR").matchesFuzzily();
+        return table("VARCHAR").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK);
     }
 
     private static final Matcher<ResultSet> SINGLE_ROW_TABLE_MATCHER = getSingleRowTableMatcher();
 
     private static Matcher<ResultSet> getSingleRowTableMatcher() {
-        return table().row(ASSERT_VALUE).matchesFuzzily();
+        return table().row(ASSERT_VALUE).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK);
     }
 
     private static Connection connection;
@@ -167,7 +168,7 @@ class ElasticSearchSqlDialectIT {
         final String query = "SELECT \"bool_field\"" //
                 + " FROM " + getVirtualTableName() //
                 + " WHERE \"bool_field\" = true";
-        assertVirtualTableContentsByQuery(query, table().row(Boolean.TRUE).matchesFuzzily());
+        assertVirtualTableContentsByQuery(query, table().row(Boolean.TRUE).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
     }
 
     @Test
@@ -176,7 +177,7 @@ class ElasticSearchSqlDialectIT {
         final String query = "SELECT \"int_field\"" //
                 + " FROM " + getVirtualTableName() //
                 + " WHERE \"int_field\" = 1";
-        assertVirtualTableContentsByQuery(query, table().row(1).matchesFuzzily());
+        assertVirtualTableContentsByQuery(query, table().row(1).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
     }
 
     @Test
@@ -185,7 +186,7 @@ class ElasticSearchSqlDialectIT {
         final String query = "SELECT \"str_field\"" //
                 + " FROM " + getVirtualTableName() //
                 + " WHERE \"str_field\" = 'str'";
-        assertVirtualTableContentsByQuery(query, table().row("str").matchesFuzzily());
+        assertVirtualTableContentsByQuery(query, table().row("str").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
     }
 
     @Test
@@ -194,7 +195,7 @@ class ElasticSearchSqlDialectIT {
         this.indexDocument(createObjectBuilder().add("str_field", "str").add("inner_field", innerField).build());
         final String query = "SELECT  \"str_field\", \"inner_field/inner_str_field\""//
                 + " FROM " + getVirtualTableName();
-        assertVirtualTableContentsByQuery(query, table().row("str", "inner_str").matchesFuzzily());
+        assertVirtualTableContentsByQuery(query, table().row("str", "inner_str").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
     }
 
     @Nested
@@ -204,14 +205,14 @@ class ElasticSearchSqlDialectIT {
         void testSelectListProjection() throws IOException {
             indexDocument(createObjectBuilder().add("str_field", "str").build());
             final String query = "SELECT \"str_field\" FROM " + getVirtualTableName();
-            assertVirtualTableContentsByQuery(query, table().row("str").matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row("str").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
         void testSelectListWithExpressions() throws IOException {
             indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 1).build());
             final String query = "SELECT \"int_field\"+1 FROM " + getVirtualTableName();
-            assertVirtualTableContentsByQuery(query, table().row(2).matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row(2).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -221,7 +222,7 @@ class ElasticSearchSqlDialectIT {
             final String query = "SELECT \"int_field\"" //
                     + " FROM " + getVirtualTableName() //
                     + " WHERE \"int_field\" <= 1";
-            assertVirtualTableContentsByQuery(query, table().row(1).matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row(1).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -229,7 +230,7 @@ class ElasticSearchSqlDialectIT {
             indexDocument(createObjectBuilder().add("int_field", 1).build());
             indexDocument(createObjectBuilder().add("int_field", 2).build());
             final String query = "SELECT min(\"int_field\") FROM " + getVirtualTableName();
-            assertVirtualTableContentsByQuery(query, table().row(1).matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row(1).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -239,7 +240,7 @@ class ElasticSearchSqlDialectIT {
             final String query = "SELECT \"str_field\", min(\"int_field\")" //
                     + " FROM " + getVirtualTableName() //
                     + " GROUP BY \"str_field\"";
-            assertVirtualTableContentsByQuery(query, table().row("str", 1).matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row("str", 1).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -249,7 +250,7 @@ class ElasticSearchSqlDialectIT {
             final String query = "SELECT \"str_field\"" //
                     + " FROM " + getVirtualTableName() //
                     + " GROUP BY \"str_field\", \"int_field\"";
-            assertVirtualTableContentsByQuery(query, table().row("str").matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row("str").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -260,7 +261,7 @@ class ElasticSearchSqlDialectIT {
                     + " FROM " + getVirtualTableName() //
                     + " GROUP BY \"str_field\"" //
                     + " HAVING min(\"int_field\") = 1";
-            assertVirtualTableContentsByQuery(query, table().row("str", 1).matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row("str", 1).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -270,7 +271,7 @@ class ElasticSearchSqlDialectIT {
             final String query = "SELECT \"int_field\"" //
                     + " FROM " + getVirtualTableName() //
                     + " ORDER BY \"int_field\" ASC";
-            assertVirtualTableContentsByQuery(query, table().row(1).row(2).matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row(1).row(2).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -280,7 +281,7 @@ class ElasticSearchSqlDialectIT {
             final String query = "SELECT \"int_field\"" //
                     + " FROM " + getVirtualTableName() //
                     + " ORDER BY \"int_field\" DESC";
-            assertVirtualTableContentsByQuery(query, table().row(2).row(1).matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row(2).row(1).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -291,7 +292,7 @@ class ElasticSearchSqlDialectIT {
             final String query = "SELECT \"str_field\", \"int_field\"" //
                     + " FROM " + getVirtualTableName() //
                     + " ORDER BY \"str_field\", \"int_field\"";
-            assertVirtualTableContentsByQuery(query, table().row("a", 1).row("str", 2).row("str", 3).matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row("a", 1).row("str", 2).row("str", 3).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -301,7 +302,7 @@ class ElasticSearchSqlDialectIT {
             final String query = "SELECT \"int_field\"" //
                     + " FROM " + getVirtualTableName() //
                     + " ORDER BY \"int_field\" ASC NULLS LAST";
-            assertVirtualTableContentsByQuery(query, table().row(1).row(IsNull.nullValue()).matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row(1).row(IsNull.nullValue()).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -311,7 +312,7 @@ class ElasticSearchSqlDialectIT {
             final String query = "SELECT \"int_field\"" //
                     + " FROM " + getVirtualTableName() //
                     + " ORDER BY \"int_field\" ASC NULLS FIRST";
-            assertVirtualTableContentsByQuery(query, table().row(IsNull.nullValue()).row(1).matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row(IsNull.nullValue()).row(1).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -321,7 +322,7 @@ class ElasticSearchSqlDialectIT {
             final String query = "SELECT \"int_field\"" //
                     + " FROM " + getVirtualTableName() //
                     + " ORDER BY \"int_field\"+1 DESC";
-            assertVirtualTableContentsByQuery(query, table().row(3).row(1).matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row(3).row(1).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -331,7 +332,7 @@ class ElasticSearchSqlDialectIT {
             final String query = "SELECT \"str_field\"" //
                     + " FROM " + getVirtualTableName() //
                     + " LIMIT 1";
-            assertVirtualTableContentsByQuery(query, table().row("str").matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row("str").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
     }
 
@@ -430,7 +431,7 @@ class ElasticSearchSqlDialectIT {
             createVirtualSchema();
             assertSingleRowResults("\"nullable_int_field\" IS NOT NULL");
             assertQuery(getSelectTestFieldQuery() + " WHERE \"not_nullable_str_field\" IS NOT NULL",
-                    table().row(ASSERT_VALUE).row(ASSERT_VALUE).matchesFuzzily());
+                    table().row(ASSERT_VALUE).row(ASSERT_VALUE).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -594,7 +595,7 @@ class ElasticSearchSqlDialectIT {
                     indexDocumentWithGenericTestField(createObjectBuilder().add(NUMERIC_TEST_FIELD, value));
                 }
                 assertVirtualTableContentsByQuery(this.getQuery(),
-                        table().row(ASSERT_VALUE, this.result).matchesFuzzily());
+                        table().row(ASSERT_VALUE, this.result).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
             }
 
             private String getQuery() {
@@ -902,7 +903,7 @@ class ElasticSearchSqlDialectIT {
                     + "WHEN 2 THEN 'B' "//
                     + "ELSE 'C' "//
                     + "END FROM " + getVirtualTableName();
-            assertVirtualTableContentsByQuery(query, table().row("A").row("B").row("C").matchesFuzzily());
+            assertVirtualTableContentsByQuery(query, table().row("A").row("B").row("C").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         ScalarFunctionVerifier assertExtract(final String extractUnit) {
@@ -958,7 +959,7 @@ class ElasticSearchSqlDialectIT {
             private void verify() throws IOException {
                 this.indexDocument();
                 assertVirtualTableContentsByQuery(this.getQuery(),
-                        table().row(ASSERT_VALUE, this.result).matchesFuzzily());
+                        table().row(ASSERT_VALUE, this.result).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
             }
 
             private void indexDocument() throws IOException {
