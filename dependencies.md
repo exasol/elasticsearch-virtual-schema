@@ -50,7 +50,6 @@
 | [Maven Deploy Plugin][64]                               | [The Apache Software License, Version 2.0][29] |
 | [Maven Site Plugin 3][66]                               | [The Apache Software License, Version 2.0][29] |
 
-[30]: https://www.eclemma.org/jacoco/index.html
 [48]: https://github.com/exasol/project-keeper-maven-plugin
 [2]: https://github.com/exasol/error-reporting-java
 [29]: http://www.apache.org/licenses/LICENSE-2.0.txt
@@ -71,11 +70,12 @@
 [31]: https://www.eclipse.org/legal/epl-2.0/
 [27]: http://www.eclipse.org/legal/epl-v10.html
 [18]: https://github.com/exasol/exasol-testcontainers
+[30]: https://www.jacoco.org/jacoco/trunk/doc/maven.html
 [9]: https://github.com/mockito/mockito/blob/main/LICENSE
+[11]: https://raw.githubusercontent.com/elastic/elasticsearch/v7.15.0/licenses/ELASTIC-LICENSE-2.0.txt
 [22]: https://github.com/exasol/hamcrest-resultset-matcher
 [54]: http://zlika.github.io/reproducible-build-maven-plugin
 [33]: https://www.apache.org/licenses/LICENSE-2.0.txt
-[11]: https://raw.githubusercontent.com/elastic/elasticsearch/v7.13.4/licenses/ELASTIC-LICENSE-2.0.txt
 [42]: https://maven.apache.org/enforcer/maven-enforcer-plugin/
 [7]: https://www.eclipse.org/legal/epl-v20.html
 [62]: http://maven.apache.org/plugins/maven-install-plugin/
