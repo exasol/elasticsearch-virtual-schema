@@ -5,7 +5,7 @@ import java.nio.file.Path;
 final class ITConfiguration {
     private static final String DEFAULT_EXASOL_DOCKER_IMAGE_REFERENCE = "7.1.1";
     static final String ELASTICSEARCH_DOCKER_IMAGE_REFERENCE = "docker.elastic.co/elasticsearch/elasticsearch:7.15.0";
-    static final String VIRTUAL_SCHEMAS_JAR_NAME_AND_VERSION = "virtual-schema-dist-9.0.3-elasticsearch-2.0.2.jar";
+    static final String VIRTUAL_SCHEMAS_JAR_NAME_AND_VERSION = "virtual-schema-dist-9.0.4-elasticsearch-2.0.3.jar";
     static final String TEST_RESOURCES_PATH = "src/test/resources/integration/";
     static final String JDBC_DRIVER_NAME = "x-pack-sql-jdbc.jar";
     static final String SETTINGS_FILE_NAME = "settings.cfg";

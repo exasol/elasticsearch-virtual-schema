@@ -52,6 +52,7 @@
 
 [48]: https://github.com/exasol/project-keeper-maven-plugin
 [2]: https://github.com/exasol/error-reporting-java
+[11]: https://raw.githubusercontent.com/elastic/elasticsearch/v7.16.1/licenses/ELASTIC-LICENSE-2.0.txt
 [29]: http://www.apache.org/licenses/LICENSE-2.0.txt
 [32]: https://maven.apache.org/surefire/maven-surefire-plugin/
 [58]: http://maven.apache.org/plugins/maven-clean-plugin/
@@ -72,7 +73,6 @@
 [18]: https://github.com/exasol/exasol-testcontainers
 [30]: https://www.jacoco.org/jacoco/trunk/doc/maven.html
 [9]: https://github.com/mockito/mockito/blob/main/LICENSE
-[11]: https://raw.githubusercontent.com/elastic/elasticsearch/v7.15.0/licenses/ELASTIC-LICENSE-2.0.txt
 [22]: https://github.com/exasol/hamcrest-resultset-matcher
 [54]: http://zlika.github.io/reproducible-build-maven-plugin
 [33]: https://www.apache.org/licenses/LICENSE-2.0.txt
