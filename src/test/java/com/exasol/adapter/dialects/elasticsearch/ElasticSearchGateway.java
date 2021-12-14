@@ -8,7 +8,7 @@ import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.*;
 import org.elasticsearch.client.indices.CreateIndexRequest;
 import org.elasticsearch.client.license.StartTrialRequest;
-import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.xcontent.XContentType;
 
 /**
  * Gateway for interacting with ElasticSearch data source.

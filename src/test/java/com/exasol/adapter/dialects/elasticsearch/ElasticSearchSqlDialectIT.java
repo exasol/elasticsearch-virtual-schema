@@ -2,7 +2,7 @@ package com.exasol.adapter.dialects.elasticsearch;
 
 import static com.exasol.adapter.dialects.elasticsearch.ITConfiguration.*;
 import static com.exasol.matcher.ResultSetStructureMatcher.table;
-import static javax.json.Json.createObjectBuilder;
+import static jakarta.json.Json.createObjectBuilder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -14,9 +14,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsNull;
@@ -38,6 +35,9 @@ import com.exasol.dbbuilder.dialects.exasol.AdapterScript.Language;
 import com.exasol.errorreporting.ExaError;
 import com.exasol.matcher.TypeMatchMode;
 import com.exasol.udfdebugging.UdfTestSetup;
+
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
 @Tag("integration")
 @Testcontainers
