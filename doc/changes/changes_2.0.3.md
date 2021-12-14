@@ -18,6 +18,8 @@ In this release we updated the project's dependencies. By that we fixed the tran
 * Updated `com.exasol:exasol-testcontainers:5.1.0` to `5.1.1`
 * Updated `com.exasol:hamcrest-resultset-matcher:1.5.0` to `1.5.1`
 * Updated `com.exasol:udf-debugging-java:0.4.0` to `0.4.1`
+* Removed `junit:junit:4.13.2`
+* Added `org.apache.logging.log4j:log4j-api:2.16.0`
 * Updated `org.elasticsearch.client:elasticsearch-rest-high-level-client:7.15.0` to `7.16.1`
 * Updated `org.elasticsearch.plugin:x-pack-sql-jdbc:7.15.0` to `7.16.1`
 * Updated `org.junit.jupiter:junit-jupiter:5.8.1` to `5.8.2`
