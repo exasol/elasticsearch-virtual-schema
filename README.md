@@ -20,6 +20,8 @@ The **ElasticSearch Virtual Schema** provides an abstraction layer that makes an
 
 If you want to set up a Virtual Schema for a different database system, please head over to the [Virtual Schemas Repository][virtual-schemas].
 
+Currently we support elasticsearch >= 7.16.1. In case you need support for older versions, please open a ticket.
+
 ## Features
 
 * Access an ElasticSearch data source in read only mode from an Exasol database, using Virtual Schema.
