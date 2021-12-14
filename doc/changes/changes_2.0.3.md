@@ -1,10 +1,10 @@
-# Virtual Schema for ElasticSearch 2.0.3, released 2021-12-13
+# Virtual Schema for ElasticSearch 2.0.3, released 2021-12-14
 
 Code name: Dependency Updates
 
 ## Summary
 
-In this release we updated the project's dependencies. By that we fixed the transitive dependency CVE-2021-44228 in log4j. The vulnerability only affected test code.
+In this release we updated the project's dependencies. By that we fixed the transitive dependency [CVE-2021-44228](https://nvd.nist.gov/vuln/detail/CVE-2021-44228) in log4j. The vulnerability only affected test code.
 
 ## Dependency Updates
 
