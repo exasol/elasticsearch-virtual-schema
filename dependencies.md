@@ -52,7 +52,6 @@
 
 [48]: https://github.com/exasol/project-keeper-maven-plugin
 [2]: https://github.com/exasol/error-reporting-java
-[11]: https://raw.githubusercontent.com/elastic/elasticsearch/v7.16.2/licenses/ELASTIC-LICENSE-2.0.txt
 [27]: http://www.apache.org/licenses/LICENSE-2.0.txt
 [32]: https://maven.apache.org/surefire/maven-surefire-plugin/
 [1]: https://opensource.org/licenses/MIT
@@ -76,6 +75,7 @@
 [44]: https://maven.apache.org/plugins/maven-dependency-plugin/
 [54]: http://zlika.github.io/reproducible-build-maven-plugin
 [66]: https://maven.apache.org/plugins/maven-site-plugin/
+[11]: https://raw.githubusercontent.com/elastic/elasticsearch/v7.17.0/licenses/ELASTIC-LICENSE-2.0.txt
 [29]: https://www.apache.org/licenses/LICENSE-2.0.txt
 [42]: https://maven.apache.org/enforcer/maven-enforcer-plugin/
 [7]: https://www.eclipse.org/legal/epl-v20.html

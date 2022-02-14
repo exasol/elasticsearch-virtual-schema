@@ -72,6 +72,7 @@ class ElasticSearchSqlDialectIT {
     private static AdapterScript adapterScript;
     private static VirtualSchema virtualSchema;
     private static ConnectionDefinition jdbcConnection;
+    private static UdfTestSetup udfTestSetup;
     private static ElasticSearchGateway esGateway;
 
     @BeforeAll
@@ -88,7 +89,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     private static ExasolObjectFactory setupObjectFactory() {
-        final UdfTestSetup udfTestSetup = new UdfTestSetup(DOCKER_IP_ADDRESS, EXASOL.getDefaultBucket());
+        udfTestSetup = new UdfTestSetup(DOCKER_IP_ADDRESS, EXASOL.getDefaultBucket(), connection);
         return new ExasolObjectFactory(connection,
                 ExasolObjectConfiguration.builder().withJvmOptions(udfTestSetup.getJvmOptions()).build());
     }
@@ -129,6 +130,7 @@ class ElasticSearchSqlDialectIT {
         dropAll(adapterScript, adapterSchema);
         adapterScript = null;
         adapterSchema = null;
+        udfTestSetup.close();
         connection.close();
     }
 
