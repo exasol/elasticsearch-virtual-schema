@@ -20,7 +20,7 @@
 | [Testcontainers :: JUnit Jupiter Extension][14] | [MIT][15]                         |
 | [TestContainers :: elasticsearch][14]           | [MIT][15]                         |
 | [Test containers for Exasol on Docker][18]      | [MIT][1]                          |
-| [Test Database Builder for Java][20]            | [MIT][1]                          |
+| [Test Database Builder for Java][20]            | [MIT License][21]                 |
 | [Matcher for SQL Result Sets][22]               | [MIT][1]                          |
 | [udf-debugging-java][24]                        | [MIT][1]                          |
 | [Apache HttpClient][26]                         | [Apache License, Version 2.0][27] |
@@ -52,30 +52,31 @@
 
 [48]: https://github.com/exasol/project-keeper-maven-plugin
 [2]: https://github.com/exasol/error-reporting-java
+[20]: https://github.com/exasol/test-db-builder-java/
 [27]: http://www.apache.org/licenses/LICENSE-2.0.txt
 [32]: https://maven.apache.org/surefire/maven-surefire-plugin/
 [1]: https://opensource.org/licenses/MIT
 [8]: https://github.com/mockito/mockito
 [28]: https://logging.apache.org/log4j/2.x/log4j-api/
 [38]: https://maven.apache.org/surefire/maven-failsafe-plugin/
-[20]: https://github.com/exasol/test-db-builder-java
 [40]: http://www.mojohaus.org/versions-maven-plugin/
 [5]: http://opensource.org/licenses/BSD-3-Clause
 [34]: https://maven.apache.org/plugins/maven-compiler-plugin/
 [15]: http://opensource.org/licenses/MIT
 [60]: https://maven.apache.org/plugins/maven-resources-plugin/
 [0]: https://github.com/exasol/virtual-schema-common-jdbc
+[21]: https://github.com/exasol/test-db-builder-java/blob/main/LICENSE
 [10]: https://github.com/elastic/elasticsearch
 [58]: https://maven.apache.org/plugins/maven-clean-plugin/
 [31]: https://www.eclipse.org/legal/epl-2.0/
 [18]: https://github.com/exasol/exasol-testcontainers
 [30]: https://www.jacoco.org/jacoco/trunk/doc/maven.html
 [9]: https://github.com/mockito/mockito/blob/main/LICENSE
+[11]: https://raw.githubusercontent.com/elastic/elasticsearch/v7.17.3/licenses/ELASTIC-LICENSE-2.0.txt
 [22]: https://github.com/exasol/hamcrest-resultset-matcher
 [44]: https://maven.apache.org/plugins/maven-dependency-plugin/
 [54]: http://zlika.github.io/reproducible-build-maven-plugin
 [66]: https://maven.apache.org/plugins/maven-site-plugin/
-[11]: https://raw.githubusercontent.com/elastic/elasticsearch/v7.17.0/licenses/ELASTIC-LICENSE-2.0.txt
 [29]: https://www.apache.org/licenses/LICENSE-2.0.txt
 [42]: https://maven.apache.org/enforcer/maven-enforcer-plugin/
 [7]: https://www.eclipse.org/legal/epl-v20.html
