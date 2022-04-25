@@ -7,7 +7,6 @@
     <name>Virtual Schema for ElasticSearch</name>
     <description>Virtual Schema that allows accessing content on an Elasticsearch data source as if it were part of the Exasol database</description>
     <properties>
-        <surefire.and.failsafe.plugin.version>3.0.0-M3</surefire.and.failsafe.plugin.version>
         <vscjdbc.version>9.0.4</vscjdbc.version>
         <elasticsearch.version>7.17.3</elasticsearch.version>
         <org.testcontainers.version>1.17.1</org.testcontainers.version>
@@ -136,6 +135,14 @@
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <version>3.0.0-M6</version>
+                <configuration>
+                    <forkCount>0</forkCount>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>

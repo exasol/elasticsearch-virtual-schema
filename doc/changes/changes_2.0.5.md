@@ -31,7 +31,7 @@ Code name:
 * Updated `org.apache.maven.plugins:maven-clean-plugin:3.1.0` to `3.2.0`
 * Updated `org.apache.maven.plugins:maven-compiler-plugin:3.8.1` to `3.9.0`
 * Updated `org.apache.maven.plugins:maven-dependency-plugin:3.2.0` to `3.3.0`
-* Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.0.0-M3` to `3.0.0-M5`
+* Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.0.0-M3` to `3.0.0-M6`
 * Updated `org.apache.maven.plugins:maven-site-plugin:3.9.1` to `3.12.0`
 * Updated `org.apache.maven.plugins:maven-surefire-plugin:3.0.0-M3` to `3.0.0-M5`
 * Added `org.codehaus.mojo:flatten-maven-plugin:1.2.7`
