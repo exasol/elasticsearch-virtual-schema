@@ -45,7 +45,7 @@ This release fixes the following vulnerabilities:
 * Removed `org.apache.logging.log4j:log4j-api:2.17.0`
 * Added `org.eclipse:yasson:3.0.0`
 * Removed `org.elasticsearch.client:elasticsearch-rest-high-level-client:7.16.2`
-* Removed `org.elasticsearch.plugin:x-pack-sql-jdbc:7.16.2`
+* Updated `org.elasticsearch.plugin:x-pack-sql-jdbc:7.16.2` to `8.3.3`
 * Updated `org.junit.jupiter:junit-jupiter:5.8.2` to `5.9.0`
 * Updated `org.mockito:mockito-junit-jupiter:4.2.0` to `4.6.1`
 * Updated `org.testcontainers:elasticsearch:1.16.2` to `1.17.3`
