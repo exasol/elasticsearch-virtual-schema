@@ -1,4 +1,4 @@
-# Virtual Schema for ElasticSearch 2.0.5, released 2022-08-??
+# Virtual Schema for ElasticSearch 2.0.5, released 2022-08-02
 
 Code name: Upgrade dependencies
 
