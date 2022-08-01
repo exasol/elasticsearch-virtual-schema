@@ -4,7 +4,7 @@ Code name: Upgrade Elasticsearch to fix security issue
 
 ## Security Fixes
 
-* #45: Upgraded Elasticsearch to version 7.15.0, fixing [CVE-2021-22147](https://ossindex.sonatype.org/vulnerability/a52f2ab6-086b-4285-a7a1-78ecdc6404ba?component-type=maven&component-name=org.elasticsearch.elasticsearch&utm_source=ossindex-client&utm_medium=integration&utm_content=1.1.1)
+* #45: Upgraded Elasticsearch to version 7.15.0, fixing CVE-2021-22147
 
 ## Dependency Updates
 
