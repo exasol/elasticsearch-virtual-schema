@@ -1,9 +1,17 @@
 package com.exasol.adapter.dialects.elasticsearch;
 
 import java.io.*;
+import java.util.logging.Logger;
+
+import javax.net.ssl.*;
 
 import org.apache.http.HttpHost;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.client.RestClient;
+import org.testcontainers.elasticsearch.ElasticsearchContainer;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jsonb.JsonbJsonpMapper;
@@ -14,6 +22,7 @@ import co.elastic.clients.transport.rest_client.RestClientTransport;
  * Gateway for interacting with ElasticSearch data source.
  */
 public class ElasticSearchGateway {
+    private static final Logger LOGGER = Logger.getLogger(ElasticSearchGateway.class.getName());
     private final ElasticsearchClient client;
 
     private ElasticSearchGateway(final ElasticsearchClient client) {
@@ -21,12 +30,48 @@ public class ElasticSearchGateway {
     }
 
     /**
-     * Connect to an ElasticSearch data source in the given httpHostAddress.
-     *
-     * @param httpHostAddress a string containing host and port
+     * Create a connection to the given container.
+     * 
+     * @param container the container to connect to
+     * @return a new {@link ElasticSearchGateway}
      */
-    public static ElasticSearchGateway connectTo(final String httpHostAddress) {
-        final RestClient restClient = RestClient.builder(HttpHost.create(httpHostAddress)).build();
+    public static ElasticSearchGateway connect(final ElasticsearchContainer container) {
+        if (container.caCertAsBytes().isPresent()) {
+            return ElasticSearchGateway.connectViaTls("https://" + container.getHttpHostAddress(),
+                    container.createSslContextFromCa(), "elastic",
+                    ElasticsearchContainer.ELASTICSEARCH_DEFAULT_PASSWORD);
+        } else {
+            return ElasticSearchGateway.connect("http://" + container.getHttpHostAddress(), "elastic",
+                    ElasticsearchContainer.ELASTICSEARCH_DEFAULT_PASSWORD);
+        }
+    }
+
+    private static ElasticSearchGateway connectViaTls(final String httpHostAddress, final SSLContext sslcontext,
+            final String username, final String password) {
+        LOGGER.info("Connecting to Elasticsearch at " + httpHostAddress);
+        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
+
+        final HttpHost host = HttpHost.create(httpHostAddress);
+        final HostnameVerifier hostnameVerifier = new TrustSpecificHostnameVerifier(host.getHostName());
+        final RestClient restClient = RestClient.builder(host)
+                .setHttpClientConfigCallback(
+                        httpClientBuilder -> httpClientBuilder.setDefaultCredentialsProvider(credentialsProvider)
+                                .setSSLHostnameVerifier(hostnameVerifier).setSSLContext(sslcontext))
+                .build();
+        final ElasticsearchTransport transport = new RestClientTransport(restClient, new JsonbJsonpMapper());
+        final ElasticsearchClient client = new ElasticsearchClient(transport);
+        return new ElasticSearchGateway(client);
+    }
+
+    private static ElasticSearchGateway connect(final String httpHostAddress, final String username,
+            final String password) {
+        LOGGER.info("Connecting to Elasticsearch at " + httpHostAddress);
+        final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
+        credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
+
+        final HttpHost host = HttpHost.create(httpHostAddress);
+        final RestClient restClient = RestClient.builder(host).build();
         final ElasticsearchTransport transport = new RestClientTransport(restClient, new JsonbJsonpMapper());
         final ElasticsearchClient client = new ElasticsearchClient(transport);
         return new ElasticSearchGateway(client);
@@ -80,9 +125,9 @@ public class ElasticSearchGateway {
      */
     public void startTrial() {
         try {
-            client.license().postStartTrial();
+            client.license().postStartTrial(t -> t.acknowledge(true));
         } catch (final IOException exception) {
-            throw new UncheckedIOException("Failed to start trial", exception);
+            throw new UncheckedIOException("Failed to start trial: " + exception.getMessage(), exception);
         }
     }
 
@@ -94,6 +139,19 @@ public class ElasticSearchGateway {
             client._transport().close();
         } catch (final IOException exception) {
             throw new UncheckedIOException("Failed to close Elasticsearch client", exception);
+        }
+    }
+
+    private static class TrustSpecificHostnameVerifier implements HostnameVerifier {
+        private final String expectedHostname;
+
+        public TrustSpecificHostnameVerifier(final String expectedHostname) {
+            this.expectedHostname = expectedHostname;
+        }
+
+        @Override
+        public boolean verify(final String hostname, final SSLSession session) {
+            return this.expectedHostname.equals(hostname);
         }
     }
 }

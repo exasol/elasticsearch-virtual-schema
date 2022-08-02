@@ -9,7 +9,6 @@ final class ITConfiguration {
     static final String TEST_RESOURCES_PATH = "src/test/resources/integration/";
     static final String JDBC_DRIVER_NAME = "x-pack-sql-jdbc.jar";
     static final String SETTINGS_FILE_NAME = "settings.cfg";
-    static final String DOCKER_IP_ADDRESS = "172.17.0.1";
     static final String DEFAULT_BUCKET_PATH = "/buckets/bfsdefault/default/";
     static final String JDBC_DRIVERS_IN_BUCKET_PATH = "drivers/jdbc/";
     static final Path VIRTUAL_SCHEMAS_JAR_PATH = Path.of("target", VIRTUAL_SCHEMAS_JAR_NAME_AND_VERSION);
