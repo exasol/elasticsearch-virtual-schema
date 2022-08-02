@@ -20,10 +20,18 @@ This release fixes the following vulnerabilities:
 * org.apache.xmlrpc:xmlrpc-client:jar:3.1.3 in test
     * CVE-2016-5004, severity CWE-400: Uncontrolled Resource Consumption ('Resource Exhaustion') (6.5)
 
+## Known Issue
+
+The ElasticSearch JDBC driver in version 8.x changes behavior compared to 7.17.x. This will be addressed in [#60](https://github.com/exasol/elasticsearch-virtual-schema/issues/60). Until then we recommend using ElasticSearch version 7.17.5 for both the server and the JDBC driver.
+
 ## Bug Fixes
 
 * #53: Updated Log4j library to 2.17.1 version
 * #56: Fixed vulnerabilities in dependencies
+
+## Refactoring
+
+* #58: Replace deprecated Elasticsearch High Level REST Client
 
 ## Dependency Updates
 
@@ -33,15 +41,14 @@ This release fixes the following vulnerabilities:
 
 ### Test Dependency Updates
 
+* Added `co.elastic.clients:elasticsearch-java:7.17.5`
 * Updated `com.exasol:exasol-testcontainers:5.1.1` to `6.1.2`
 * Updated `com.exasol:test-db-builder-java:3.2.1` to `3.3.3`
 * Updated `com.exasol:udf-debugging-java:0.4.1` to `0.6.4`
-* Added `com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.12.7`
-* Added `com.fasterxml.jackson.dataformat:jackson-dataformat-smile:2.12.7`
-* Added `com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.12.7`
 * Added `commons-codec:commons-codec:1.15`
-* Updated `org.apache.logging.log4j:log4j-api:2.17.0` to `2.18.0`
-* Updated `org.elasticsearch.client:elasticsearch-rest-high-level-client:7.16.2` to `7.17.5`
+* Removed `org.apache.logging.log4j:log4j-api:2.17.0`
+* Added `org.eclipse:yasson:3.0.0`
+* Removed `org.elasticsearch.client:elasticsearch-rest-high-level-client:7.16.2`
 * Updated `org.elasticsearch.plugin:x-pack-sql-jdbc:7.16.2` to `7.17.5`
 * Updated `org.junit.jupiter:junit-jupiter:5.8.2` to `5.9.0`
 * Updated `org.mockito:mockito-junit-jupiter:4.2.0` to `4.6.1`

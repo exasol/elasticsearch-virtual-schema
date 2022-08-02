@@ -70,15 +70,37 @@
         </dependency>
         <!--Integration test dependencies -->
         <dependency>
-            <groupId>org.elasticsearch.client</groupId>
-            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <groupId>co.elastic.clients</groupId>
+            <artifactId>elasticsearch-java</artifactId>
             <version>${elasticsearch.version}</version>
             <scope>test</scope>
         </dependency>
+        <!-- JDBC driver used by UDF -->
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>x-pack-sql-jdbc</artifactId>
             <version>${elasticsearch.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Required by elasticsearch-java -->
+        <dependency>
+            <groupId>org.eclipse</groupId>
+            <artifactId>yasson</artifactId>
+            <version>3.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Explicitly upgrade transitive dependency of elasticsearch-java to fix CVE-2020-13956 -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Explicitly upgrade transitive dependency of httpclient to fix https://ossindex.sonatype.org/vulnerability/sonatype-2012-0050 -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.15</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -115,50 +137,6 @@
             <groupId>com.exasol</groupId>
             <artifactId>udf-debugging-java</artifactId>
             <version>0.6.4</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Overrides httpclient 4.5.10 which is used in elasticsearch-rest-high-level-client but contains
-                    a security issue: https://ossindex.sonatype.org/vuln/c0ed9602-d5c5-4c45-af48-c757161879ee -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Overrides log4j-api 2.11.1 which is used in elasticsearch-rest-high-level-client
-            but contains a security issue: https://nvd.nist.gov/vuln/detail/CVE-2021-44228 -->
-        <dependency>
-            <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-api</artifactId>
-            <version>2.18.0</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Overrides com.fasterxml.jackson.dataformat:jackson-dataformat-cbor 2.10.4 and two more jackson libraries
-            which are used in elasticsearch-rest-high-level-client but contains a security issue: CVE-2020-28491 -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-cbor</artifactId>
-            <version>${jackson.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-smile</artifactId>
-            <version>${jackson.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
-            <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>${jackson.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- Overrides commons-codec:commons-codec 1.11 which is used in org.apache.httpcomponents:httpclient
-            but contains a security issue: https://ossindex.sonatype.org/vulnerability/sonatype-2012-0050 -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.15</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -237,17 +215,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.ossindex.maven</groupId>
-                <artifactId>ossindex-maven-plugin</artifactId>
-                <configuration>
-                    <excludeVulnerabilityIds>
-                        <!-- Ignores CVE-2020-15250, because we use Java 11 and Junit 4.13.1
-                                                    which contains a fix: https://ossindex.sonatype.org/vuln/7ea56ad4-8a8b-4e51-8ed9-5aad83d8efb1 -->
-                        <exclude>7ea56ad4-8a8b-4e51-8ed9-5aad83d8efb1</exclude>
-                    </excludeVulnerabilityIds>
-                </configuration>
             </plugin>
         </plugins>
     </build>

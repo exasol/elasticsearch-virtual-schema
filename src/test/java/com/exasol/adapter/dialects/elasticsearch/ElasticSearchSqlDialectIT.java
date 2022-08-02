@@ -6,9 +6,15 @@ import static jakarta.json.Json.createObjectBuilder;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.*;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
 import java.sql.*;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
@@ -22,6 +28,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.platform.commons.util.StringUtils;
 import org.testcontainers.containers.JdbcDatabaseContainer.NoDriverFoundException;
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -47,14 +54,25 @@ class ElasticSearchSqlDialectIT {
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
             getExasolDockerImageReference()).withReuse(true);
     @Container
-    private static final ElasticsearchContainer ES_CONTAINER = new ElasticsearchContainer(
-            ELASTICSEARCH_DOCKER_IMAGE_REFERENCE).withReuse(true);
+    private static final ElasticsearchContainer ES_CONTAINER = createElasticsearchContainer();
+
     private static final String VIRTUAL_SCHEMA_NAME = "VIRTUAL_SCHEMA_ES";
     private static final String INDEX_NAME = "index";
     private static final String ASSERT_FIELD = "ASSERT_FIELD";
     private static final String ASSERT_VALUE = "ASSERT_VALUE";
 
     private static final Matcher<ResultSet> EMPTY_TABLE_MATCHER = getEmptyTableMatcher();
+
+    private static ElasticsearchContainer createElasticsearchContainer() {
+        final ElasticsearchContainer container = new ElasticsearchContainer(ELASTICSEARCH_DOCKER_IMAGE_REFERENCE);
+        // Disable TLS for Elasticsearch server as the self-signed certificate uses the wrong hostname and we can't
+        // configure a HostnameVerifier for the JDBC driver.
+        container.withEnv("xpack.security.enabled", "false");
+        container.withEnv("discovery.type", "single-node");
+        container.setWaitStrategy(new LogMessageWaitStrategy()
+                .withRegEx(".*Cluster health status changed from \\[YELLOW\\] to \\[GREEN\\].*"));
+        return container;
+    }
 
     private static Matcher<ResultSet> getEmptyTableMatcher() {
         return table("VARCHAR").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK);
@@ -82,14 +100,13 @@ class ElasticSearchSqlDialectIT {
         objectFactory = setupObjectFactory();
         adapterSchema = objectFactory.createSchema("ADAPTER_SCHEMA");
         adapterScript = installVirtualSchemaAdapter(adapterSchema);
-        ES_CONTAINER.start();
-        esGateway = ElasticSearchGateway.connectTo(ES_CONTAINER.getHttpHostAddress());
+        esGateway = ElasticSearchGateway.connectTo(ES_CONTAINER);
         esGateway.startTrial();
         esGateway.closeConnection();
     }
 
     private static ExasolObjectFactory setupObjectFactory() {
-        udfTestSetup = new UdfTestSetup(DOCKER_IP_ADDRESS, EXASOL.getDefaultBucket(), connection);
+        udfTestSetup = new UdfTestSetup(getJdbcUrlHost(), EXASOL.getDefaultBucket(), connection);
         return new ExasolObjectFactory(connection,
                 ExasolObjectConfiguration.builder().withJvmOptions(udfTestSetup.getJvmOptions()).build());
     }
@@ -111,7 +128,7 @@ class ElasticSearchSqlDialectIT {
             bucket.uploadFile(JDBC_DRIVER_PATH, JDBC_DRIVERS_IN_BUCKET_PATH + JDBC_DRIVER_NAME);
         } catch (final BucketAccessException | FileNotFoundException exception) {
             LOGGER.severe(ExaError.messageBuilder("F-VS-ES-2")
-                    .message("An error occured while uploading the jdbc driver to the bucket.")
+                    .message("An error occurred while uploading the jdbc driver to the bucket.")
                     .mitigation("Make sure the {{JDBC_DRIVER_PATH}} file exists.")
                     .parameter("JDBC_DRIVER_PATH", JDBC_DRIVER_PATH)
                     .mitigation("You can generate it by executing the integration test with maven.").toString());
@@ -138,7 +155,7 @@ class ElasticSearchSqlDialectIT {
     void beforeEach() throws IOException {
         virtualSchema = null;
         jdbcConnection = createAdapterConnectionDefinition();
-        esGateway = ElasticSearchGateway.connectTo(ES_CONTAINER.getHttpHostAddress());
+        esGateway = ElasticSearchGateway.connectTo(ES_CONTAINER);
         esGateway.createIndex(INDEX_NAME);
     }
 
@@ -152,8 +169,54 @@ class ElasticSearchSqlDialectIT {
     }
 
     private ConnectionDefinition createAdapterConnectionDefinition() {
-        final String jdbcUrl = "jdbc:es://" + DOCKER_IP_ADDRESS + ":" + ES_CONTAINER.getMappedPort(9200);
-        return objectFactory.createConnectionDefinition("JDBC_CONNECTION", jdbcUrl);
+        return objectFactory.createConnectionDefinition("JDBC_CONNECTION", getJdbcUrl());
+    }
+
+    private String getJdbcUrl() {
+        final Integer port = ES_CONTAINER.getMappedPort(9200);
+        final String host = getJdbcUrlHost();
+        if (ES_CONTAINER.caCertAsBytes().isPresent()) {
+            final String trustStorePassword = "trustStorePassword";
+            final String truststorePath = uploadCaTruststore(trustStorePassword);
+            return "jdbc:es://https://" + host + ":" + port + "?ssl=true&ssl.truststore.location=" + truststorePath
+                    + "&ssl.truststore.pass=" + trustStorePassword + "&ssl.truststore.type=JKS";
+        } else {
+            return "jdbc:es://http://" + host + ":" + port;
+        }
+    }
+
+    private static String getJdbcUrlHost() {
+        return ES_CONTAINER.getHost().equals("localhost") ? ITConfiguration.DOCKER_IP_ADDRESS : ES_CONTAINER.getHost();
+    }
+
+    private String uploadCaTruststore(final String trustStorePassword) {
+        final Path truststorePath = generateCaTruststore(ES_CONTAINER.caCertAsBytes().get(), getJdbcUrlHost(),
+                trustStorePassword);
+        try {
+            EXASOL.getDefaultBucket().uploadFile(truststorePath, truststorePath.getFileName().toString());
+        } catch (FileNotFoundException | BucketAccessException | TimeoutException exception) {
+            throw new IllegalStateException("Failed to upload file to BucketFS", exception);
+        }
+        return DEFAULT_BUCKET_PATH + truststorePath.getFileName().toString();
+    }
+
+    private Path generateCaTruststore(final byte[] caCert, final String certificateHost,
+            final String trustStorePassword) {
+        try {
+            final Path tempFile = Files.createTempFile("certTruststore", "jks");
+            final KeyStore keyStore = KeyStore.getInstance("JKS");
+            final char[] pwdArray = trustStorePassword.toCharArray();
+            keyStore.load(null, pwdArray);
+            final Certificate certificate = CertificateFactory.getInstance("X.509")
+                    .generateCertificate(new ByteArrayInputStream(caCert));
+            keyStore.setCertificateEntry(certificateHost, certificate);
+            try (OutputStream fos = Files.newOutputStream(tempFile)) {
+                keyStore.store(fos, pwdArray);
+            }
+            return tempFile;
+        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException exception) {
+            throw new IllegalStateException("Failed to generate truststore", exception);
+        }
     }
 
     private static void dropAll(final DatabaseObject... databaseObjects) {
@@ -197,7 +260,8 @@ class ElasticSearchSqlDialectIT {
         this.indexDocument(createObjectBuilder().add("str_field", "str").add("inner_field", innerField).build());
         final String query = "SELECT  \"str_field\", \"inner_field/inner_str_field\""//
                 + " FROM " + getVirtualTableName();
-        assertVirtualTableContentsByQuery(query, table().row("str", "inner_str").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
+        assertVirtualTableContentsByQuery(query,
+                table().row("str", "inner_str").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
     }
 
     @Nested
@@ -294,7 +358,8 @@ class ElasticSearchSqlDialectIT {
             final String query = "SELECT \"str_field\", \"int_field\"" //
                     + " FROM " + getVirtualTableName() //
                     + " ORDER BY \"str_field\", \"int_field\"";
-            assertVirtualTableContentsByQuery(query, table().row("a", 1).row("str", 2).row("str", 3).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
+            assertVirtualTableContentsByQuery(query,
+                    table().row("a", 1).row("str", 2).row("str", 3).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -304,7 +369,8 @@ class ElasticSearchSqlDialectIT {
             final String query = "SELECT \"int_field\"" //
                     + " FROM " + getVirtualTableName() //
                     + " ORDER BY \"int_field\" ASC NULLS LAST";
-            assertVirtualTableContentsByQuery(query, table().row(1).row(IsNull.nullValue()).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
+            assertVirtualTableContentsByQuery(query,
+                    table().row(1).row(IsNull.nullValue()).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -314,7 +380,8 @@ class ElasticSearchSqlDialectIT {
             final String query = "SELECT \"int_field\"" //
                     + " FROM " + getVirtualTableName() //
                     + " ORDER BY \"int_field\" ASC NULLS FIRST";
-            assertVirtualTableContentsByQuery(query, table().row(IsNull.nullValue()).row(1).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
+            assertVirtualTableContentsByQuery(query,
+                    table().row(IsNull.nullValue()).row(1).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
@@ -905,7 +972,8 @@ class ElasticSearchSqlDialectIT {
                     + "WHEN 2 THEN 'B' "//
                     + "ELSE 'C' "//
                     + "END FROM " + getVirtualTableName();
-            assertVirtualTableContentsByQuery(query, table().row("A").row("B").row("C").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
+            assertVirtualTableContentsByQuery(query,
+                    table().row("A").row("B").row("C").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         ScalarFunctionVerifier assertExtract(final String extractUnit) {
