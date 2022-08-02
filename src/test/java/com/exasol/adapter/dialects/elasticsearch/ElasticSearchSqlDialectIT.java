@@ -177,11 +177,10 @@ class ElasticSearchSqlDialectIT {
             final String trustStorePassword = "trustStorePassword";
             final String truststorePath = uploadCaTruststore(trustStorePassword);
             return "jdbc:es://https://" + ES_CONTAINER.getHost() + ":" + ES_CONTAINER.getMappedPort(9200)
-                    + "?timezone=UTC&ssl=true&ssl.truststore.location=" + truststorePath + "&ssl.truststore.pass="
+                    + "?ssl=true&ssl.truststore.location=" + truststorePath + "&ssl.truststore.pass="
                     + trustStorePassword + "&ssl.truststore.type=JKS";
         } else {
-            return "jdbc:es://http://" + ES_CONTAINER.getHost() + ":" + ES_CONTAINER.getMappedPort(9200)
-                    + "?timezone=UTC";
+            return "jdbc:es://http://" + ES_CONTAINER.getHost() + ":" + ES_CONTAINER.getMappedPort(9200);
         }
     }
 
