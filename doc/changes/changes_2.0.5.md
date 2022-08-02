@@ -37,7 +37,7 @@ This release fixes the following vulnerabilities:
 
 ### Test Dependency Updates
 
-* Added `co.elastic.clients:elasticsearch-java:8.3.3`
+* Added `co.elastic.clients:elasticsearch-java:7.17.5`
 * Updated `com.exasol:exasol-testcontainers:5.1.1` to `6.1.2`
 * Updated `com.exasol:test-db-builder-java:3.2.1` to `3.3.3`
 * Updated `com.exasol:udf-debugging-java:0.4.1` to `0.6.4`
@@ -45,7 +45,7 @@ This release fixes the following vulnerabilities:
 * Removed `org.apache.logging.log4j:log4j-api:2.17.0`
 * Added `org.eclipse:yasson:3.0.0`
 * Removed `org.elasticsearch.client:elasticsearch-rest-high-level-client:7.16.2`
-* Updated `org.elasticsearch.plugin:x-pack-sql-jdbc:7.16.2` to `8.3.3`
+* Updated `org.elasticsearch.plugin:x-pack-sql-jdbc:7.16.2` to `7.17.5`
 * Updated `org.junit.jupiter:junit-jupiter:5.8.2` to `5.9.0`
 * Updated `org.mockito:mockito-junit-jupiter:4.2.0` to `4.6.1`
 * Updated `org.testcontainers:elasticsearch:1.16.2` to `1.17.3`
