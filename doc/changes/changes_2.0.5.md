@@ -20,6 +20,10 @@ This release fixes the following vulnerabilities:
 * org.apache.xmlrpc:xmlrpc-client:jar:3.1.3 in test
     * CVE-2016-5004, severity CWE-400: Uncontrolled Resource Consumption ('Resource Exhaustion') (6.5)
 
+## Known Issue
+
+The ElasticSearch JDBC driver in version 8.x changes behavior compared to 7.17.x. This will be addressed in [#60](https://github.com/exasol/elasticsearch-virtual-schema/issues/60). Until then we recommend using ElasticSearch version 7.17.5 for both the server and the JDBC driver.
+
 ## Bug Fixes
 
 * #53: Updated Log4j library to 2.17.1 version
