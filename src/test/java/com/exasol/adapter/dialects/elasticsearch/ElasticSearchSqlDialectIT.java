@@ -66,7 +66,7 @@ class ElasticSearchSqlDialectIT {
     private static ElasticsearchContainer createElasticsearchContainer() {
         final ElasticsearchContainer container = new ElasticsearchContainer(ELASTICSEARCH_DOCKER_IMAGE_REFERENCE);
         // Disable TLS for Elasticsearch server as the self-signed certificate uses the wrong hostname and we can't
-        // configure the HostnameVerifier for the JDBC driver.
+        // configure a HostnameVerifier for the JDBC driver.
         container.withEnv("xpack.security.enabled", "false");
         container.withEnv("discovery.type", "single-node");
         container.setWaitStrategy(new LogMessageWaitStrategy()
@@ -100,7 +100,7 @@ class ElasticSearchSqlDialectIT {
         objectFactory = setupObjectFactory();
         adapterSchema = objectFactory.createSchema("ADAPTER_SCHEMA");
         adapterScript = installVirtualSchemaAdapter(adapterSchema);
-        esGateway = ElasticSearchGateway.connect(ES_CONTAINER);
+        esGateway = ElasticSearchGateway.connectTo(ES_CONTAINER);
         esGateway.startTrial();
         esGateway.closeConnection();
     }
@@ -155,7 +155,7 @@ class ElasticSearchSqlDialectIT {
     void beforeEach() throws IOException {
         virtualSchema = null;
         jdbcConnection = createAdapterConnectionDefinition();
-        esGateway = ElasticSearchGateway.connect(ES_CONTAINER);
+        esGateway = ElasticSearchGateway.connectTo(ES_CONTAINER);
         esGateway.createIndex(INDEX_NAME);
     }
 

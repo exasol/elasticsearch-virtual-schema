@@ -33,7 +33,7 @@ public class ElasticSearchGateway {
      * @param container the container to connect to
      * @return a new {@link ElasticSearchGateway}
      */
-    public static ElasticSearchGateway connect(final ElasticsearchContainer container) {
+    public static ElasticSearchGateway connectTo(final ElasticsearchContainer container) {
         if (container.caCertAsBytes().isPresent()) {
             return ElasticSearchGateway.connectViaTls("https://" + container.getHttpHostAddress(),
                     container.createSslContextFromCa(), "elastic",
@@ -75,10 +75,6 @@ public class ElasticSearchGateway {
 
     /**
      * Index a new document in Json format in the data source.
-     *
-     * @param indexName
-     * @param jsonSource
-     * @throws IOException
      */
     public void indexDocument(final String indexName, final String jsonSource) {
         try {
@@ -90,9 +86,6 @@ public class ElasticSearchGateway {
 
     /**
      * Create an index in the data source with the given name.
-     *
-     * @param indexName
-     * @throws IOException
      */
     public void createIndex(final String indexName) {
         try {
@@ -104,9 +97,6 @@ public class ElasticSearchGateway {
 
     /**
      * Drop an index in the data source that matches the given name.
-     *
-     * @param indexName
-     * @throws IOException
      */
     public void dropIndex(final String indexName) {
         try {
