@@ -1,7 +1,6 @@
 package com.exasol.adapter.dialects.elasticsearch;
 
 import java.io.*;
-import java.util.logging.Logger;
 
 import javax.net.ssl.*;
 
@@ -22,7 +21,6 @@ import co.elastic.clients.transport.rest_client.RestClientTransport;
  * Gateway for interacting with ElasticSearch data source.
  */
 public class ElasticSearchGateway {
-    private static final Logger LOGGER = Logger.getLogger(ElasticSearchGateway.class.getName());
     private final ElasticsearchClient client;
 
     private ElasticSearchGateway(final ElasticsearchClient client) {
@@ -48,7 +46,6 @@ public class ElasticSearchGateway {
 
     private static ElasticSearchGateway connectViaTls(final String httpHostAddress, final SSLContext sslcontext,
             final String username, final String password) {
-        LOGGER.info("Connecting to Elasticsearch at " + httpHostAddress);
         final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
 
@@ -66,7 +63,6 @@ public class ElasticSearchGateway {
 
     private static ElasticSearchGateway connect(final String httpHostAddress, final String username,
             final String password) {
-        LOGGER.info("Connecting to Elasticsearch at " + httpHostAddress);
         final CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(username, password));
 

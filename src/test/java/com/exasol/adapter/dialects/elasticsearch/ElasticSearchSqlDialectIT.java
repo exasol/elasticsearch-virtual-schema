@@ -106,7 +106,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     private static ExasolObjectFactory setupObjectFactory() {
-        udfTestSetup = new UdfTestSetup(ES_CONTAINER.getHost(), EXASOL.getDefaultBucket(), connection);
+        udfTestSetup = new UdfTestSetup(getJdbcUrlHost(), EXASOL.getDefaultBucket(), connection);
         return new ExasolObjectFactory(connection,
                 ExasolObjectConfiguration.builder().withJvmOptions(udfTestSetup.getJvmOptions()).build());
     }
@@ -173,19 +173,24 @@ class ElasticSearchSqlDialectIT {
     }
 
     private String getJdbcUrl() {
+        final Integer port = ES_CONTAINER.getMappedPort(9200);
+        final String host = getJdbcUrlHost();
         if (ES_CONTAINER.caCertAsBytes().isPresent()) {
             final String trustStorePassword = "trustStorePassword";
             final String truststorePath = uploadCaTruststore(trustStorePassword);
-            return "jdbc:es://https://" + ES_CONTAINER.getHost() + ":" + ES_CONTAINER.getMappedPort(9200)
-                    + "?ssl=true&ssl.truststore.location=" + truststorePath + "&ssl.truststore.pass="
-                    + trustStorePassword + "&ssl.truststore.type=JKS";
+            return "jdbc:es://https://" + host + ":" + port + "?ssl=true&ssl.truststore.location=" + truststorePath
+                    + "&ssl.truststore.pass=" + trustStorePassword + "&ssl.truststore.type=JKS";
         } else {
-            return "jdbc:es://http://" + ES_CONTAINER.getHost() + ":" + ES_CONTAINER.getMappedPort(9200);
+            return "jdbc:es://http://" + host + ":" + port;
         }
     }
 
+    private static String getJdbcUrlHost() {
+        return ES_CONTAINER.getHost().equals("localhost") ? ITConfiguration.DOCKER_IP_ADDRESS : ES_CONTAINER.getHost();
+    }
+
     private String uploadCaTruststore(final String trustStorePassword) {
-        final Path truststorePath = generateCaTruststore(ES_CONTAINER.caCertAsBytes().get(), ES_CONTAINER.getHost(),
+        final Path truststorePath = generateCaTruststore(ES_CONTAINER.caCertAsBytes().get(), getJdbcUrlHost(),
                 trustStorePassword);
         try {
             EXASOL.getDefaultBucket().uploadFile(truststorePath, truststorePath.getFileName().toString());
