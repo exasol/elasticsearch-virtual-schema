@@ -35,7 +35,7 @@ The SQL statement below creates the adapter script, defines the Java class that 
 ```sql
 CREATE OR REPLACE JAVA ADAPTER SCRIPT <schema_name>.<adapter_name> AS
   %scriptclass com.exasol.adapter.RequestDispatcher;
-  %jar /buckets/<BFS service>/<bucket>/virtual-schema-dist-9.0.5-elasticsearch-2.0.5.jar;
+  %jar /buckets/<BFS service>/<bucket>/virtual-schema-dist-10.1.0-elasticsearch-2.1.0.jar;
   %jar /buckets/<BFS service>/<bucket>/x-pack-sql-jdbc-<elasticsearch_driver_version>.jar;
 /
 ```

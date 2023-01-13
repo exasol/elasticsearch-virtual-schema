@@ -72,7 +72,7 @@ class ElasticSearchSqlDialectIT {
         container.withEnv("discovery.type", "single-node");
         container.setWaitStrategy(new LogMessageWaitStrategy()
                 .withRegEx(".*Cluster health status changed from \\[YELLOW\\] to \\[GREEN\\].*")
-                .withStartupTimeout(Duration.ofMinutes(4)));
+                .withStartupTimeout(Duration.ofMinutes(6)));
         container.withReuse(true);
         return container;
     }
