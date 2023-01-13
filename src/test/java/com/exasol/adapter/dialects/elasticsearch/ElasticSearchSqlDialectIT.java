@@ -68,12 +68,11 @@ class ElasticSearchSqlDialectIT {
         final ElasticsearchContainer container = new ElasticsearchContainer(ELASTICSEARCH_DOCKER_IMAGE_REFERENCE);
         // Disable TLS for Elasticsearch server as the self-signed certificate uses the wrong hostname and we can't
         // configure a HostnameVerifier for the JDBC driver.
-        container.withEnv("xpack.security.enabled", "false");
-        container.withEnv("discovery.type", "single-node");
+        container.withEnv("ES_SETTING_XPACK_SECURITY_ENABLED", "false");
+        container.withEnv("ES_SETTING_DISCOVERY_TYPE", "single-node");
         container.setWaitStrategy(new LogMessageWaitStrategy()
                 .withRegEx(".*Cluster health status changed from \\[YELLOW\\] to \\[GREEN\\].*")
                 .withStartupTimeout(Duration.ofMinutes(6)));
-        container.withReuse(true);
         return container;
     }
 
