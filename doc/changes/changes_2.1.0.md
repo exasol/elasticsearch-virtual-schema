@@ -1,10 +1,14 @@
-# Virtual Schema for ElasticSearch 2.0.6, released 2023-01-??
+# Virtual Schema for Elasticsearch 2.1.0, released 2023-01-??
 
-Code name: Support Elasticsearch 8
+Code name: Enhanced Data Type Detection for Result Sets & Support for Elasticsearch 8.6
 
 ## Summary
 
-This release adds support for Elasticsearch version 8. If you use an older version of Elasticsearch please use version 2.0.5 of the virtual schema.
+Starting with version 7.1.14 Exasol database uses the capabilities reported by each virtual schema to provide select list data types for each push down request. Based on this information the JDBC virtual schemas no longer need to infer the data types of the result set by inspecting its values. Instead the JDBC virtual schemas can now use the information provided by the database.
+
+This release provides enhanced data type detection for result sets by updating `virtual-schema-common-jdbc` to version [10.1.0](https://github.com/exasol/virtual-schema-common-jdbc/releases/tag/10.1.0). If you face any problems with character encoding, set adapter property `IMPORT_DATA_TYPES` to `FROM_RESULT_SET`. For details please see [adapter Properties for JDBC-Based Virtual Schemas](https://github.com/exasol/virtual-schema-common-jdbc/blob/main/README.md#adapter-properties-for-jdbc-based-virtual-schemas).
+
+This release also adds support for Elasticsearch version 8.6. If you run Elasticsearch version 7.x please use version 2.0.5 of the virtual schema.
 
 ## Features
 

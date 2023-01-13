@@ -3,9 +3,9 @@ package com.exasol.adapter.dialects.elasticsearch;
 import java.nio.file.Path;
 
 final class ITConfiguration {
-    private static final String DEFAULT_EXASOL_DOCKER_IMAGE_REFERENCE = "7.1.12";
-    static final String ELASTICSEARCH_DOCKER_IMAGE_REFERENCE = "docker.elastic.co/elasticsearch/elasticsearch:7.17.5";
-    static final String VIRTUAL_SCHEMAS_JAR_NAME_AND_VERSION = "virtual-schema-dist-9.0.5-elasticsearch-2.0.5.jar";
+    static final String DEFAULT_EXASOL_DOCKER_IMAGE_REFERENCE = "7.1.17";
+    static final String ELASTICSEARCH_DOCKER_IMAGE_REFERENCE = "docker.elastic.co/elasticsearch/elasticsearch:8.6.0";
+    static final String VIRTUAL_SCHEMAS_JAR_NAME_AND_VERSION = "virtual-schema-dist-10.1.0-elasticsearch-2.0.6.jar";
     static final String TEST_RESOURCES_PATH = "src/test/resources/integration/";
     static final String JDBC_DRIVER_NAME = "x-pack-sql-jdbc.jar";
     static final String SETTINGS_FILE_NAME = "settings.cfg";
@@ -18,18 +18,5 @@ final class ITConfiguration {
 
     private ITConfiguration() {
         // prevent instantiation
-    }
-
-    /**
-     * Get the Exasol {@code docker-db} image reference.
-     * <p>
-     * This reference can be overridden by setting the Java property {@code com.exasol.dockerdb.image}. If the property
-     * is not set, then the default reference provided with the integration tests is used instead.
-     * </p>
-     *
-     * @return reference to the Exasol {@code docker-db} image.
-     */
-    public static String getExasolDockerImageReference() {
-        return System.getProperty("com.exasol.dockerdb.image", DEFAULT_EXASOL_DOCKER_IMAGE_REFERENCE);
     }
 }

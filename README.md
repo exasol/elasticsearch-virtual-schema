@@ -16,11 +16,11 @@
 
 # Overview
 
-The **ElasticSearch Virtual Schema** provides an abstraction layer that makes an external [ElasticSearch](https://www.elastic.co/) data source accessible from an Exasol database through regular SQL commands. The contents of the external ElasticSearch data source are mapped to virtual tables which look like and can be queried as any regular Exasol table.
+The **Elasticsearch Virtual Schema** provides an abstraction layer that makes an external [ElasticSearch](https://www.elastic.co/) data source accessible from an Exasol database through regular SQL commands. The contents of the external ElasticSearch data source are mapped to virtual tables which look like and can be queried as any regular Exasol table.
 
 If you want to set up a Virtual Schema for a different database system, please head over to the [Virtual Schemas Repository][virtual-schemas].
- 
-Currently we only support Elasticsearch 7.17.x. In case you need support for older versions, please open a ticket. The behavior of the Elasticsearch JDBC driver in version 8 has changed, causing the Virtual Schema to return slightly different values. If you need support for Elasticsearch 8, please vote on [issue #60](https://github.com/exasol/elasticsearch-virtual-schema/issues/60).
+
+The current version of **Elasticsearch Virtual Schema** supports Elasticsearch 8.6. If you run Elasticsearch version 7.x please use version 2.0.5 of the virtual schema.
 
 ## Features
 

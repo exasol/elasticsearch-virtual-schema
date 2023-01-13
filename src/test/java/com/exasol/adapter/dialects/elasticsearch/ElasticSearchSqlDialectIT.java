@@ -15,6 +15,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.sql.*;
 import java.sql.Timestamp;
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
@@ -52,7 +53,7 @@ class ElasticSearchSqlDialectIT {
     private static final Logger LOGGER = Logger.getLogger(ElasticSearchSqlDialectIT.class.getName());
     @Container
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
-            getExasolDockerImageReference()).withReuse(true);
+            DEFAULT_EXASOL_DOCKER_IMAGE_REFERENCE).withReuse(true);
     @Container
     private static final ElasticsearchContainer ES_CONTAINER = createElasticsearchContainer();
 
@@ -70,7 +71,9 @@ class ElasticSearchSqlDialectIT {
         container.withEnv("xpack.security.enabled", "false");
         container.withEnv("discovery.type", "single-node");
         container.setWaitStrategy(new LogMessageWaitStrategy()
-                .withRegEx(".*Cluster health status changed from \\[YELLOW\\] to \\[GREEN\\].*"));
+                .withRegEx(".*Cluster health status changed from \\[YELLOW\\] to \\[GREEN\\].*")
+                .withStartupTimeout(Duration.ofMinutes(4)));
+        container.withReuse(true);
         return container;
     }
 

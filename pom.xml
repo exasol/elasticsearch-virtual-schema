@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.exasol</groupId>
     <artifactId>elasticsearch-virtual-schema</artifactId>
-    <version>2.0.6</version>
-    <name>Virtual Schema for ElasticSearch</name>
+    <version>2.1.0</version>
+    <name>Virtual Schema for Elasticsearch</name>
     <description>Virtual Schema that allows accessing content on an Elasticsearch data source as if it were part of the Exasol database</description>
     <url>https://github.com/exasol/elasticsearch-virtual-schema/</url>
     <properties>
