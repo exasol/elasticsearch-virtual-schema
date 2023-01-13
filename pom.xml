@@ -8,11 +8,11 @@
     <version>2.0.6</version>
     <name>Virtual Schema for ElasticSearch</name>
     <description>Virtual Schema that allows accessing content on an Elasticsearch data source as if it were part of the Exasol database</description>
+    <url>https://github.com/exasol/elasticsearch-virtual-schema/</url>
     <properties>
-        <vscjdbc.version>9.0.5</vscjdbc.version>
-        <elasticsearch.version>7.17.5</elasticsearch.version>
-        <org.testcontainers.version>1.17.3</org.testcontainers.version>
-        <jackson.version>2.12.7</jackson.version>
+        <vscjdbc.version>10.1.0</vscjdbc.version>
+        <elasticsearch.version>8.6.0</elasticsearch.version>
+        <org.testcontainers.version>1.17.6</org.testcontainers.version>
     </properties>
     <dependencies>
         <dependency>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>error-reporting-java</artifactId>
-            <version>0.4.1</version>
+            <version>1.0.0</version>
         </dependency>
         <!--Unit test dependencies -->
         <dependency>
@@ -35,13 +35,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.9.0</version>
+            <version>5.9.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-junit-jupiter</artifactId>
-            <version>4.6.1</version>
+            <version>4.11.0</version>
             <scope>test</scope>
         </dependency>
         <!--Integration test dependencies -->
@@ -62,24 +62,30 @@
         <dependency>
             <groupId>org.eclipse</groupId>
             <artifactId>yasson</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.2</version>
             <scope>test</scope>
         </dependency>
         <!-- Explicitly upgrade transitive dependency of elasticsearch-java to fix CVE-2020-13956 -->
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- 
+
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+                <version>4.5.13</version>
+        <scope>test</scope>
+            </dependency>
+        -->
         <!-- Explicitly upgrade transitive dependency of httpclient to fix
         https://ossindex.sonatype.org/vulnerability/sonatype-2012-0050 -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.15</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- 
+
+            <dependency>
+                <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+                <version>1.15</version>
+        <scope>test</scope>
+            </dependency>
+        -->
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -95,25 +101,25 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>exasol-testcontainers</artifactId>
-            <version>6.1.2</version>
+            <version>6.4.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>test-db-builder-java</artifactId>
-            <version>3.3.3</version>
+            <version>3.4.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>hamcrest-resultset-matcher</artifactId>
-            <version>1.5.1</version>
+            <version>1.5.2</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>udf-debugging-java</artifactId>
-            <version>0.6.4</version>
+            <version>0.6.6</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -196,7 +202,6 @@
             </plugin>
         </plugins>
     </build>
-    <url>https://github.com/exasol/elasticsearch-virtual-schema/</url>
     <parent>
         <artifactId>elasticsearch-virtual-schema-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
