@@ -4,7 +4,6 @@ import static com.exasol.adapter.dialects.elasticsearch.ITConfiguration.*;
 import static com.exasol.matcher.ResultSetStructureMatcher.table;
 import static jakarta.json.Json.createObjectBuilder;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -28,6 +27,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.platform.commons.util.StringUtils;
+import org.opentest4j.AssertionFailedError;
 import org.testcontainers.containers.JdbcDatabaseContainer.NoDriverFoundException;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
@@ -1030,8 +1030,8 @@ class ElasticSearchSqlDialectIT {
 
             private void verify() throws IOException {
                 this.indexDocument();
-                assertVirtualTableContentsByQuery(this.getQuery(),
-                        table().row(ASSERT_VALUE, this.result).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
+                assertVirtualTableContentsByQuery(this.getQuery(), table().row(ASSERT_VALUE, this.result)
+                        .withUtcCalendar().matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
             }
 
             private void indexDocument() throws IOException {
@@ -1086,7 +1086,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     private void indexDocument(final JsonObject document) throws IOException {
-        LOGGER.fine(() -> "Elasticsearch: Indexing document " + document);
+        LOGGER.finest(() -> "Elasticsearch: Indexing document " + document);
         esGateway.indexDocument(INDEX_NAME, document.toString());
     }
 
@@ -1099,12 +1099,14 @@ class ElasticSearchSqlDialectIT {
         try {
             assertThat(query(query), matcher);
         } catch (final SQLException exception) {
-            fail("Unable to execute assertion query. Caused by: " + exception.getMessage());
+            throw new AssertionFailedError(
+                    "Unable to execute assertion query '" + query + "'. Caused by: " + exception.getMessage(),
+                    exception);
         }
     }
 
     private ResultSet query(final String sql) throws SQLException {
-        LOGGER.fine(() -> "Executing query " + sql);
+        LOGGER.finest(() -> "Executing query " + sql);
         return connection.createStatement().executeQuery(sql);
     }
 
