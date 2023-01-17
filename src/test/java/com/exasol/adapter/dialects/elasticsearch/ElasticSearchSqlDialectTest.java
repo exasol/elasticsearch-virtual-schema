@@ -31,7 +31,7 @@ import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.capabilities.Capabilities;
 import com.exasol.adapter.dialects.SqlDialect.NullSorting;
 import com.exasol.adapter.dialects.SqlDialect.StructureElementSupport;
-import com.exasol.adapter.dialects.rewriting.ImportFromJDBCQueryRewriter;
+import com.exasol.adapter.dialects.rewriting.ImportIntoTemporaryTableQueryRewriter;
 import com.exasol.adapter.jdbc.ConnectionFactory;
 import com.exasol.adapter.jdbc.RemoteMetadataReaderException;
 import com.exasol.adapter.sql.ScalarFunction;
@@ -149,7 +149,7 @@ class ElasticSearchSqlDialectTest {
     @Test
     void testCreateQueryRewriter(@Mock final Connection connectionMock) throws SQLException {
         when(this.connectionFactoryMock.getConnection()).thenReturn(connectionMock);
-        assertThat(this.dialect.createQueryRewriter(), instanceOf(ImportFromJDBCQueryRewriter.class));
+        assertThat(this.dialect.createQueryRewriter(), instanceOf(ImportIntoTemporaryTableQueryRewriter.class));
     }
 
     @Test

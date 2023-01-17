@@ -1086,6 +1086,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     private void indexDocument(final JsonObject document) throws IOException {
+        LOGGER.fine(() -> "Elasticsearch: Indexing document " + document);
         esGateway.indexDocument(INDEX_NAME, document.toString());
     }
 
@@ -1103,6 +1104,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     private ResultSet query(final String sql) throws SQLException {
+        LOGGER.fine(() -> "Executing query " + sql);
         return connection.createStatement().executeQuery(sql);
     }
 
