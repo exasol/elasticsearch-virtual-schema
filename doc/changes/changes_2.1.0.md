@@ -33,7 +33,7 @@ This release also adds support for Elasticsearch version 8.6. If you run Elastic
 * Updated `org.eclipse:yasson:3.0.0` to `3.0.2`
 * Updated `org.elasticsearch.plugin:x-pack-sql-jdbc:7.17.5` to `8.6.0`
 * Updated `org.junit.jupiter:junit-jupiter:5.9.0` to `5.9.2`
-* Updated `org.mockito:mockito-junit-jupiter:4.6.1` to `4.11.0`
+* Updated `org.mockito:mockito-junit-jupiter:4.6.1` to `5.0.0`
 * Updated `org.testcontainers:elasticsearch:1.17.3` to `1.17.6`
 * Updated `org.testcontainers:junit-jupiter:1.17.3` to `1.17.6`
 
