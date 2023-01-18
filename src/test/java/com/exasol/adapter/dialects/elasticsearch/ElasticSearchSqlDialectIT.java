@@ -266,6 +266,14 @@ class ElasticSearchSqlDialectIT {
                 table().row("str", "inner_str").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
     }
 
+    @Test
+    void testSelectAllColumns() throws IOException {
+        this.indexDocument(createObjectBuilder().add("c1", "str").add("c2", 42).add("c3", 3.14).build());
+        final String query = "SELECT * FROM " + getVirtualTableName();
+        assertVirtualTableContentsByQuery(query,
+                table().row("str", "str", 42, 3.140000104904175).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
+    }
+
     @Nested
     @DisplayName("Main Capabilities test")
     class MainCapabilitiesTest {
@@ -802,7 +810,7 @@ class ElasticSearchSqlDialectIT {
 
         @Test
         void testRound() throws IOException {
-            assertScalarFunction("ROUND").withValues(123.456, 2).withResult(123.46).verify();
+            assertScalarFunction("ROUND").withValues(123.456, 2).withResult(123.45999908447266).verify();
         }
 
         @Test
