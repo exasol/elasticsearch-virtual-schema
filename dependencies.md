@@ -38,7 +38,7 @@
 | [Versions Maven Plugin][35]                             | [Apache License, Version 2.0][11]              |
 | [Apache Maven Assembly Plugin][36]                      | [Apache License, Version 2.0][11]              |
 | [Apache Maven JAR Plugin][37]                           | [Apache License, Version 2.0][11]              |
-| [Apache Maven Dependency Plugin][38]                    | [Apache License, Version 2.0][11]              |
+| [Maven Dependency Plugin][38]                           | [The Apache Software License, Version 2.0][33] |
 | [Artifact reference checker and unifier][39]            | [MIT License][40]                              |
 | [Maven Failsafe Plugin][41]                             | [Apache License, Version 2.0][11]              |
 | [JaCoCo :: Maven Plugin][42]                            | [Eclipse Public License 2.0][43]               |
@@ -89,7 +89,7 @@
 [35]: https://www.mojohaus.org/versions-maven-plugin/
 [36]: https://maven.apache.org/plugins/maven-assembly-plugin/
 [37]: https://maven.apache.org/plugins/maven-jar-plugin/
-[38]: https://maven.apache.org/plugins/maven-dependency-plugin/
+[38]: http://maven.apache.org/plugins/maven-dependency-plugin/
 [39]: https://github.com/exasol/artifact-reference-checker-maven-plugin/
 [40]: https://github.com/exasol/artifact-reference-checker-maven-plugin/blob/main/LICENSE
 [41]: https://maven.apache.org/surefire/maven-failsafe-plugin/

@@ -26,7 +26,7 @@ There are some known issues with the current version. Please see the [user guide
 ### Test Dependency Updates
 
 * Updated `co.elastic.clients:elasticsearch-java:7.17.5` to `8.6.0`
-* Updated `com.exasol:exasol-testcontainers:6.1.2` to `6.4.1`
+* Updated `com.exasol:exasol-testcontainers:6.1.2` to `6.5.0`
 * Updated `com.exasol:hamcrest-resultset-matcher:1.5.1` to `1.5.2`
 * Updated `com.exasol:test-db-builder-java:3.3.3` to `3.4.1`
 * Updated `com.exasol:udf-debugging-java:0.6.4` to `0.6.6`
@@ -46,6 +46,7 @@ There are some known issues with the current version. Please see the [user guide
 * Updated `com.exasol:project-keeper-maven-plugin:2.5.0` to `2.9.1`
 * Updated `io.github.zlika:reproducible-build-maven-plugin:0.15` to `0.16`
 * Updated `org.apache.maven.plugins:maven-assembly-plugin:3.3.0` to `3.4.2`
+* Updated `org.apache.maven.plugins:maven-dependency-plugin:3.3.0` to `2.8`
 * Updated `org.apache.maven.plugins:maven-enforcer-plugin:3.0.0` to `3.1.0`
 * Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.0.0-M5` to `3.0.0-M7`
 * Updated `org.apache.maven.plugins:maven-jar-plugin:3.2.2` to `3.3.0`
