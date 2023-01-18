@@ -16,7 +16,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.sql.*;
 import java.sql.Timestamp;
-import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
@@ -74,8 +73,7 @@ class ElasticSearchSqlDialectIT {
         container.withEnv("ES_SETTING_XPACK_SECURITY_ENABLED", "false");
         container.withEnv("ES_SETTING_DISCOVERY_TYPE", "single-node");
         container.setWaitStrategy(new LogMessageWaitStrategy()
-                .withRegEx(".*Cluster health status changed from \\[YELLOW\\] to \\[GREEN\\].*")
-                .withStartupTimeout(Duration.ofMinutes(6)));
+                .withRegEx(".*Cluster health status changed from \\[YELLOW\\] to \\[GREEN\\].*"));
         return container;
     }
 
