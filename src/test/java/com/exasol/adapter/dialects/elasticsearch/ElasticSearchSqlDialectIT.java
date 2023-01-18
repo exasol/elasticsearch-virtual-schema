@@ -4,6 +4,8 @@ import static com.exasol.adapter.dialects.elasticsearch.ITConfiguration.*;
 import static com.exasol.matcher.ResultSetStructureMatcher.table;
 import static jakarta.json.Json.createObjectBuilder;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -24,6 +26,7 @@ import java.util.stream.IntStream;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.platform.commons.util.StringUtils;
@@ -739,8 +742,20 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
+        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/66")
         void testCeil() throws IOException {
             assertScalarFunction("CEIL").withValues(0.234).withResult(1).verify();
+        }
+
+        @Test
+        void testCeilWithBug() throws IOException {
+            // See https://github.com/exasol/elasticsearch-virtual-schema/issues/66
+            assertNumberConversionFails(() -> assertScalarFunction("CEIL").withValues(0.234).withResult(1).verify());
+        }
+
+        private void assertNumberConversionFails(final Executable executable) {
+            final AssertionError error = assertThrows(AssertionError.class, executable);
+            assertThat(error.getMessage(), containsString("ETL-1299: Failed to create transformator"));
         }
 
         @Test
@@ -774,8 +789,15 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
+        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/66")
         void testFloor() throws IOException {
             assertScalarFunction("FLOOR").withValues(4.567).withResult(4).verify();
+        }
+
+        @Test
+        void testFloorWithBug() throws IOException {
+            // See https://github.com/exasol/elasticsearch-virtual-schema/issues/66
+            assertNumberConversionFails(() -> assertScalarFunction("FLOOR").withValues(4.567).withResult(4).verify());
         }
 
         @Test
@@ -839,8 +861,14 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
+        @Disabled("Bug in Exasol")
         void testTrunc() throws IOException {
             assertScalarFunction("TRUNC").withValues(123.456, 2).withResult(123.45).verify();
+        }
+
+        @Test
+        void testTruncWithBug() throws IOException {
+            assertScalarFunction("TRUNC").withValues(123.456, 2).withResult(123.44999694824219).verify();
         }
 
         @Test
@@ -933,8 +961,15 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
+        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/65")
         void testExtractSecond() throws IOException {
             assertExtract("SECOND").withValues("2018-02-19T10:23:27Z").withResult(27).verify();
+        }
+
+        @Test
+        void testExtractSecondWithBug() throws IOException {
+            // Workaround for bug in DB. See https://github.com/exasol/elasticsearch-virtual-schema/issues/65
+            assertExtract("SECOND").withValues("2018-02-19T10:23:27Z").withResult(0.027).verify();
         }
 
         @Test
@@ -1036,13 +1071,13 @@ class ElasticSearchSqlDialectIT {
                 return this;
             }
 
-            private void verify() throws IOException {
+            private void verify() {
                 this.indexDocument();
-                assertVirtualTableContentsByQuery(this.getQuery(), table().row(ASSERT_VALUE, this.result)
-                        .withUtcCalendar().matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
+                assertVirtualTableContentsByQuery(this.getQuery(),
+                        table().row(ASSERT_VALUE, this.result).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
             }
 
-            private void indexDocument() throws IOException {
+            private void indexDocument() {
                 int fieldNumber = 0;
                 final JsonObjectBuilder objectBuilder = createObjectBuilder();
                 for (final Object value : this.values) {
@@ -1089,11 +1124,11 @@ class ElasticSearchSqlDialectIT {
         }
     }
 
-    private void indexDocumentWithGenericTestField(final JsonObjectBuilder documentBuilder) throws IOException {
+    private void indexDocumentWithGenericTestField(final JsonObjectBuilder documentBuilder) {
         indexDocument(documentBuilder.add(ASSERT_FIELD, ASSERT_VALUE).build());
     }
 
-    private void indexDocument(final JsonObject document) throws IOException {
+    private void indexDocument(final JsonObject document) {
         LOGGER.finest(() -> "Elasticsearch: Indexing document " + document);
         esGateway.indexDocument(INDEX_NAME, document.toString());
     }

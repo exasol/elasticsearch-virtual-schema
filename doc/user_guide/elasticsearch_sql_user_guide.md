@@ -161,7 +161,7 @@ will return 0.027 instead of 27. This is a known issue in Exasol 7.1.17. See als
 
 ### Conversion of numbers may fail
 
-The `FLOOR` scalar function and others may fail with an error message. Query `SELECT FLOOR("FIELD") FROM VIRTUAL_SCHEMA."index"` will fail with the following error message:
+The `FLOOR` and `CEIL` scalar functions may fail with an error message. Query `SELECT FLOOR("FIELD") FROM VIRTUAL_SCHEMA."index"` will fail with the following error message:
 
 ```
 ETL-1299: Failed to create transformator for column=0 (starting from 0 for selected columns) [ETL-1202: Not implemented - Transformation for this combination of column types is not possible in this version. A solution for this problem can be perhaps the conversion in another datatype in the database. Otherwise please contact support for additional information]
