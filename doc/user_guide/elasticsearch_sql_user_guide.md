@@ -16,10 +16,6 @@ The reason is that the JDBC driver requires a JAVA permission which we do not gr
 
 **IMPORTANT**: Have in mind that the use of the Elasticsearch JDBC driver currently requires a license on the server, so this feature won't be available without it.
 
-### Known Issue
-
-The Elasticsearch JDBC driver in version 8.x changes behavior compared to 7.17.x. This will be addressed in [#60](https://github.com/exasol/elasticsearch-virtual-schema/issues/60). Until then we recommend using Elasticsearch version 7.17.5 for both the server and the JDBC driver.
-
 ## Installing the Adapter Script
 
 Upload the latest available release of [Elasticsearch Virtual Schema adapter](https://github.com/exasol/elasticsearch-virtual-schema/releases) to Bucket FS.
@@ -51,7 +47,7 @@ USER '<user>'
 IDENTIFIED BY '<password>';
 ```
 
-See the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/7.17/sql-jdbc.html#jdbc-setup) for details about the JDBC URL options.
+See the [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/reference/8.6/sql-jdbc.html#jdbc-setup) for details about the JDBC URL options.
 
 ## Creating a Virtual Schema
 
@@ -118,18 +114,69 @@ ALTER VIRTUAL SCHEMA "<elastic_search_virtual_schema_name>" REFRESH;
 
 Given the previously described situation, we recommend to not use the dynamic mapping feature of Elasticsearch, and instead define the mappings explicitly.
 
-### Known issues
+## Known issues
 
-At the moment for querying all the contents of a table in the virtual schema it is not possible to use the `*` wild card, as in:
+### `SELECT *` returns additional keyword column
 
-```sql
-SELECT * FROM "<elastic_search_virtual_schema_name>"."<table_name>";
+Querying all the contents of a table in the virtual schema with the `*` wild card will return an additional column.
+
+When you index this document
+
+```json
+{
+    "c1" : "str",
+    "c2" : 42,
+    "c3" : 3.14
+}
 ```
 
-Instead the columns to query needs to be explicitly specified, as in:
+The query `SELECT * FROM "<elastic_search_virtual_schema_name>"."<table_name>"` will return four columns: `c1`, `c1/keyword`, `c2` and `c3`. Columns `c1` and `c1/keyword` will have the same content.
+
+As a workaround please explicitly specify the selected columns, as in:
 
 ```sql
 SELECT "<column_name_1>", "<column_name_2>", ..., "<column_name_n>" FROM "<elastic_search_virtual_schema_name>"."<table_name>";
 ```
 
-A new feature to avoid this issue will be added in the future.
+### Conversion of numbers may return approximated results
+
+When executing a query like this in the virtual schema it may return approximated numerical results:
+
+```sql
+SELECT TRUNC("FIELD", 2) FROM VIRTUAL_SCHEMA."index";
+```
+
+For input value 123.456 this will return 123.44999694824219 instead of the expected 123.45.
+
+### Conversion of numbers may return invalid results
+
+The `EXTRACT SECOND FROM` and other scalar function may return wrong values, e.g. the following statement
+
+```sql
+SELECT EXTRACT(SECOND FROM CAST('2018-02-19 10:23:27' AS TIMESTAMP))
+FROM VIRTUAL_SCHEMA."index";
+```
+
+will return 0.027 instead of 27. This is a known issue in Exasol 7.1.17. See also [issue #65](https://github.com/exasol/elasticsearch-virtual-schema/issues/65).
+
+### Conversion of numbers may fail
+
+The `FLOOR` scalar function and others may fail with an error message. Query `SELECT FLOOR("FIELD") FROM VIRTUAL_SCHEMA."index"` will fail with the following error message:
+
+```
+ETL-1299: Failed to create transformator for column=0 (starting from 0 for selected columns) [ETL-1202: Not implemented - Transformation for this combination of column types is not possible in this version. A solution for this problem can be perhaps the conversion in another datatype in the database. Otherwise please contact support for additional information]
+```
+
+This is a known issue in Exasol 7.1.17. See also [issue #66](https://github.com/exasol/elasticsearch-virtual-schema/issues/66).
+
+### Adapter Property `IMPORT_DATA_TYPES` not supported
+
+Due to restrictions of the Elasticsearch 8 JDBC driver the adapter property `IMPORT_DATA_TYPES` does not support the option `FROM_RESULT_SET`. Only the default value `EXASOL_CALCULATED` is supported. For details please see [adapter Properties for JDBC-Based Virtual Schemas](https://github.com/exasol/virtual-schema-common-jdbc/blob/main/README.md#adapter-properties-for-jdbc-based-virtual-schemas).
+
+Background: The Elasticsearch 8 JDBC driver does not return Metadata for a prepared statement without executing it. So it is not possible for the adapter to determine the column types of an Elasticsearch SQL query and it will fail with the following error message:
+
+```
+VM error: F-UDF-CL-LIB-1126: F-UDF-CL-SL-JAVA-1006: F-UDF-CL-SL-JAVA-1026: 
+com.exasol.ExaUDFException: F-UDF-CL-SL-JAVA-1068: Exception during singleCall adapterCall 
+com.exasol.adapter.jdbc.RemoteMetadataReaderException: F-VSCJDBC-34: Metadata is missing in the ResultSet. This can happen if the generated query was incorrect, but the JDBC driver didn't throw an exception. This is an internal error that should not happen. Please report it by opening a GitHub issue.
+```

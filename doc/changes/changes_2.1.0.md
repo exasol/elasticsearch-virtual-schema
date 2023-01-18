@@ -6,9 +6,11 @@ Code name: Enhanced Data Type Detection for Result Sets & Support for Elasticsea
 
 Starting with version 7.1.14 Exasol database uses the capabilities reported by each virtual schema to provide select list data types for each push down request. Based on this information the JDBC virtual schemas no longer need to infer the data types of the result set by inspecting its values. Instead the JDBC virtual schemas can now use the information provided by the database.
 
-This release provides enhanced data type detection for result sets by updating `virtual-schema-common-jdbc` to version [10.1.0](https://github.com/exasol/virtual-schema-common-jdbc/releases/tag/10.1.0). If you face any problems with character encoding, set adapter property `IMPORT_DATA_TYPES` to `FROM_RESULT_SET`. For details please see [adapter Properties for JDBC-Based Virtual Schemas](https://github.com/exasol/virtual-schema-common-jdbc/blob/main/README.md#adapter-properties-for-jdbc-based-virtual-schemas).
+This release provides enhanced data type detection for result sets by updating `virtual-schema-common-jdbc` to version [10.1.0](https://github.com/exasol/virtual-schema-common-jdbc/releases/tag/10.1.0).
 
 This release also adds support for Elasticsearch version 8.6. If you run Elasticsearch version 7.x please use version 2.0.5 of the virtual schema.
+
+There are some known issues with the current version. Please see the [user guide](https://github.com/exasol/elasticsearch-virtual-schema/blob/main/doc/user_guide/elasticsearch_sql_user_guide.md#known-issues) for details.
 
 ## Features
 
