@@ -4,7 +4,8 @@ import static com.exasol.adapter.dialects.elasticsearch.ITConfiguration.*;
 import static com.exasol.matcher.ResultSetStructureMatcher.table;
 import static jakarta.json.Json.createObjectBuilder;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -24,9 +25,11 @@ import java.util.stream.IntStream;
 import org.hamcrest.Matcher;
 import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.function.Executable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.platform.commons.util.StringUtils;
+import org.opentest4j.AssertionFailedError;
 import org.testcontainers.containers.JdbcDatabaseContainer.NoDriverFoundException;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
@@ -52,7 +55,7 @@ class ElasticSearchSqlDialectIT {
     private static final Logger LOGGER = Logger.getLogger(ElasticSearchSqlDialectIT.class.getName());
     @Container
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
-            getExasolDockerImageReference()).withReuse(true);
+            DEFAULT_EXASOL_DOCKER_IMAGE_REFERENCE).withReuse(true);
     @Container
     private static final ElasticsearchContainer ES_CONTAINER = createElasticsearchContainer();
 
@@ -67,8 +70,8 @@ class ElasticSearchSqlDialectIT {
         final ElasticsearchContainer container = new ElasticsearchContainer(ELASTICSEARCH_DOCKER_IMAGE_REFERENCE);
         // Disable TLS for Elasticsearch server as the self-signed certificate uses the wrong hostname and we can't
         // configure a HostnameVerifier for the JDBC driver.
-        container.withEnv("xpack.security.enabled", "false");
-        container.withEnv("discovery.type", "single-node");
+        container.withEnv("ES_SETTING_XPACK_SECURITY_ENABLED", "false");
+        container.withEnv("ES_SETTING_DISCOVERY_TYPE", "single-node");
         container.setWaitStrategy(new LogMessageWaitStrategy()
                 .withRegEx(".*Cluster health status changed from \\[YELLOW\\] to \\[GREEN\\].*"));
         return container;
@@ -262,6 +265,14 @@ class ElasticSearchSqlDialectIT {
                 + " FROM " + getVirtualTableName();
         assertVirtualTableContentsByQuery(query,
                 table().row("str", "inner_str").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
+    }
+
+    @Test
+    void testSelectAllColumns() throws IOException {
+        this.indexDocument(createObjectBuilder().add("c1", "str").add("c2", 42).add("c3", 3.14).build());
+        final String query = "SELECT * FROM " + getVirtualTableName();
+        assertVirtualTableContentsByQuery(query,
+                table().row("str", "str", 42, 3.140000104904175).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
     }
 
     @Nested
@@ -729,8 +740,20 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
+        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/66")
         void testCeil() throws IOException {
             assertScalarFunction("CEIL").withValues(0.234).withResult(1).verify();
+        }
+
+        @Test
+        void testCeilWithBug() throws IOException {
+            // See https://github.com/exasol/elasticsearch-virtual-schema/issues/66
+            assertNumberConversionFails(() -> assertScalarFunction("CEIL").withValues(0.234).withResult(1).verify());
+        }
+
+        private void assertNumberConversionFails(final Executable executable) {
+            final AssertionError error = assertThrows(AssertionError.class, executable);
+            assertThat(error.getMessage(), containsString("ETL-1299: Failed to create transformator"));
         }
 
         @Test
@@ -764,8 +787,15 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
+        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/66")
         void testFloor() throws IOException {
             assertScalarFunction("FLOOR").withValues(4.567).withResult(4).verify();
+        }
+
+        @Test
+        void testFloorWithBug() throws IOException {
+            // See https://github.com/exasol/elasticsearch-virtual-schema/issues/66
+            assertNumberConversionFails(() -> assertScalarFunction("FLOOR").withValues(4.567).withResult(4).verify());
         }
 
         @Test
@@ -800,7 +830,7 @@ class ElasticSearchSqlDialectIT {
 
         @Test
         void testRound() throws IOException {
-            assertScalarFunction("ROUND").withValues(123.456, 2).withResult(123.46).verify();
+            assertScalarFunction("ROUND").withValues(123.456, 2).withResult(123.45999908447266).verify();
         }
 
         @Test
@@ -829,8 +859,14 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
+        @Disabled("Bug in Exasol")
         void testTrunc() throws IOException {
             assertScalarFunction("TRUNC").withValues(123.456, 2).withResult(123.45).verify();
+        }
+
+        @Test
+        void testTruncWithBug() throws IOException {
+            assertScalarFunction("TRUNC").withValues(123.456, 2).withResult(123.44999694824219).verify();
         }
 
         @Test
@@ -923,8 +959,15 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
+        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/65")
         void testExtractSecond() throws IOException {
             assertExtract("SECOND").withValues("2018-02-19T10:23:27Z").withResult(27).verify();
+        }
+
+        @Test
+        void testExtractSecondWithBug() throws IOException {
+            // Workaround for bug in DB. See https://github.com/exasol/elasticsearch-virtual-schema/issues/65
+            assertExtract("SECOND").withValues("2018-02-19T10:23:27Z").withResult(0.027).verify();
         }
 
         @Test
@@ -1026,13 +1069,13 @@ class ElasticSearchSqlDialectIT {
                 return this;
             }
 
-            private void verify() throws IOException {
+            private void verify() {
                 this.indexDocument();
                 assertVirtualTableContentsByQuery(this.getQuery(),
                         table().row(ASSERT_VALUE, this.result).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
             }
 
-            private void indexDocument() throws IOException {
+            private void indexDocument() {
                 int fieldNumber = 0;
                 final JsonObjectBuilder objectBuilder = createObjectBuilder();
                 for (final Object value : this.values) {
@@ -1079,11 +1122,12 @@ class ElasticSearchSqlDialectIT {
         }
     }
 
-    private void indexDocumentWithGenericTestField(final JsonObjectBuilder documentBuilder) throws IOException {
+    private void indexDocumentWithGenericTestField(final JsonObjectBuilder documentBuilder) {
         indexDocument(documentBuilder.add(ASSERT_FIELD, ASSERT_VALUE).build());
     }
 
-    private void indexDocument(final JsonObject document) throws IOException {
+    private void indexDocument(final JsonObject document) {
+        LOGGER.finest(() -> "Elasticsearch: Indexing document " + document);
         esGateway.indexDocument(INDEX_NAME, document.toString());
     }
 
@@ -1096,11 +1140,14 @@ class ElasticSearchSqlDialectIT {
         try {
             assertThat(query(query), matcher);
         } catch (final SQLException exception) {
-            fail("Unable to execute assertion query. Caused by: " + exception.getMessage());
+            throw new AssertionFailedError(
+                    "Unable to execute assertion query '" + query + "'. Caused by: " + exception.getMessage(),
+                    exception);
         }
     }
 
     private ResultSet query(final String sql) throws SQLException {
+        LOGGER.finest(() -> "Executing query " + sql);
         return connection.createStatement().executeQuery(sql);
     }
 

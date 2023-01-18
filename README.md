@@ -1,4 +1,4 @@
-# ElasticSearch Virtual Schema
+# Elasticsearch Virtual Schema
 
 [![Build Status](https://github.com/exasol/elasticsearch-virtual-schema/actions/workflows/ci-build.yml/badge.svg)](https://github.com/exasol/elasticsearch-virtual-schema/actions/workflows/ci-build.yml)
 
@@ -16,22 +16,22 @@
 
 # Overview
 
-The **ElasticSearch Virtual Schema** provides an abstraction layer that makes an external [ElasticSearch](https://www.elastic.co/) data source accessible from an Exasol database through regular SQL commands. The contents of the external ElasticSearch data source are mapped to virtual tables which look like and can be queried as any regular Exasol table.
+The **Elasticsearch Virtual Schema** provides an abstraction layer that makes an external [Elasticsearch](https://www.elastic.co/) data source accessible from an Exasol database through regular SQL commands. The contents of the external Elasticsearch data source are mapped to virtual tables which look like and can be queried as any regular Exasol table.
 
 If you want to set up a Virtual Schema for a different database system, please head over to the [Virtual Schemas Repository][virtual-schemas].
- 
-Currently we only support Elasticsearch 7.17.x. In case you need support for older versions, please open a ticket. The behavior of the Elasticsearch JDBC driver in version 8 has changed, causing the Virtual Schema to return slightly different values. If you need support for Elasticsearch 8, please vote on [issue #60](https://github.com/exasol/elasticsearch-virtual-schema/issues/60).
+
+The current version of **Elasticsearch Virtual Schema** supports Elasticsearch 8.6. If you run Elasticsearch version 7.x please use version 2.0.5 of the virtual schema.
 
 ## Features
 
-* Access an ElasticSearch data source in read only mode from an Exasol database, using Virtual Schema.
+* Access an Elasticsearch data source in read only mode from an Exasol database, using Virtual Schema.
 
 ## Table of Contents
 
 ### Information for Users
 
 * [Virtual Schemas User Guide][user-guide]
-* [ElasticSearchSQL Dialect User Guide](doc/user_guide/elasticsearch_sql_user_guide.md)
+* [ElasticsearchSQL Dialect User Guide](doc/user_guide/elasticsearch_sql_user_guide.md)
 * [Changelog](doc/changes/changelog.md)
 * [Dependencies](dependencies.md)
 
@@ -42,7 +42,6 @@ Find all the documentation in the [Virtual Schemas project][vs-doc].
 * [Virtual Schema API Documentation][vs-api]
 
 <!-- @formatter:off -->
-[virtual-schema-common-jdbc]: https://github.com/exasol/virtual-schema-common-jdbc
 [user-guide]: https://docs.exasol.com/database_concepts/virtual_schemas.htm
 [virtual-schemas]: https://github.com/exasol/virtual-schemas
 [vs-api]: https://github.com/exasol/virtual-schema-common-java/blob/master/doc/development/api/virtual_schema_api.md

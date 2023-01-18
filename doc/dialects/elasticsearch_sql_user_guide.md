@@ -1,3 +1,3 @@
-# ElasticSearchSQL Dialect User Guide
+# ElasticsearchSQL Dialect User Guide
 
-The ElasticSearchSQL dialect guide can be found at (https://github.com/exasol/elasticsearch-virtual-schema/blob/main/doc/user_guide/elasticsearch_sql_user_guide.md).
+The ElasticsearchSQL dialect guide can be found in the [ElasticsearchSQL user guide](../user_guide/elasticsearch_sql_user_guide.md).
