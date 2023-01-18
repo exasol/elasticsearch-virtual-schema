@@ -1,4 +1,4 @@
-# Virtual Schema for Elasticsearch 2.1.0, released 2023-01-??
+# Virtual Schema for Elasticsearch 2.1.0, released 2023-01-18
 
 Code name: Enhanced Data Type Detection for Result Sets & Support for Elasticsearch 8.6
 
