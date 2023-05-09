@@ -130,7 +130,7 @@ class ElasticSearchSqlDialectIT {
             bucket.uploadFile(SETTINGS_FILE_PATH, JDBC_DRIVERS_IN_BUCKET_PATH + SETTINGS_FILE_NAME);
             bucket.uploadFile(JDBC_DRIVER_PATH, JDBC_DRIVERS_IN_BUCKET_PATH + JDBC_DRIVER_NAME);
         } catch (final BucketAccessException | FileNotFoundException exception) {
-            LOGGER.severe(ExaError.messageBuilder("F-VS-ES-2")
+            LOGGER.severe(ExaError.messageBuilder("F-VSES-2")
                     .message("An error occurred while uploading the jdbc driver to the bucket.")
                     .mitigation("Make sure the {{JDBC_DRIVER_PATH}} file exists.")
                     .parameter("JDBC_DRIVER_PATH", JDBC_DRIVER_PATH)

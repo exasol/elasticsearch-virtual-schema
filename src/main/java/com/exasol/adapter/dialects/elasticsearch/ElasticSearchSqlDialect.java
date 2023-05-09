@@ -117,7 +117,7 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
         try {
             return new ElasticSearchMetadataReader(this.connectionFactory.getConnection(), this.properties);
         } catch (final SQLException exception) {
-            throw new RemoteMetadataReaderException(ExaError.messageBuilder("E-VS-ES-1")
+            throw new RemoteMetadataReaderException(ExaError.messageBuilder("E-VSES-1")
                     .message("Unable to create ElasticSearch remote metadata reader.").toString(), exception);
         }
     }

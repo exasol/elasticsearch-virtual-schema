@@ -1,5 +1,5 @@
 error-tags:
-  VS-ES:
+  VSES:
     packages:
       - com.exasol.adapter.dialects.elasticsearch
     highest-index: 2
