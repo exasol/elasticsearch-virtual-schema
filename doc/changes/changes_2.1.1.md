@@ -28,6 +28,7 @@ This release updates dependency `virtual-schema-common-jdbc` which adds support 
 * Updated `org.elasticsearch.plugin:x-pack-sql-jdbc:8.6.0` to `8.7.1`
 * Updated `org.junit.jupiter:junit-jupiter:5.9.2` to `5.9.3`
 * Updated `org.mockito:mockito-junit-jupiter:5.0.0` to `5.3.1`
+* Added `org.slf4j:slf4j-jdk14:2.0.7`
 * Updated `org.testcontainers:elasticsearch:1.17.6` to `1.18.0`
 * Updated `org.testcontainers:junit-jupiter:1.17.6` to `1.18.0`
 
