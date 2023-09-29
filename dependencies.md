@@ -19,12 +19,12 @@
 | [jdbc][12]                                      | [Elastic License 2.0][13]                                                      |
 | [Yasson][14]                                    | [Eclipse Public License v. 2.0][15]; [Eclipse Distribution License v. 1.0][16] |
 | [Testcontainers :: JUnit Jupiter Extension][17] | [MIT][18]                                                                      |
-| [TestContainers :: elasticsearch][17]           | [MIT][18]                                                                      |
+| [Testcontainers :: elasticsearch][17]           | [MIT][18]                                                                      |
 | [Test containers for Exasol on Docker][19]      | [MIT License][20]                                                              |
 | [Test Database Builder for Java][21]            | [MIT License][22]                                                              |
 | [Matcher for SQL Result Sets][23]               | [MIT License][24]                                                              |
 | [udf-debugging-java][25]                        | [MIT License][26]                                                              |
-| [SLF4J JDK14 Binding][27]                       | [MIT License][28]                                                              |
+| [SLF4J JDK14 Provider][27]                      | [MIT License][28]                                                              |
 
 ## Plugin Dependencies
 
@@ -38,7 +38,7 @@
 | [Maven Surefire Plugin][36]                             | [Apache-2.0][11]                               |
 | [Versions Maven Plugin][37]                             | [Apache License, Version 2.0][11]              |
 | [duplicate-finder-maven-plugin Maven Mojo][38]          | [Apache License 2.0][39]                       |
-| [Apache Maven Assembly Plugin][40]                      | [Apache License, Version 2.0][11]              |
+| [Apache Maven Assembly Plugin][40]                      | [Apache-2.0][11]                               |
 | [Apache Maven JAR Plugin][41]                           | [Apache License, Version 2.0][11]              |
 | [Maven Dependency Plugin][42]                           | [The Apache Software License, Version 2.0][35] |
 | [Artifact reference checker and unifier][43]            | [MIT License][44]                              |
@@ -66,11 +66,11 @@
 [10]: https://github.com/elastic/elasticsearch-java/
 [11]: https://www.apache.org/licenses/LICENSE-2.0.txt
 [12]: https://github.com/elastic/elasticsearch.git
-[13]: https://raw.githubusercontent.com/elastic/elasticsearch/v8.7.1/licenses/ELASTIC-LICENSE-2.0.txt
+[13]: https://raw.githubusercontent.com/elastic/elasticsearch/v8.10.2/licenses/ELASTIC-LICENSE-2.0.txt
 [14]: https://projects.eclipse.org/projects/ee4j.yasson
 [15]: http://www.eclipse.org/legal/epl-v20.html
 [16]: http://www.eclipse.org/org/documents/edl-v10.php
-[17]: https://testcontainers.org
+[17]: https://java.testcontainers.org
 [18]: http://opensource.org/licenses/MIT
 [19]: https://github.com/exasol/exasol-testcontainers/
 [20]: https://github.com/exasol/exasol-testcontainers/blob/main/LICENSE
@@ -91,7 +91,7 @@
 [35]: http://www.apache.org/licenses/LICENSE-2.0.txt
 [36]: https://maven.apache.org/surefire/maven-surefire-plugin/
 [37]: https://www.mojohaus.org/versions/versions-maven-plugin/
-[38]: https://github.com/basepom/duplicate-finder-maven-plugin
+[38]: https://basepom.github.io/duplicate-finder-maven-plugin
 [39]: http://www.apache.org/licenses/LICENSE-2.0.html
 [40]: https://maven.apache.org/plugins/maven-assembly-plugin/
 [41]: https://maven.apache.org/plugins/maven-jar-plugin/

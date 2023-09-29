@@ -54,8 +54,7 @@ import jakarta.json.JsonObjectBuilder;
 class ElasticSearchSqlDialectIT {
     private static final Logger LOGGER = Logger.getLogger(ElasticSearchSqlDialectIT.class.getName());
     @Container
-    private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>(
-            DEFAULT_EXASOL_DOCKER_IMAGE_REFERENCE).withReuse(true);
+    private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>().withReuse(true);
     @Container
     private static final ElasticsearchContainer ES_CONTAINER = createElasticsearchContainer();
 
