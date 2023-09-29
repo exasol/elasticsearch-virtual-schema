@@ -55,10 +55,9 @@ Below you see how an ElasticsearchSQL Virtual Schema is created.
 
 ```sql
 CREATE VIRTUAL SCHEMA <elastic_search_virtual_schema_name>
-	USING <schema_name>.<adapter_name>
-	WITH
-	CONNECTION_NAME = '<connection_name>'
-	;
+    USING <schema_name>.<adapter_name>
+    WITH
+    CONNECTION_NAME = '<connection_name>';
 ```
 
 ## Elasticsearch Identifiers
@@ -75,12 +74,12 @@ Elasticsearch is a document based database. Among other things, this means you c
 
 ```json
 {
-	"book_title": "Effective Java",
-	"pages_count": 377,
-	"author": {
-			"first_name": "Joshua",
-			"last_name": "Bloch"
-	}
+    "book_title": "Effective Java",
+    "pages_count": 377,
+    "author": {
+            "first_name": "Joshua",
+            "last_name": "Bloch"
+    }
 }
 ```
 
@@ -176,7 +175,7 @@ Due to restrictions of the Elasticsearch 8 JDBC driver the adapter property `IMP
 Background: The Elasticsearch 8 JDBC driver does not return Metadata for a prepared statement without executing it. So it is not possible for the adapter to determine the column types of an Elasticsearch SQL query and it will fail with the following error message:
 
 ```
-VM error: F-UDF-CL-LIB-1126: F-UDF-CL-SL-JAVA-1006: F-UDF-CL-SL-JAVA-1026: 
-com.exasol.ExaUDFException: F-UDF-CL-SL-JAVA-1068: Exception during singleCall adapterCall 
+VM error: F-UDF-CL-LIB-1126: F-UDF-CL-SL-JAVA-1006: F-UDF-CL-SL-JAVA-1026:
+com.exasol.ExaUDFException: F-UDF-CL-SL-JAVA-1068: Exception during singleCall adapterCall
 com.exasol.adapter.jdbc.RemoteMetadataReaderException: F-VSCJDBC-34: Metadata is missing in the ResultSet. This can happen if the generated query was incorrect, but the JDBC driver didn't throw an exception. This is an internal error that should not happen. Please report it by opening a GitHub issue.
 ```
