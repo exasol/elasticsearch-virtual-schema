@@ -10,6 +10,10 @@ This release fixes vulnerability CVE-2023-4043 in test dependency `org.eclipse.p
 
 * #71: Fixed CVE-2023-4043 in test dependency `org.eclipse.parsson:parsson`
 
+## Features
+
+* #68: Updated tests to Exasol v8
+
 ## Dependency Updates
 
 ### Test Dependency Updates
