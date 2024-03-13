@@ -1,4 +1,4 @@
-# Virtual Schema for Elasticsearch 2.1.4, released 2024-03-13
+# Virtual Schema for Elasticsearch 2.1.4, released 2024-03-14
 
 Code name: Fixed vulnerabilities CVE-2024-25710 and CVE-2024-26308 in test dependencies
 
