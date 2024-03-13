@@ -8,8 +8,8 @@ This is a security release in which we updated test dependency `com.exasol:exaso
 
 ## Security
 
-* #73: Fixed vulnerability CVE-2024-25710
-* #74: Fixed vulnerability CVE-2024-26308
+* #73: Fixed vulnerability CVE-2024-25710 by updating test dependency
+* #74: Fixed vulnerability CVE-2024-26308 by updating test dependency
 
 ## Dependency Updates
 
