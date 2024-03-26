@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>elasticsearch-virtual-schema</artifactId>
-    <version>2.1.4</version>
+    <version>3.0.0</version>
     <name>Virtual Schema for Elasticsearch</name>
     <description>Virtual Schema that allows accessing content on an Elasticsearch data source as if it were part of the Exasol database</description>
     <url>https://github.com/exasol/elasticsearch-virtual-schema/</url>
@@ -203,7 +203,7 @@
     <parent>
         <artifactId>elasticsearch-virtual-schema-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>2.1.4</version>
+        <version>3.0.0</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
 </project>
