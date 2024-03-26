@@ -1,5 +1,7 @@
 # Virtual Schema for Elasticsearch 3.0.0, released 2024-03-26
 
+Code name: Charset is always `utf-8`, deprecated IMPORT_DATA_TYPES `FROM_RESULT_SET` value
+
 ## Summary
 
 The behaviour when it comes to character sets is now simplified,
@@ -9,5 +11,5 @@ An exception will be thrown when users use`FROM_RESULT_SET`. The exception messa
 
 ## Refactoring
 
-* #22: Update tests to include Exasol V8/ Update to vsjdbc 12.0.0
+* #22: Updated tests to include Exasol V8, updated to vsjdbc 12.0.0
 
