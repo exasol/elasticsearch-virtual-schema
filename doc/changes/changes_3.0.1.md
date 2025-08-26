@@ -12,8 +12,8 @@ Uncontrolled Recursion vulnerability in Apache Commons Lang.
 
 This issue affects Apache Commons Lang: Starting with commons-lang:commons-lang 2.0 to 2.6, and, from org.apache.commons:commons-lang3 3.0 before 3.18.0.
 
-The methods ClassUtils.getClass(...) can throw StackOverflowError on very long inputs. Because an Error is usually not handled by applications and libraries, a 
-StackOverflowError could cause an application to stop.
+The methods ClassUtils.getClass(...) can throw StackOverflowError on very long inputs. Because an Error is usually not handled by applications and libraries, a 
+StackOverflowError could cause an application to stop.
 
 Users are recommended to upgrade to version 3.18.0, which fixes the issue.
 
@@ -66,7 +66,7 @@ CWE: CWE-94
 * Updated `org.apache.maven.plugins:maven-compiler-plugin:3.12.1` to `3.14.0`
 * Updated `org.apache.maven.plugins:maven-enforcer-plugin:3.4.1` to `3.5.0`
 * Updated `org.apache.maven.plugins:maven-failsafe-plugin:3.2.5` to `3.5.3`
-* Updated `org.apache.maven.plugins:maven-install-plugin:3.1.1` to `3.1.4`
+* Updated `org.apache.maven.plugins:maven-install-plugin:3.1.2` to `3.1.4`
 * Updated `org.apache.maven.plugins:maven-jar-plugin:3.3.0` to `3.4.2`
 * Updated `org.apache.maven.plugins:maven-site-plugin:3.12.1` to `3.21.0`
 * Updated `org.apache.maven.plugins:maven-surefire-plugin:3.2.5` to `3.5.3`
