@@ -1,8 +1,8 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>elasticsearch-virtual-schema</artifactId>
-    <version>3.0.0</version>
+    <version>3.0.1</version>
     <name>Virtual Schema for Elasticsearch</name>
     <description>Virtual Schema that allows accessing content on an Elasticsearch data source as if it were part of the Exasol database</description>
     <url>https://github.com/exasol/elasticsearch-virtual-schema/</url>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>com.exasol</groupId>
             <artifactId>exasol-testcontainers</artifactId>
-            <version>7.0.1</version>
+            <version>7.1.7</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -179,7 +179,7 @@
             <plugin>
                 <groupId>com.exasol</groupId>
                 <artifactId>project-keeper-maven-plugin</artifactId>
-                <version>4.2.0</version>
+                <version>5.2.3</version>
                 <executions>
                     <execution>
                         <goals>
@@ -198,12 +198,23 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.ossindex.maven</groupId>
+                <artifactId>ossindex-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <excludeVulnerabilityIds>
+                        <!--com.exasol:exasol-jdbc:7.1.20:test-->
+                        <exclude>CVE-2024-55551</exclude>
+                    </excludeVulnerabilityIds>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <parent>
         <artifactId>elasticsearch-virtual-schema-generated-parent</artifactId>
         <groupId>com.exasol</groupId>
-        <version>3.0.0</version>
+        <version>3.0.1</version>
         <relativePath>pk_generated_parent.pom</relativePath>
     </parent>
 </project>
