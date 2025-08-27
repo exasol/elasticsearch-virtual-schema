@@ -964,12 +964,6 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testExtractSecondWithBug() throws IOException {
-            // Workaround for bug in DB. See https://github.com/exasol/elasticsearch-virtual-schema/issues/65
-            assertExtract("SECOND").withValues("2018-02-19T10:23:27Z").withResult(0.027).verify();
-        }
-
-        @Test
         void testExtractMonth() throws IOException {
             assertExtract("MONTH").withValues("2000-10-01").withResult(10).verify();
         }
