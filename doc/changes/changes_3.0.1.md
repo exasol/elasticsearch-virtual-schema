@@ -1,4 +1,4 @@
-# Virtual Schema for Elasticsearch 3.0.1, released 2025-08-26
+# Virtual Schema for Elasticsearch 3.0.1, released 2025-08-27
 
 Code name: Fixes for vulnerabilities CVE-2024-55551 and CVE-2025-48924
 
