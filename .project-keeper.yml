@@ -5,8 +5,17 @@ sources:
       - jar_artifact
       - integration_tests
 build:
-  runnerOs: ubuntu-20.04
+  runnerOs: ubuntu-latest
   freeDiskSpace: false
   exasolDbVersions:
-    - "7.1.25"
-    - "8.24.0"
+    - "8.34.0"
+  workflows:
+    - name: ci-build.yml
+      stepCustomizations:
+        - action: INSERT_AFTER
+          job: matrix-build
+          stepId: enable-testcontainer-reuse
+          content:
+            name: Fix VM Crash in UDFs
+            id: fix-vm-crash
+            run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
