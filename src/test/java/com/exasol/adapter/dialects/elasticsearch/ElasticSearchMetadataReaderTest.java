@@ -4,6 +4,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ class ElasticSearchMetadataReaderTest {
 
     @BeforeEach
     void beforeEach() {
+        when(exaMetadataMock.getDatabaseVersion()).thenReturn("3.2.1");
         this.reader = new ElasticSearchMetadataReader(null, AdapterProperties.emptyProperties(), exaMetadataMock);
     }
 

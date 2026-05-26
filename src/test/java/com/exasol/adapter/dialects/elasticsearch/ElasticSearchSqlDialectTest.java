@@ -27,6 +27,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.exasol.ExaMetadata;
 import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.capabilities.Capabilities;
 import com.exasol.adapter.dialects.JDBCAdapterContext;
@@ -41,12 +42,18 @@ import com.exasol.adapter.sql.ScalarFunction;
 class ElasticSearchSqlDialectTest {
     private ElasticSearchSqlDialect dialect;
     @Mock
-    private ConnectionFactory connectionFactoryMock;
+    ConnectionFactory connectionFactoryMock;
+    @Mock
+    ExaMetadata exaMetadataMock;
 
     @BeforeEach
     void beforeEach() {
         this.dialect = new ElasticSearchSqlDialect(
-                JDBCAdapterContext.builder().connectionFactory(this.connectionFactoryMock).properties(AdapterProperties.emptyProperties()).build());
+                JDBCAdapterContext.builder()
+                        .connectionFactory(this.connectionFactoryMock)
+                        .properties(AdapterProperties.emptyProperties())
+                        .metadata(exaMetadataMock)
+                        .build());
     }
 
     @Test
@@ -137,6 +144,7 @@ class ElasticSearchSqlDialectTest {
     @Test
     void testCreateRemoteMetadataReader(@Mock final Connection connectionMock) throws SQLException {
         when(this.connectionFactoryMock.getConnection()).thenReturn(connectionMock);
+        when(exaMetadataMock.getDatabaseVersion()).thenReturn("3.2.1");
         assertThat(this.dialect.createRemoteMetadataReader(), instanceOf(ElasticSearchMetadataReader.class));
     }
 
@@ -151,6 +159,7 @@ class ElasticSearchSqlDialectTest {
     @Test
     void testCreateQueryRewriter(@Mock final Connection connectionMock) throws SQLException {
         when(this.connectionFactoryMock.getConnection()).thenReturn(connectionMock);
+        when(exaMetadataMock.getDatabaseVersion()).thenReturn("3.2.1");
         assertThat(this.dialect.createQueryRewriter(), instanceOf(ImportIntoTemporaryTableQueryRewriter.class));
     }
 
