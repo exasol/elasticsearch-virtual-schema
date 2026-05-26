@@ -6,7 +6,10 @@ Code name: Anonymous telemetry
 
 This release introduces anonymous feature-usage telemetry through `telemetry-java`. See the [documentation](https://github.com/exasol/telemetry-java/blob/main/doc/app-user-guide.md) for details about the collected data and how to opt out.
 
-The release also fixes CVE-2026-45292 in transitive dependency `io.opentelemetry:opentelemetry-api:1.37.0` of `co.elastic.clients:elasticsearch-java`.
+The release also fixes the following vulnerabilities:
+* CVE-2026-45292 in transitive dependency `io.opentelemetry:opentelemetry-api:1.37.0` of `co.elastic.clients:elasticsearch-java`
+* CVE-2026-29062 in transitive dependency `tools.jackson.core:jackson-core:3.0.0` of `co.elastic.clients:elasticsearch-java`
+
 ## Breaking Change
 
 Starting with this release, this Virtual Schema no longer supports Exasol 7.1. The supported versions are the current release and the LTS release line `2025.1.x`.
@@ -24,14 +27,14 @@ Starting with this release, this Virtual Schema no longer supports Exasol 7.1. T
 
 ### Test Dependency Updates
 
-* Updated `co.elastic.clients:elasticsearch-java:8.12.2` to `9.4.1`
+* Updated `co.elastic.clients:elasticsearch-java:8.12.2` to `8.19.15`
 * Updated `com.exasol:exasol-testcontainers:7.1.7` to `7.3.0`
 * Updated `com.exasol:hamcrest-resultset-matcher:1.6.5` to `1.7.2`
 * Updated `com.exasol:test-db-builder-java:3.5.4` to `4.0.0`
 * Updated `com.exasol:udf-debugging-java:0.6.12` to `0.6.18`
 * Updated `org.eclipse.parsson:parsson:1.1.5` to `1.1.9`
 * Updated `org.eclipse:yasson:3.0.3` to `3.0.4`
-* Updated `org.elasticsearch.plugin:x-pack-sql-jdbc:8.12.2` to `9.4.1`
+* Updated `org.elasticsearch.plugin:x-pack-sql-jdbc:8.12.2` to `8.19.15`
 * Updated `org.hamcrest:hamcrest:2.2` to `3.0`
 * Added `org.jacoco:org.jacoco.agent:0.8.14`
 * Updated `org.junit.jupiter:junit-jupiter:5.10.2` to `5.14.4`
@@ -41,6 +44,8 @@ Starting with this release, this Virtual Schema no longer supports Exasol 7.1. T
 * Removed `org.testcontainers:junit-jupiter:1.19.7`
 * Added `org.testcontainers:testcontainers-elasticsearch:2.0.5`
 * Added `org.testcontainers:testcontainers-junit-jupiter:2.0.5`
+* Added `tools.jackson.core:jackson-core:3.1.3`
+* Added `tools.jackson.core:jackson-databind:3.1.3`
 
 ### Plugin Dependency Updates
 
