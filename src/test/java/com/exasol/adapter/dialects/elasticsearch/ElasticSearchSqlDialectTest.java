@@ -29,6 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.capabilities.Capabilities;
+import com.exasol.adapter.dialects.JDBCAdapterContext;
 import com.exasol.adapter.dialects.SqlDialect.NullSorting;
 import com.exasol.adapter.dialects.SqlDialect.StructureElementSupport;
 import com.exasol.adapter.dialects.rewriting.ImportIntoTemporaryTableQueryRewriter;
@@ -44,7 +45,8 @@ class ElasticSearchSqlDialectTest {
 
     @BeforeEach
     void beforeEach() {
-        this.dialect = new ElasticSearchSqlDialect(this.connectionFactoryMock, AdapterProperties.emptyProperties());
+        this.dialect = new ElasticSearchSqlDialect(
+                JDBCAdapterContext.builder().connectionFactory(this.connectionFactoryMock).properties(AdapterProperties.emptyProperties()).build());
     }
 
     @Test
@@ -153,7 +155,7 @@ class ElasticSearchSqlDialectTest {
     }
 
     @Test
-    void testGetSqlGenerator() throws SQLException {
+    void testGetSqlGenerator() {
         assertThat(this.dialect.getSqlGenerator(null), instanceOf(ElasticSearchSqlGenerationVisitor.class));
     }
 
@@ -170,7 +172,7 @@ class ElasticSearchSqlDialectTest {
 
     @ParameterizedTest
     @MethodSource("getMappedStringLiterals")
-    void getStringLiteral(final String value, final String expected) throws SQLException {
+    void getStringLiteral(final String value, final String expected) {
         assertThat(this.dialect.getStringLiteral(value), equalTo(expected));
     }
 }

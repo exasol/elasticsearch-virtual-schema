@@ -53,6 +53,7 @@ import jakarta.json.JsonObjectBuilder;
 @Testcontainers
 class ElasticSearchSqlDialectIT {
     private static final Logger LOGGER = Logger.getLogger(ElasticSearchSqlDialectIT.class.getName());
+    @SuppressWarnings("resource") // Will be closed by @Container
     @Container
     private static final ExasolContainer<? extends ExasolContainer<?>> EXASOL = new ExasolContainer<>().withReuse(true);
     @Container
@@ -96,8 +97,7 @@ class ElasticSearchSqlDialectIT {
     private static ElasticSearchGateway esGateway;
 
     @BeforeAll
-    static void beforeAll()
-            throws BucketAccessException, TimeoutException, IOException, NoDriverFoundException, SQLException {
+    static void beforeAll() throws BucketAccessException, TimeoutException, IOException, NoDriverFoundException {
         connection = EXASOL.createConnection();
         objectFactory = setupObjectFactory();
         adapterSchema = objectFactory.createSchema("ADAPTER_SCHEMA");
@@ -154,7 +154,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     @BeforeEach
-    void beforeEach() throws IOException {
+    void beforeEach() {
         virtualSchema = null;
         jdbcConnection = createAdapterConnectionDefinition();
         esGateway = ElasticSearchGateway.connectTo(ES_CONTAINER);
@@ -162,7 +162,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     @AfterEach
-    void afterEach() throws IOException {
+    void afterEach() {
         dropAll(virtualSchema, jdbcConnection);
         virtualSchema = null;
         jdbcConnection = null;
@@ -230,7 +230,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     @Test
-    void testDocumentWithBooleanProperty() throws IOException {
+    void testDocumentWithBooleanProperty() {
         this.indexDocument(createObjectBuilder().add("bool_field", Boolean.TRUE).build());
         final String query = "SELECT \"bool_field\"" //
                 + " FROM " + getVirtualTableName() //
@@ -239,7 +239,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     @Test
-    void testDocumentWithIntegerProperty() throws IOException {
+    void testDocumentWithIntegerProperty() {
         this.indexDocument(createObjectBuilder().add("int_field", 1).build());
         final String query = "SELECT \"int_field\"" //
                 + " FROM " + getVirtualTableName() //
@@ -248,7 +248,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     @Test
-    void testDocumentWithStringProperty() throws IOException {
+    void testDocumentWithStringProperty() {
         this.indexDocument(createObjectBuilder().add("str_field", "str").build());
         final String query = "SELECT \"str_field\"" //
                 + " FROM " + getVirtualTableName() //
@@ -257,7 +257,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     @Test
-    void testDocumentWithNestedProperty() throws IOException {
+    void testDocumentWithNestedProperty() {
         final JsonObject innerField = createObjectBuilder().add("inner_str_field", "inner_str").build();
         this.indexDocument(createObjectBuilder().add("str_field", "str").add("inner_field", innerField).build());
         final String query = "SELECT  \"str_field\", \"inner_field/inner_str_field\""//
@@ -267,7 +267,7 @@ class ElasticSearchSqlDialectIT {
     }
 
     @Test
-    void testSelectAllColumns() throws IOException {
+    void testSelectAllColumns() {
         this.indexDocument(createObjectBuilder().add("c1", "str").add("c2", 42).add("c3", 3.14).build());
         final String query = "SELECT * FROM " + getVirtualTableName();
         assertVirtualTableContentsByQuery(query,
@@ -278,21 +278,21 @@ class ElasticSearchSqlDialectIT {
     @DisplayName("Main Capabilities test")
     class MainCapabilitiesTest {
         @Test
-        void testSelectListProjection() throws IOException {
+        void testSelectListProjection() {
             indexDocument(createObjectBuilder().add("str_field", "str").build());
             final String query = "SELECT \"str_field\" FROM " + getVirtualTableName();
             assertVirtualTableContentsByQuery(query, table().row("str").matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
-        void testSelectListWithExpressions() throws IOException {
+        void testSelectListWithExpressions() {
             indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 1).build());
             final String query = "SELECT \"int_field\"+1 FROM " + getVirtualTableName();
             assertVirtualTableContentsByQuery(query, table().row(2).matches(TypeMatchMode.NO_JAVA_TYPE_CHECK));
         }
 
         @Test
-        void testFilterExpressions() throws IOException {
+        void testFilterExpressions() {
             indexDocument(createObjectBuilder().add("int_field", 1).build());
             indexDocument(createObjectBuilder().add("int_field", 2).build());
             final String query = "SELECT \"int_field\"" //
@@ -302,7 +302,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testAggregateSingleGroup() throws IOException {
+        void testAggregateSingleGroup() {
             indexDocument(createObjectBuilder().add("int_field", 1).build());
             indexDocument(createObjectBuilder().add("int_field", 2).build());
             final String query = "SELECT min(\"int_field\") FROM " + getVirtualTableName();
@@ -310,7 +310,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testAggregateGroupByColumn() throws IOException {
+        void testAggregateGroupByColumn() {
             indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 1).build());
             indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
             final String query = "SELECT \"str_field\", min(\"int_field\")" //
@@ -320,7 +320,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testAggregateGroupByTuple() throws IOException {
+        void testAggregateGroupByTuple() {
             indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
             indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
             final String query = "SELECT \"str_field\"" //
@@ -330,7 +330,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testAggregateHaving() throws IOException {
+        void testAggregateHaving() {
             indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 1).build());
             indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
             final String query = "SELECT \"str_field\", min(\"int_field\")" //
@@ -341,7 +341,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testOrderByColumnASC() throws IOException {
+        void testOrderByColumnASC() {
             indexDocument(createObjectBuilder().add("int_field", 1).build());
             indexDocument(createObjectBuilder().add("int_field", 2).build());
             final String query = "SELECT \"int_field\"" //
@@ -351,7 +351,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testOrderByColumnDESC() throws IOException {
+        void testOrderByColumnDESC() {
             indexDocument(createObjectBuilder().add("int_field", 1).build());
             indexDocument(createObjectBuilder().add("int_field", 2).build());
             final String query = "SELECT \"int_field\"" //
@@ -361,7 +361,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testOrderByMultipleColumnASC() throws IOException {
+        void testOrderByMultipleColumnASC() {
             indexDocument(createObjectBuilder().add("str_field", "a").add("int_field", 1).build());
             indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 2).build());
             indexDocument(createObjectBuilder().add("str_field", "str").add("int_field", 3).build());
@@ -373,7 +373,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testOrderByColumnNullsLastASC() throws IOException {
+        void testOrderByColumnNullsLastASC() {
             indexDocument(createObjectBuilder().add("int_field", 1).build());
             indexDocument(createObjectBuilder().addNull("int_field").build());
             final String query = "SELECT \"int_field\"" //
@@ -384,7 +384,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testOrderByColumnNullsFirstASC() throws IOException {
+        void testOrderByColumnNullsFirstASC() {
             indexDocument(createObjectBuilder().add("int_field", 1).build());
             indexDocument(createObjectBuilder().addNull("int_field").build());
             final String query = "SELECT \"int_field\"" //
@@ -395,7 +395,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testOrderByExpression() throws IOException {
+        void testOrderByExpression() {
             indexDocument(createObjectBuilder().add("int_field", 1).build());
             indexDocument(createObjectBuilder().add("int_field", 3).build());
             final String query = "SELECT \"int_field\"" //
@@ -405,7 +405,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testLimit() throws IOException {
+        void testLimit() {
             indexDocument(createObjectBuilder().add("str_field", "str").build());
             indexDocument(createObjectBuilder().add("str_field", "str").build());
             final String query = "SELECT \"str_field\"" //
@@ -419,7 +419,7 @@ class ElasticSearchSqlDialectIT {
     @DisplayName("Predicate Capabilities test")
     class PredicateCapabilitiesTest {
         @Test
-        void testAndPredicate() throws IOException {
+        void testAndPredicate() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
             assertSingleRowResults("\"int_field\" = 1 AND \"int_field\" = 1");
@@ -428,7 +428,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testOrPredicate() throws IOException {
+        void testOrPredicate() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
             assertSingleRowResults("\"int_field\" = 1 OR \"int_field\" = 1");
@@ -437,7 +437,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testNotPredicate() throws IOException {
+        void testNotPredicate() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
             assertEmptyResults("NOT \"int_field\" = 1");
@@ -445,7 +445,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testEqualPredicate() throws IOException {
+        void testEqualPredicate() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
             assertEmptyResults("\"int_field\" = 2");
@@ -453,7 +453,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testNotEqualPredicate() throws IOException {
+        void testNotEqualPredicate() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
             assertSingleRowResults("\"int_field\" != 2");
@@ -461,7 +461,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testLessPredicate() throws IOException {
+        void testLessPredicate() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
             assertSingleRowResults("\"int_field\" < 2");
@@ -469,7 +469,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testLessEqualPredicate() throws IOException {
+        void testLessEqualPredicate() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
             assertSingleRowResults("\"int_field\" <= 1");
@@ -477,7 +477,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testBetweenPredicate() throws IOException {
+        void testBetweenPredicate() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
             assertSingleRowResults("\"int_field\" BETWEEN 0 AND 1");
@@ -485,7 +485,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testInConstListPredicate() throws IOException, SQLException {
+        void testInConstListPredicate() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
             assertSingleRowResults("\"int_field\" IN (1,2)");
@@ -493,7 +493,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testIsNullPredicate() throws IOException {
+        void testIsNullPredicate() {
             indexDocumentWithGenericTestField(
                     createObjectBuilder().add("not_nullable_str_field", "str").add("nullable_int_field", 1));
             indexDocumentWithGenericTestField(createObjectBuilder().add("not_nullable_str_field", "str"));
@@ -503,7 +503,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testIsNotNullPredicate() throws IOException {
+        void testIsNotNullPredicate() {
             indexDocumentWithGenericTestField(
                     createObjectBuilder().add("not_nullable_str_field", "str").add("nullable_int_field", 1));
             indexDocumentWithGenericTestField(createObjectBuilder().add("not_nullable_str_field", "str"));
@@ -514,7 +514,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testLikePredicate() throws IOException {
+        void testLikePredicate() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("str_field", "abcd"));
             createVirtualSchema();
             assertEmptyResults("\"str_field\" LIKE 'a_d'");
@@ -528,7 +528,7 @@ class ElasticSearchSqlDialectIT {
     @DisplayName("Literal Capabilities test")
     class LiteralCapabilitiesTest {
         @Test
-        void testBoolLiteral() throws IOException {
+        void testBoolLiteral() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("bool_field", Boolean.TRUE));
             createVirtualSchema();
             assertSingleRowResults("\"bool_field\" = true");
@@ -536,7 +536,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testDoubleLiteral() throws IOException {
+        void testDoubleLiteral() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("double_field", 100.23));
             createVirtualSchema();
             assertSingleRowResults("\"double_field\" = 100.23");
@@ -546,7 +546,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testExactNumericLiteral() throws IOException {
+        void testExactNumericLiteral() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             createVirtualSchema();
             assertEmptyResults("\"int_field\" = 5");
@@ -555,7 +555,7 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testStringLiteral() throws IOException {
+        void testStringLiteral() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("str_field", "str"));
             createVirtualSchema();
             assertEmptyResults("\"str_field\" = 'abc'");
@@ -569,67 +569,67 @@ class ElasticSearchSqlDialectIT {
     @DisplayName("Aggregate Function Capabilities test")
     class AggregateFunctionCapabilitiesTest {
         @Test
-        void testCount() throws IOException {
+        void testCount() {
             assertAggregateFunction("COUNT").withValues(1, 1).withResult(2).verify();
         }
 
         @Test
-        void testCountStar() throws IOException {
+        void testCountStar() {
             assertAggregateFunction("COUNT").withValues(1, 1).applyToStar().withResult(2).verify();
         }
 
         @Test
-        void testCountDistinct() throws IOException {
+        void testCountDistinct() {
             assertAggregateFunction("COUNT").distinct().withValues(1, 2).withResult(2).verify();
         }
 
         @Test
-        void testSum() throws IOException {
+        void testSum() {
             assertAggregateFunction("SUM").withValues(1, 2).withResult(3).verify();
         }
 
         @Test
-        void testMin() throws IOException {
+        void testMin() {
             assertAggregateFunction("MIN").withValues(1, 2).withResult(1).verify();
         }
 
         @Test
-        void testMax() throws IOException {
+        void testMax() {
             assertAggregateFunction("MAX").withValues(1, 2).withResult(2).verify();
         }
 
         @Test
-        void testAvg() throws IOException {
+        void testAvg() {
             assertAggregateFunction("AVG").withValues(1, 2).withResult(1.5).verify();
         }
 
         @Test
-        void testFirstValue() throws IOException {
+        void testFirstValue() {
             assertAggregateFunction("FIRST_VALUE").withValues(1, 2).withResult(1).verify();
         }
 
         @Test
-        void testLastValue() throws IOException {
+        void testLastValue() {
             assertAggregateFunction("LAST_VALUE").withValues(1, 2).withResult(2).verify();
         }
 
         @Test
-        void testStdDevPop() throws IOException {
+        void testStdDevPop() {
             assertAggregateFunction("STDDEV_POP").withValues(1, 2).withResult(0.5).verify();
         }
 
         @Test
-        void testStdDevSamp() throws IOException {
+        void testStdDevSamp() {
             assertAggregateFunction("STDDEV_SAMP").withValues(1, 2).withResult(0.7071067811865476).verify();
         }
 
         @Test
-        void testVarPop() throws IOException {
+        void testVarPop() {
             assertAggregateFunction("VAR_POP").withValues(1, 2).withResult(0.25).verify();
         }
 
         @Test
-        void testVarSamp() throws IOException {
+        void testVarSamp() {
             assertAggregateFunction("VAR_SAMP").withValues(1, 2).withResult(0.5).verify();
         }
 
@@ -669,7 +669,7 @@ class ElasticSearchSqlDialectIT {
                 return this;
             }
 
-            private void verify() throws IOException {
+            private void verify() {
                 for (final int value : this.values) {
                     indexDocumentWithGenericTestField(createObjectBuilder().add(NUMERIC_TEST_FIELD, value));
                 }
@@ -694,58 +694,58 @@ class ElasticSearchSqlDialectIT {
     @DisplayName("Scalar Function Capabilities test")
     class ScalarFunctionCapabilitiesTest {
         @Test
-        void testAdd() throws IOException {
+        void testAdd() {
             assertScalarFunction("+").asBinaryOperator().withValues(1, 1).withResult(2).verify();
         }
 
         @Test
-        void testSub() throws IOException {
+        void testSub() {
             assertScalarFunction("-").asBinaryOperator().withValues(1, 1).withResult(0).verify();
         }
 
         @Test
-        void testMult() throws IOException {
+        void testMult() {
             assertScalarFunction("*").asBinaryOperator().withValues(1, 2).withResult(2).verify();
         }
 
         @Test
-        void testNeg() throws IOException {
+        void testNeg() {
             assertScalarFunction("*").asBinaryOperator().withValues(1, -2).withResult(-2).verify();
         }
 
         @Test
-        void testAbs() throws IOException {
+        void testAbs() {
             assertScalarFunction("ABS").withValues(-1).withResult(1).verify();
         }
 
         @Test
-        void testACos() throws IOException {
+        void testACos() {
             assertScalarFunction("ACOS").withValues(0.5).withResult(1.0471975511965979).verify();
         }
 
         @Test
-        void testASin() throws IOException {
+        void testASin() {
             assertScalarFunction("ASIN").withValues(1).withResult(1.5707963267948966).verify();
         }
 
         @Test
-        void testATan() throws IOException {
+        void testATan() {
             assertScalarFunction("ATAN").withValues(1).withResult(0.7853981633974483).verify();
         }
 
         @Test
-        void testATan2() throws IOException {
+        void testATan2() {
             assertScalarFunction("ATAN2").withValues(1, 1).withResult(0.7853981633974483).verify();
         }
 
         @Test
         @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/66")
-        void testCeil() throws IOException {
+        void testCeil() {
             assertScalarFunction("CEIL").withValues(0.234).withResult(1).verify();
         }
 
         @Test
-        void testCeilWithBug() throws IOException {
+        void testCeilWithBug() {
             // See https://github.com/exasol/elasticsearch-virtual-schema/issues/66
             assertNumberConversionFails(() -> assertScalarFunction("CEIL").withValues(0.234).withResult(1).verify());
         }
@@ -756,250 +756,250 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        void testCos() throws IOException {
+        void testCos() {
             assertScalarFunction("COS").withValues(0.5).withResult(0.8775825618903728).verify();
         }
 
         @Test
-        void testCosh() throws IOException {
+        void testCosh() {
             assertScalarFunction("COSH").withValues(1).withResult(1.543080634815244).verify();
         }
 
         @Test
-        void testCot() throws IOException {
+        void testCot() {
             assertScalarFunction("COT").withValues(1).withResult(0.6420926159343306).verify();
         }
 
         @Test
-        void testDegrees() throws IOException {
+        void testDegrees() {
             assertScalarFunction("DEGREES").withValues(0.5).withResult(28.64788975654116).verify();
         }
 
         @Test
-        void testDiv() throws IOException {
+        void testDiv() {
             assertScalarFunction("DIV").withValues(15, 6).withResult(2).verify();
         }
 
         @Test
-        void testExp() throws IOException {
+        void testExp() {
             assertScalarFunction("EXP").withValues(1).withResult(2.718281828459045).verify();
         }
 
         @Test
         @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/66")
-        void testFloor() throws IOException {
+        void testFloor() {
             assertScalarFunction("FLOOR").withValues(4.567).withResult(4).verify();
         }
 
         @Test
-        void testFloorWithBug() throws IOException {
+        void testFloorWithBug() {
             // See https://github.com/exasol/elasticsearch-virtual-schema/issues/66
             assertNumberConversionFails(() -> assertScalarFunction("FLOOR").withValues(4.567).withResult(4).verify());
         }
 
         @Test
-        void testGreatest() throws IOException {
+        void testGreatest() {
             assertScalarFunction("GREATEST").withValues(1, 5, 3).withResult(5).verify();
         }
 
         @Test
-        void testLeast() throws IOException {
+        void testLeast() {
             assertScalarFunction("LEAST").withValues(1, 5, 3).withResult(1).verify();
         }
 
         @Test
-        void testLN() throws IOException {
+        void testLN() {
             assertScalarFunction("LN").withValues(100).withResult(4.605170185988092).verify();
         }
 
         @Test
-        void testMod() throws IOException {
+        void testMod() {
             assertScalarFunction("MOD").withValues(15, 6).withResult(3).verify();
         }
 
         @Test
-        void testPower() throws IOException {
+        void testPower() {
             assertScalarFunction("POWER").withValues(2, 10).withResult(1024.0).verify();
         }
 
         @Test
-        void testRadians() throws IOException {
+        void testRadians() {
             assertScalarFunction("RADIANS").withValues(180).withResult(3.141592653589793).verify();
         }
 
         @Test
-        void testRound() throws IOException {
+        void testRound() {
             assertScalarFunction("ROUND").withValues(123.456, 2).withResult(123.45999908447266).verify();
         }
 
         @Test
-        void testSign() throws IOException {
+        void testSign() {
             assertScalarFunction("SIGN").withValues(-123).withResult(-1).verify();
         }
 
         @Test
-        void testSin() throws IOException {
+        void testSin() {
             assertScalarFunction("SIN").withValues(1).withResult(0.8414709848078965).verify();
         }
 
         @Test
-        void testSinh() throws IOException {
+        void testSinh() {
             assertScalarFunction("SINH").withValues(0).withResult(0.0).verify();
         }
 
         @Test
-        void testSqrt() throws IOException {
+        void testSqrt() {
             assertScalarFunction("SQRT").withValues(2).withResult(1.4142135623730951).verify();
         }
 
         @Test
-        void testTan() throws IOException {
+        void testTan() {
             assertScalarFunction("TAN").withValues(4).withResult(1.1578212823495775).verify();
         }
 
         @Test
         @Disabled("Bug in Exasol")
-        void testTrunc() throws IOException {
+        void testTrunc() {
             assertScalarFunction("TRUNC").withValues(123.456, 2).withResult(123.45).verify();
         }
 
         @Test
-        void testTruncWithBug() throws IOException {
+        void testTruncWithBug() {
             assertScalarFunction("TRUNC").withValues(123.456, 2).withResult(123.44999694824219).verify();
         }
 
         @Test
-        void testAscii() throws IOException {
+        void testAscii() {
             assertScalarFunction("ASCII").withValues("X").withResult(88).verify();
         }
 
         @Test
-        void testBitLength() throws IOException {
+        void testBitLength() {
             assertScalarFunction("BIT_LENGTH").withValues("aou").withResult(24).verify();
         }
 
         @Test
-        void testBitLengthSpecialChars() throws IOException {
+        void testBitLengthSpecialChars() {
             assertScalarFunction("BIT_LENGTH").withValues("äöü").withResult(48).verify();
         }
 
         @ParameterizedTest
         @CsvSource({ "CHAR", "CHR" })
-        void testChar(final String charScalarFunctionAlias) throws IOException {
+        void testChar(final String charScalarFunctionAlias) {
             assertScalarFunction(charScalarFunctionAlias).withValues(88).withResult("X").verify();
         }
 
         @Test
-        void testConcat() throws IOException {
+        void testConcat() {
             assertScalarFunction("CONCAT").withValues("abc", "def").withResult("abcdef").verify();
         }
 
         @Test
-        void testInsertLongerThanString() throws IOException {
+        void testInsertLongerThanString() {
             assertScalarFunction("INSERT").withValues("abc", 2, 2, "xxx").withResult("axxx").verify();
         }
 
         @Test
-        void testInsertShorterThanString() throws IOException {
+        void testInsertShorterThanString() {
             assertScalarFunction("INSERT").withValues("abcdef", 3, 2, "CD").withResult("abCDef").verify();
         }
 
         @Test
-        void testLength() throws IOException {
+        void testLength() {
             assertScalarFunction("LENGTH").withValues("abc").withResult(3).verify();
         }
 
         @Test
-        void testOctetLength() throws IOException {
+        void testOctetLength() {
             assertScalarFunction("OCTET_LENGTH").withValues("abcd").withResult(4).verify();
         }
 
         @Test
-        void testOctetLengthSpecialChars() throws IOException {
+        void testOctetLengthSpecialChars() {
             assertScalarFunction("OCTET_LENGTH").withValues("äöü").withResult(6).verify();
         }
 
         @Test
-        void testRepeat() throws IOException {
+        void testRepeat() {
             assertScalarFunction("REPEAT").withValues("abc", 3).withResult("abcabcabc").verify();
         }
 
         @Test
-        void testReplace() throws IOException {
+        void testReplace() {
             assertScalarFunction("REPLACE").withValues("Apple juice is great", "Apple", "Orange")
                     .withResult("Orange juice is great").verify();
         }
 
         @Test
-        void testRight() throws IOException {
+        void testRight() {
             assertScalarFunction("RIGHT").withValues("abcdef", 3).withResult("def").verify();
         }
 
         @Test
-        void testSpace() throws IOException {
+        void testSpace() {
             assertScalarFunction("SPACE").withValues(5).withResult("     ").verify();
         }
 
         @Test
-        void testDateTruncMonth() throws IOException {
+        void testDateTruncMonth() {
             assertScalarFunction("DATE_TRUNC").withValues("month", "2006-12-31")
                     .withResult(Timestamp.valueOf("2006-12-01 00:00:00.0")).verify();
         }
 
         @Test
-        void testDateTruncMinute() throws IOException {
+        void testDateTruncMinute() {
             assertScalarFunction("DATE_TRUNC").withValues("minute", "2018-02-19T10:23:27Z")
                     .withResult(Timestamp.valueOf("2018-02-19 11:23:00.0")).verify();
         }
 
         @Test
-        void testDay() throws IOException {
+        void testDay() {
             assertScalarFunction("DAY").withValues("2010-10-20").withResult(20).verify();
         }
 
         @Test
         @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/65")
-        void testExtractSecond() throws IOException {
+        void testExtractSecond() {
             assertExtract("SECOND").withValues("2018-02-19T10:23:27Z").withResult(27).verify();
         }
 
         @Test
-        void testExtractMonth() throws IOException {
+        void testExtractMonth() {
             assertExtract("MONTH").withValues("2000-10-01").withResult(10).verify();
         }
 
         @Test
-        void testHour() throws IOException {
+        void testHour() {
             assertScalarFunction("HOUR").withValues("2018-02-19T10:23:27Z").withResult(11).verify();
         }
 
         @Test
-        void testMinute() throws IOException {
+        void testMinute() {
             assertScalarFunction("MINUTE").withValues("2018-02-19T10:23:27Z").withResult(23).verify();
         }
 
         @Test
-        void testMonth() throws IOException {
+        void testMonth() {
             assertScalarFunction("MONTH").withValues("2010-10-20").withResult(10).verify();
         }
 
         @Test
-        void testWeek() throws IOException {
+        void testWeek() {
             assertScalarFunction("WEEK").withValues("2012-01-05").withResult(1).verify();
         }
 
         @Test
-        void testYear() throws IOException {
+        void testYear() {
             assertScalarFunction("YEAR").withValues("2010-10-20").withResult(2010).verify();
         }
 
         @Test
-        void testCastToDate() throws IOException {
+        void testCastToDate() {
             assertCastTo("DATE").withValues("2006-01-01").withResult(Date.valueOf("2006-01-01")).verify();
         }
 
         @Test
-        void testCase() throws IOException {
+        void testCase() {
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 1));
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 2));
             indexDocumentWithGenericTestField(createObjectBuilder().add("int_field", 3));

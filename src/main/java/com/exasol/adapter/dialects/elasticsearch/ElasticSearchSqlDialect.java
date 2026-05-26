@@ -9,12 +9,12 @@ import static com.exasol.adapter.capabilities.ScalarFunctionCapability.*;
 import java.sql.SQLException;
 import java.util.*;
 
-import com.exasol.adapter.AdapterProperties;
 import com.exasol.adapter.capabilities.Capabilities;
 import com.exasol.adapter.dialects.*;
 import com.exasol.adapter.dialects.rewriting.ImportIntoTemporaryTableQueryRewriter;
 import com.exasol.adapter.dialects.rewriting.SqlGenerationContext;
-import com.exasol.adapter.jdbc.*;
+import com.exasol.adapter.jdbc.RemoteMetadataReader;
+import com.exasol.adapter.jdbc.RemoteMetadataReaderException;
 import com.exasol.adapter.sql.ScalarFunction;
 import com.exasol.errorreporting.ExaError;
 
@@ -47,11 +47,10 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
     /**
      * Creates a new instance of {@link ElasticSearchSqlDialect}.
      *
-     * @param connectionFactory factory for JDBC connection to remote data source
-     * @param properties        user defined properties
+     * @param context context of the SQL adapter
      */
-    public ElasticSearchSqlDialect(final ConnectionFactory connectionFactory, final AdapterProperties properties) {
-        super(connectionFactory, properties, Set.of());
+    public ElasticSearchSqlDialect(final JDBCAdapterContext context) {
+        super(context, Set.of());
     }
 
     @Override
@@ -115,7 +114,7 @@ public class ElasticSearchSqlDialect extends AbstractSqlDialect {
     @Override
     protected RemoteMetadataReader createRemoteMetadataReader() {
         try {
-            return new ElasticSearchMetadataReader(this.connectionFactory.getConnection(), this.properties);
+            return new ElasticSearchMetadataReader(this.connectionFactory.getConnection(), this.properties, this.exaMetadata);
         } catch (final SQLException exception) {
             throw new RemoteMetadataReaderException(ExaError.messageBuilder("E-VSES-1")
                     .message("Unable to create ElasticSearch remote metadata reader.").toString(), exception);

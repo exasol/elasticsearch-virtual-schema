@@ -7,7 +7,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.exasol.adapter.AdapterProperties;
+import com.exasol.adapter.dialects.JDBCAdapterContext;
 
 class ElasticSearchSqlDialectFactoryTest {
     private ElasticSearchSqlDialectFactory factory;
@@ -24,7 +24,7 @@ class ElasticSearchSqlDialectFactoryTest {
 
     @Test
     void testCreateDialect() {
-        assertThat(this.factory.createSqlDialect(null, AdapterProperties.emptyProperties()),
+        assertThat(this.factory.createSqlDialect(JDBCAdapterContext.builder().build()),
                 instanceOf(ElasticSearchSqlDialect.class));
     }
 }
