@@ -1131,7 +1131,7 @@ class ElasticSearchSqlDialectIT {
 
     private void assertQuery(final String query, final Matcher<ResultSet> matcher) {
         try {
-            assertThat(query(query), matcher);
+            assertThat("Result for query '" + query + "'", query(query), matcher);
         } catch (final SQLException exception) {
             throw new AssertionFailedError(
                     "Unable to execute assertion query '" + query + "'. Caused by: " + exception.getMessage(),
