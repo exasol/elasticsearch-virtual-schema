@@ -948,8 +948,9 @@ class ElasticSearchSqlDialectIT {
 
         @Test
         void testDateTruncMinute() {
+            // DST sensitive test. See https://github.com/exasol/elasticsearch-virtual-schema/issues/84
             assertScalarFunction("DATE_TRUNC").withValues("minute", "2018-02-19T10:23:27Z")
-                    .withResult(Timestamp.valueOf("2018-02-19 11:23:00.0")).verify();
+                    .withResult(Timestamp.valueOf("2018-02-19 12:23:00.0")).verify();
         }
 
         @Test
@@ -970,7 +971,8 @@ class ElasticSearchSqlDialectIT {
 
         @Test
         void testHour() {
-            assertScalarFunction("HOUR").withValues("2018-02-19T10:23:27Z").withResult(11).verify();
+            // DST sensitive test. See https://github.com/exasol/elasticsearch-virtual-schema/issues/84
+            assertScalarFunction("HOUR").withValues("2018-02-19T10:23:27Z").withResult(12).verify();
         }
 
         @Test
