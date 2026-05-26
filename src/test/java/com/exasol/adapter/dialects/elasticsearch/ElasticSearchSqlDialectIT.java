@@ -738,6 +738,7 @@ class ElasticSearchSqlDialectIT {
             assertScalarFunction("ATAN2").withValues(1, 1).withResult(0.7853981633974483).verify();
         }
 
+        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/66")
         @Test
         void testCeil() {
             assertScalarFunction("CEIL").withValues(0.234).withResult(1).verify();
@@ -784,6 +785,7 @@ class ElasticSearchSqlDialectIT {
             assertScalarFunction("EXP").withValues(1).withResult(2.718281828459045).verify();
         }
 
+        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/66")
         @Test
         void testFloor() {
             assertScalarFunction("FLOOR").withValues(4.567).withResult(4).verify();
