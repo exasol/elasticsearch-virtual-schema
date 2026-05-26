@@ -72,8 +72,8 @@ class ElasticSearchSqlDialectIT {
         // configure a HostnameVerifier for the JDBC driver.
         container.withEnv("ES_SETTING_XPACK_SECURITY_ENABLED", "false");
         container.withEnv("ES_SETTING_DISCOVERY_TYPE", "single-node");
-        container
-                .setWaitStrategy(new LogMessageWaitStrategy().withRegEx(".*\"license .* mode \\[basic\\] - valid\".*"));
+        container.setWaitStrategy(new LogMessageWaitStrategy().withRegEx(".*\"license .* mode \\[basic\\] - valid\".*"));
+        container.withReuse(true);
         return container;
     }
 
