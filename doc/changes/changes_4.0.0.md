@@ -6,6 +6,7 @@ Code name: Anonymous telemetry
 
 This release introduces anonymous feature-usage telemetry through `telemetry-java`. See the [documentation](https://github.com/exasol/telemetry-java/blob/main/doc/app-user-guide.md) for details about the collected data and how to opt out.
 
+The release also fixes CVE-2026-45292 in transitive dependency `io.opentelemetry:opentelemetry-api:1.37.0` of `co.elastic.clients:elasticsearch-java`.
 ## Breaking Change
 
 Starting with this release, this Virtual Schema no longer supports Exasol 7.1. The supported versions are the current release and the LTS release line `2025.1.x`.

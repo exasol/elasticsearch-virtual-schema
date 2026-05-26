@@ -11,6 +11,18 @@
         <elasticsearch.version>9.4.1</elasticsearch.version>
         <org.testcontainers.version>2.0.5</org.testcontainers.version>
     </properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- Fix CVE-2026-45292 in transitive dependency of co.elastic.clients:elasticsearch-java -->
+                <groupId>io.opentelemetry</groupId>
+                <artifactId>opentelemetry-bom</artifactId>
+                <version>1.62.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     <dependencies>
         <dependency>
             <groupId>com.exasol</groupId>
