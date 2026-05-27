@@ -63,13 +63,6 @@
             <version>${elasticsearch.version}</version>
             <scope>test</scope>
         </dependency>
-        <!-- Upgrade transitive dependency of elasticsearch-java to fix CVE-2023-4043 -->
-        <dependency>
-            <groupId>org.eclipse.parsson</groupId>
-            <artifactId>parsson</artifactId>
-            <version>1.1.9</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <!-- Upgrade transitive dependency of elasticsearch-java to fix CVE-2026-29062 -->
             <groupId>tools.jackson.core</groupId>
@@ -78,7 +71,7 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <!-- Upgrade transitive dependency of elasticsearch-java to fix CVE-2026-29062 -->
+            <!-- Consistently upgrade also other Jackson dependencies. There is no bom for Jackson 3 -->
             <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>

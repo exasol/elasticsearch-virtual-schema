@@ -32,7 +32,7 @@ Starting with this release, this Virtual Schema no longer supports Exasol 7.1. T
 * Updated `com.exasol:hamcrest-resultset-matcher:1.6.5` to `1.7.2`
 * Updated `com.exasol:test-db-builder-java:3.5.4` to `4.0.0`
 * Updated `com.exasol:udf-debugging-java:0.6.12` to `0.6.18`
-* Updated `org.eclipse.parsson:parsson:1.1.5` to `1.1.9`
+* Removed `org.eclipse.parsson:parsson:1.1.5`
 * Updated `org.eclipse:yasson:3.0.3` to `3.0.4`
 * Updated `org.elasticsearch.plugin:x-pack-sql-jdbc:8.12.2` to `8.19.15`
 * Updated `org.hamcrest:hamcrest:2.2` to `3.0`
