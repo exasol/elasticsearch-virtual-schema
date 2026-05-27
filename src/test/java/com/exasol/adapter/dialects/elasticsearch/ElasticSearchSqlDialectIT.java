@@ -73,7 +73,7 @@ class ElasticSearchSqlDialectIT {
         container.withEnv("ES_SETTING_XPACK_SECURITY_ENABLED", "false");
         container.withEnv("ES_SETTING_DISCOVERY_TYPE", "single-node");
         container.setWaitStrategy(new LogMessageWaitStrategy().withRegEx(".*\"license .* mode \\[basic\\] - valid\".*"));
-        container.withReuse(true);
+        // Elasticsearch does not support reuse
         return container;
     }
 
@@ -738,8 +738,8 @@ class ElasticSearchSqlDialectIT {
             assertScalarFunction("ATAN2").withValues(1, 1).withResult(0.7853981633974483).verify();
         }
 
-        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/66")
         @Test
+        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/66")
         void testCeil() {
             assertScalarFunction("CEIL").withValues(0.234).withResult(1).verify();
         }
@@ -785,8 +785,8 @@ class ElasticSearchSqlDialectIT {
             assertScalarFunction("EXP").withValues(1).withResult(2.718281828459045).verify();
         }
 
-        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/66")
         @Test
+        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/66")
         void testFloor() {
             assertScalarFunction("FLOOR").withValues(4.567).withResult(4).verify();
         }
