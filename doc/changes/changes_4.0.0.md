@@ -44,8 +44,6 @@ Starting with this release, this Virtual Schema no longer supports Exasol 7.1. T
 * Removed `org.testcontainers:junit-jupiter:1.19.7`
 * Added `org.testcontainers:testcontainers-elasticsearch:2.0.5`
 * Added `org.testcontainers:testcontainers-junit-jupiter:2.0.5`
-* Added `tools.jackson.core:jackson-core:3.1.3`
-* Added `tools.jackson.core:jackson-databind:3.1.3`
 
 ### Plugin Dependency Updates
 

@@ -11,7 +11,6 @@
         <!-- Version 9 requires Java 17 -->
         <elasticsearch.version>8.19.15</elasticsearch.version>
         <org.testcontainers.version>2.0.5</org.testcontainers.version>
-        <jackson.version>3.1.3</jackson.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -20,6 +19,14 @@
                 <groupId>io.opentelemetry</groupId>
                 <artifactId>opentelemetry-bom</artifactId>
                 <version>1.62.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <!-- Upgrade transitive dependency tools.jackson.core:jackson-core of elasticsearch-java to fix CVE-2026-29062 -->
+                <groupId>tools.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>3.1.3</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -61,20 +68,6 @@
             <groupId>co.elastic.clients</groupId>
             <artifactId>elasticsearch-java</artifactId>
             <version>${elasticsearch.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <!-- Upgrade transitive dependency of elasticsearch-java to fix CVE-2026-29062 -->
-            <groupId>tools.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <!-- Consistently upgrade also other Jackson dependencies. There is no bom for Jackson 3 -->
-            <groupId>tools.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
             <scope>test</scope>
         </dependency>
         <!-- JDBC driver used by UDF -->
