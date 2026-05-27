@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.exasol.adapter.AdapterException;
 import com.exasol.adapter.AdapterProperties;
+import com.exasol.adapter.dialects.JDBCAdapterContext;
 import com.exasol.adapter.dialects.SqlDialect;
 import com.exasol.adapter.dialects.rewriting.SqlGenerationContext;
 import com.exasol.adapter.jdbc.ConnectionFactory;
@@ -24,8 +25,8 @@ class ElasticSearchSqlGenerationVisitorTest {
 
     @BeforeEach
     void beforeEach(@Mock final ConnectionFactory connectionFactoryMock) {
-        final SqlDialect dialect = new ElasticSearchSqlDialectFactory().createSqlDialect(connectionFactoryMock,
-                AdapterProperties.emptyProperties());
+        final SqlDialect dialect = new ElasticSearchSqlDialectFactory().createSqlDialect(
+                JDBCAdapterContext.builder().connectionFactory(connectionFactoryMock).properties(AdapterProperties.emptyProperties()).build());
         final SqlGenerationContext context = new SqlGenerationContext(null, null, false);
         this.elasticSearchSqlGenerationVisitor = new ElasticSearchSqlGenerationVisitor(dialect, context);
     }

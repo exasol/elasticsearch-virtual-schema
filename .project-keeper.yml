@@ -4,11 +4,13 @@ sources:
     modules:
       - jar_artifact
       - integration_tests
+      - udf_coverage
 build:
   runnerOs: ubuntu-latest
   freeDiskSpace: false
   exasolDbVersions:
-    - "8.34.0"
+    - "2026.1.0"
+    - "2025.1.10"
   workflows:
     - name: ci-build.yml
       stepCustomizations:
