@@ -69,7 +69,7 @@
 [10]: https://github.com/elastic/elasticsearch-java/
 [11]: https://www.apache.org/licenses/LICENSE-2.0.txt
 [12]: https://github.com/elastic/elasticsearch
-[13]: https://raw.githubusercontent.com/elastic/elasticsearch/v8.19.15/licenses/ELASTIC-LICENSE-2.0.txt
+[13]: https://raw.githubusercontent.com/elastic/elasticsearch/v9.4.3/licenses/ELASTIC-LICENSE-2.0.txt
 [14]: https://projects.eclipse.org/projects/ee4j.yasson
 [15]: http://www.eclipse.org/legal/epl-v20.html
 [16]: http://www.eclipse.org/org/documents/edl-v10.php
