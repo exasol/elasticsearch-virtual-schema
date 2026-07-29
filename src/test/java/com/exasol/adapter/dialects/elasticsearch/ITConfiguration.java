@@ -3,7 +3,7 @@ package com.exasol.adapter.dialects.elasticsearch;
 import java.nio.file.Path;
 
 final class ITConfiguration {
-    static final String ELASTICSEARCH_DOCKER_IMAGE_REFERENCE = "elasticsearch:9.4.1";
+    static final String ELASTICSEARCH_DOCKER_IMAGE_REFERENCE = "elasticsearch:9.4.4";
     static final String VIRTUAL_SCHEMAS_JAR_NAME_AND_VERSION = "virtual-schema-dist-14.0.4-elasticsearch-4.0.1.jar";
     static final String TEST_RESOURCES_PATH = "src/test/resources/integration/";
     static final String JDBC_DRIVER_NAME = "x-pack-sql-jdbc.jar";
