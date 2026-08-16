@@ -10,22 +10,22 @@
 
 ## Test Dependencies
 
-| Dependency                                      | License                                                                        |
-| ----------------------------------------------- | ------------------------------------------------------------------------------ |
-| [Hamcrest][4]                                   | [BSD-3-Clause][5]                                                              |
-| [JUnit Jupiter (Aggregator)][6]                 | [Eclipse Public License v2.0][7]                                               |
-| [mockito-junit-jupiter][8]                      | [MIT][9]                                                                       |
-| [Elasticsearch Java API Client][10]             | [The Apache Software License, Version 2.0][11]                                 |
-| [jdbc][12]                                      | [Elastic License 2.0][13]                                                      |
-| [Yasson][14]                                    | [Eclipse Public License v. 2.0][15]; [Eclipse Distribution License v. 1.0][16] |
-| [Testcontainers :: JUnit Jupiter Extension][17] | [MIT][18]                                                                      |
-| [Testcontainers :: elasticsearch][17]           | [MIT][18]                                                                      |
-| [Test containers for Exasol on Docker][19]      | [MIT License][20]                                                              |
-| [Test Database Builder for Java][21]            | [MIT License][22]                                                              |
-| [Matcher for SQL Result Sets][23]               | [MIT License][24]                                                              |
-| [udf-debugging-java][25]                        | [MIT License][26]                                                              |
-| [SLF4J JDK14 Provider][27]                      | [MIT][28]                                                                      |
-| [JaCoCo :: Agent][29]                           | [EPL-2.0][30]                                                                  |
+| Dependency                                      | License                                                                                                           |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| [Hamcrest][4]                                   | [BSD-3-Clause][5]                                                                                                 |
+| [JUnit Jupiter (Aggregator)][6]                 | [Eclipse Public License v2.0][7]                                                                                  |
+| [mockito-junit-jupiter][8]                      | [MIT][9]                                                                                                          |
+| [Elasticsearch Java API Client][10]             | [The Apache Software License, Version 2.0][11]                                                                    |
+| [jdbc][12]                                      | [Elastic License 2.0][13]                                                                                         |
+| [Yasson][14]                                    | [Eclipse Public License v. 2.0][15]; [GNU General Public License, version 2 with the GNU Classpath Exception][16] |
+| [Testcontainers :: JUnit Jupiter Extension][17] | [MIT][18]                                                                                                         |
+| [Testcontainers :: elasticsearch][17]           | [MIT][18]                                                                                                         |
+| [Test containers for Exasol on Docker][19]      | [MIT License][20]                                                                                                 |
+| [Test Database Builder for Java][21]            | [MIT License][22]                                                                                                 |
+| [Matcher for SQL Result Sets][23]               | [MIT License][24]                                                                                                 |
+| [udf-debugging-java][25]                        | [MIT License][26]                                                                                                 |
+| [SLF4J JDK14 Provider][27]                      | [MIT][28]                                                                                                         |
+| [JaCoCo :: Agent][29]                           | [EPL-2.0][30]                                                                                                     |
 
 ## Plugin Dependencies
 
@@ -69,10 +69,10 @@
 [10]: https://github.com/elastic/elasticsearch-java/
 [11]: https://www.apache.org/licenses/LICENSE-2.0.txt
 [12]: https://github.com/elastic/elasticsearch
-[13]: https://raw.githubusercontent.com/elastic/elasticsearch/v8.19.19/licenses/ELASTIC-LICENSE-2.0.txt
-[14]: https://projects.eclipse.org/projects/ee4j.yasson
-[15]: http://www.eclipse.org/legal/epl-v20.html
-[16]: http://www.eclipse.org/org/documents/edl-v10.php
+[13]: https://raw.githubusercontent.com/elastic/elasticsearch/v9.5.1/licenses/ELASTIC-LICENSE-2.0.txt
+[14]: https://projects.eclipse.org/projects/ee4j/yasson
+[15]: https://www.eclipse.org/org/documents/epl-2.0/EPL-2.0.txt
+[16]: https://www.gnu.org/software/classpath/license.html
 [17]: https://java.testcontainers.org
 [18]: http://opensource.org/licenses/MIT
 [19]: https://github.com/exasol/exasol-testcontainers/
