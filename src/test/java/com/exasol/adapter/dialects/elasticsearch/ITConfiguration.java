@@ -4,8 +4,7 @@ import java.nio.file.Path;
 
 final class ITConfiguration {
     // https://hub.docker.com/_/elasticsearch
-    // Use same elasticsearch version as the JDBC driver to avoid failing integration tests
-    static final String ELASTICSEARCH_DOCKER_IMAGE_REFERENCE = "elasticsearch:8.19.23";
+    static final String ELASTICSEARCH_DOCKER_IMAGE_REFERENCE = "elasticsearch:9.5.5";
     static final String VIRTUAL_SCHEMAS_JAR_NAME_AND_VERSION = "virtual-schema-dist-14.1.0-elasticsearch-4.0.2.jar";
     static final String TEST_RESOURCES_PATH = "src/test/resources/integration/";
     static final String JDBC_DRIVER_NAME = "x-pack-sql-jdbc.jar";
