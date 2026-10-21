@@ -41,7 +41,8 @@ Code name:
 * Updated `com.exasol:hamcrest-resultset-matcher:1.7.3` to `1.7.4`
 * Updated `com.exasol:test-db-builder-java:4.0.2` to `4.0.3`
 * Updated `com.exasol:udf-debugging-java:0.6.20` to `0.6.22`
-* Updated `org.eclipse:yasson:3.0.4` to `3.0.5`
+* Added `org.eclipse.yasson:yasson:3.0.5`
+* Removed `org.eclipse:yasson:3.0.4`
 * Updated `org.mockito:mockito-junit-jupiter:5.23.0` to `5.24.0`
 * Updated `org.slf4j:slf4j-jdk14:2.0.18` to `2.0.20`
 

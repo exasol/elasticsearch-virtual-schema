@@ -79,7 +79,7 @@
         </dependency>
         <!-- Required by elasticsearch-java -->
         <dependency>
-            <groupId>org.eclipse</groupId>
+            <groupId>org.eclipse.yasson</groupId>
             <artifactId>yasson</artifactId>
             <version>3.0.5</version>
             <scope>test</scope>
