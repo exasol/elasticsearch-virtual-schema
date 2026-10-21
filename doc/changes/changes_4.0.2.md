@@ -37,12 +37,14 @@ Code name:
 
 ### Test Dependency Updates
 
+* Updated `co.elastic.clients:elasticsearch-java:8.19.19` to `8.19.23`
 * Updated `com.exasol:exasol-testcontainers:8.0.1` to `8.0.2`
 * Updated `com.exasol:hamcrest-resultset-matcher:1.7.3` to `1.7.4`
 * Updated `com.exasol:test-db-builder-java:4.0.2` to `4.0.3`
 * Updated `com.exasol:udf-debugging-java:0.6.20` to `0.6.22`
 * Added `org.eclipse.yasson:yasson:3.0.5`
 * Removed `org.eclipse:yasson:3.0.4`
+* Updated `org.elasticsearch.plugin:x-pack-sql-jdbc:8.19.19` to `8.19.23`
 * Updated `org.mockito:mockito-junit-jupiter:5.23.0` to `5.24.0`
 * Updated `org.slf4j:slf4j-jdk14:2.0.18` to `2.0.20`
 

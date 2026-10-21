@@ -14,6 +14,8 @@ For details on what is collected and how to disable telemetry, see the [document
 
 First download the [Elasticsearch JDBC driver](https://www.elastic.co/downloads/jdbc-client).
 
+**IMPORTANT**: Use an Elasticsearch JDBC driver version in the `8.19.x` series. Version 9 requires Java 17, which is not available in Exasol's Java UDF runtime. Therefore, version 9 of the Elasticsearch JDBC driver is not supported.
+
 1. [Create a bucket in BucketFS](https://docs.exasol.com/administration/on-premise/bucketfs/create_new_bucket_in_bucketfs_service.htm)
 1. Upload the driver to BucketFS
 

@@ -9,7 +9,7 @@
     <properties>
         <vscjdbc.version>14.1.0</vscjdbc.version>
         <!-- Version 9 requires Java 17 -->
-        <elasticsearch.version>8.19.19</elasticsearch.version>
+        <elasticsearch.version>8.19.23</elasticsearch.version>
         <org.testcontainers.version>2.0.5</org.testcontainers.version>
     </properties>
     <dependencyManagement>
