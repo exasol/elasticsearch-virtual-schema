@@ -1,12 +1,14 @@
-# Virtual Schema for Elasticsearch 4.0.2, released 2026-??-??
+# Virtual Schema for Elasticsearch 4.0.2, released 2026-10-21
 
-Code name:
+Code name: Security Fixes
 
 ## Summary
 
-## Features
+This release fixes many vulnerabilities in test dependencies and stabilizes DST-sensitive integration tests.
 
-* ISSUE_NUMBER: description
+## Bugfixes
+
+* #84: Stabilize DST-sensitive integration tests
 
 ## Security
 
