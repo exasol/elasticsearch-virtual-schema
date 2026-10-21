@@ -80,7 +80,7 @@ public class ElasticSearchGateway {
     public void indexDocument(final String indexName, final String jsonSource) {
         try {
             client.index(i -> i.index(indexName)
-                    // Ensure that document is indexed before we continue with the test. This avoids empty results during integration tests.
+                    // Ensure that document is indexed before we continue with the test. This avoids sporadic empty results during integration tests.
                     .refresh(Refresh.WaitFor)
                     .withJson(new StringReader(jsonSource)));
         } catch (final IOException exception) {
