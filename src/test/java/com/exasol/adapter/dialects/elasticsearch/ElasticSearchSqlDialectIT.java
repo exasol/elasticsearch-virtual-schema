@@ -16,6 +16,8 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.sql.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
@@ -948,9 +950,13 @@ class ElasticSearchSqlDialectIT {
 
         @Test
         void testDateTruncMinute() {
-            // DST sensitive test. See https://github.com/exasol/elasticsearch-virtual-schema/issues/84
             assertScalarFunction("DATE_TRUNC").withValues("minute", "2018-02-19T10:23:27Z")
-                    .withResult(Timestamp.valueOf("2018-02-19 12:23:00.0")).verify();
+                    .withResult(Timestamp.valueOf(expectedDateTime().truncatedTo(ChronoUnit.MINUTES))).verify();
+        }
+
+        private LocalDateTime expectedDateTime() {
+            final int offset = EXASOL.getTimeZone().getOffset(System.currentTimeMillis());
+            return LocalDateTime.parse("2018-02-19T10:23:27").plus(offset, ChronoUnit.MILLIS);
         }
 
         @Test
@@ -971,8 +977,7 @@ class ElasticSearchSqlDialectIT {
 
         @Test
         void testHour() {
-            // DST sensitive test. See https://github.com/exasol/elasticsearch-virtual-schema/issues/84
-            assertScalarFunction("HOUR").withValues("2018-02-19T10:23:27Z").withResult(12).verify();
+            assertScalarFunction("HOUR").withValues("2018-02-19T10:23:27Z").withResult(expectedDateTime().getHour()).verify();
         }
 
         @Test
