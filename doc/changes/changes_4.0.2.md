@@ -8,6 +8,27 @@ Code name:
 
 * ISSUE_NUMBER: description
 
+## Security
+
+* #97: Fixed vulnerability CVE-2026-19032 in dependency `tools.jackson.core:jackson-databind:jar:3.2.1:test`
+* #98: Fixed vulnerability CVE-2026-68497 in dependency `tools.jackson.core:jackson-databind:jar:3.2.1:test`
+* #100: Fixed vulnerability CVE-2026-86231 in dependency `com.github.mwiede:jsch:jar:2.28.5:test`
+* #101: Fixed vulnerability CVE-2026-68498 in dependency `tools.jackson.core:jackson-core:jar:3.2.1:test`
+* #103: Fixed vulnerability CVE-2026-91776 in dependency `tools.jackson.core:jackson-databind:jar:3.2.1:test`
+* #104: Fixed vulnerability CVE-2026-91777 in dependency `tools.jackson.core:jackson-databind:jar:3.2.1:test`
+* #105: Fixed vulnerability CVE-2026-83557 in dependency `tools.jackson.core:jackson-databind:jar:3.2.1:test`
+* #107: Fixed vulnerability CVE-2026-89407 in dependency `tools.jackson.core:jackson-core:jar:3.2.1:test`
+* #108: Fixed vulnerability CVE-2026-89425 in dependency `tools.jackson.core:jackson-core:jar:3.2.1:test`
+* #110: Fixed vulnerability CVE-2026-110262 in dependency `org.ow2.asm:asm-commons:jar:9.10.1:test`
+* #111: Fixed vulnerability CVE-2026-110270 in dependency `org.ow2.asm:asm-commons:jar:9.10.1:test`
+* #112: Fixed vulnerability CVE-2026-110257 in dependency `org.ow2.asm:asm:jar:9.10.1:test`
+* #113: Fixed vulnerability CVE-2026-110258 in dependency `org.ow2.asm:asm:jar:9.10.1:test`
+* #114: Fixed vulnerability CVE-2026-110259 in dependency `org.ow2.asm:asm:jar:9.10.1:test`
+* #115: Fixed vulnerability CVE-2026-110260 in dependency `org.ow2.asm:asm:jar:9.10.1:test`
+* #116: Fixed vulnerability CVE-2026-110261 in dependency `org.ow2.asm:asm:jar:9.10.1:test`
+* #117: Fixed vulnerability CVE-2026-110263 in dependency `org.ow2.asm:asm:jar:9.10.1:test`
+* Fixed vulnerability CVE-2026-110879 in dependency `tools.jackson.core:jackson-databind:jar:3.2.1:test`
+
 ## Dependency Updates
 
 ### Compile Dependency Updates
