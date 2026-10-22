@@ -1,4 +1,4 @@
-# Virtual Schema for Elasticsearch 4.0.2, released 2026-10-21
+# Virtual Schema for Elasticsearch 4.0.2, released 2026-10-22
 
 Code name: Security Fixes
 
