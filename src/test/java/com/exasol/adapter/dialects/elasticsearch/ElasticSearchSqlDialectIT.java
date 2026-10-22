@@ -16,7 +16,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.sql.*;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.*;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
@@ -950,13 +950,19 @@ class ElasticSearchSqlDialectIT {
 
         @Test
         void testDateTruncMinute() {
-            assertScalarFunction("DATE_TRUNC").withValues("minute", "2018-02-19T10:23:27Z")
-                    .withResult(Timestamp.valueOf(expectedDateTime().truncatedTo(ChronoUnit.MINUTES))).verify();
+            final Instant instant = Instant.parse("2018-02-19T10:23:27Z");
+            final LocalDateTime expected = OffsetDateTime.ofInstant(instant, ZoneId.of("UTC"))
+                    .withOffsetSameInstant(getCurrentExasolOffset())
+                    .toLocalDateTime()
+                    .truncatedTo(ChronoUnit.MINUTES);
+            assertScalarFunction("DATE_TRUNC").withValues("minute", instant.toString())
+                    .withResult(Timestamp.valueOf(expected)).verify();
         }
 
-        private LocalDateTime expectedDateTime() {
-            final int offset = EXASOL.getTimeZone().getOffset(System.currentTimeMillis());
-            return LocalDateTime.parse("2018-02-19T10:23:27").plus(offset, ChronoUnit.MILLIS);
+        @SuppressWarnings("java:S8692") // Using current time to get current timezone offset
+        private ZoneOffset getCurrentExasolOffset() {
+            final ZoneId exasolTimeZone = EXASOL.getTimeZone().toZoneId();
+            return exasolTimeZone.getRules().getOffset(Instant.now());
         }
 
         @Test
@@ -965,7 +971,6 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/65")
         void testExtractSecond() {
             assertExtract("SECOND").withValues("2018-02-19T10:23:27Z").withResult(27).verify();
         }
@@ -977,7 +982,11 @@ class ElasticSearchSqlDialectIT {
 
         @Test
         void testHour() {
-            assertScalarFunction("HOUR").withValues("2018-02-19T10:23:27Z").withResult(expectedDateTime().getHour()).verify();
+            final Instant instant = Instant.parse("2018-02-19T10:23:27Z");
+            final LocalDateTime expected = OffsetDateTime.ofInstant(instant, ZoneId.of("UTC"))
+                    .withOffsetSameInstant(getCurrentExasolOffset())
+                    .toLocalDateTime();
+            assertScalarFunction("HOUR").withValues(instant.toString()).withResult(expected.getHour()).verify();
         }
 
         @Test
