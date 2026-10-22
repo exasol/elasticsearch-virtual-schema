@@ -1084,14 +1084,18 @@ class ElasticSearchSqlDialectIT {
                 int fieldNumber = 0;
                 final JsonObjectBuilder objectBuilder = createObjectBuilder();
                 for (final Object value : this.values) {
-                    if (value instanceof String) {
-                        objectBuilder.add(TEST_FIELD + fieldNumber, (String) value);
-                    }
-                    if (value instanceof Integer) {
-                        objectBuilder.add(TEST_FIELD + fieldNumber, (Integer) value);
-                    }
-                    if (value instanceof Double) {
-                        objectBuilder.add(TEST_FIELD + fieldNumber, (Double) value);
+                    final String fieldName = TEST_FIELD + fieldNumber;
+                    if (value == null) {
+                        objectBuilder.addNull(fieldName);
+                    } else if (value instanceof String) {
+                        objectBuilder.add(fieldName, (String) value);
+                    } else if (value instanceof Integer) {
+                        objectBuilder.add(fieldName, (Integer) value);
+                    } else if (value instanceof Double) {
+                        objectBuilder.add(fieldName, (Double) value);
+                    } else {
+                        throw new IllegalArgumentException(
+                                String.format("Unsupported value %s of type %s for field %d", value, value.getClass().getName(), fieldNumber));
                     }
                     fieldNumber++;
                 }
