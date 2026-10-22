@@ -13,6 +13,7 @@ import org.elasticsearch.client.RestClient;
 import org.testcontainers.elasticsearch.ElasticsearchContainer;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch._types.Refresh;
 import co.elastic.clients.json.jsonb.JsonbJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
@@ -29,7 +30,7 @@ public class ElasticSearchGateway {
 
     /**
      * Create a connection to the given container.
-     * 
+     *
      * @param container the container to connect to
      * @return a new {@link ElasticSearchGateway}
      */
@@ -78,7 +79,10 @@ public class ElasticSearchGateway {
      */
     public void indexDocument(final String indexName, final String jsonSource) {
         try {
-            client.index(i -> i.index(indexName).withJson(new StringReader(jsonSource)));
+            client.index(i -> i.index(indexName)
+                    // Ensure that document is indexed before we continue with the test. This avoids sporadic empty results during integration tests.
+                    .refresh(Refresh.WaitFor)
+                    .withJson(new StringReader(jsonSource)));
         } catch (final IOException exception) {
             throw new UncheckedIOException("Failed to index document", exception);
         }

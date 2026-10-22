@@ -16,6 +16,8 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.sql.*;
 import java.sql.Timestamp;
+import java.time.*;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Logger;
@@ -948,9 +950,17 @@ class ElasticSearchSqlDialectIT {
 
         @Test
         void testDateTruncMinute() {
-            // DST sensitive test. See https://github.com/exasol/elasticsearch-virtual-schema/issues/84
-            assertScalarFunction("DATE_TRUNC").withValues("minute", "2018-02-19T10:23:27Z")
-                    .withResult(Timestamp.valueOf("2018-02-19 12:23:00.0")).verify();
+            final Instant instant = Instant.parse("2018-02-19T10:23:27Z");
+            final LocalDateTime expected = LocalDateTime.ofInstant(instant, getCurrentExasolOffset())
+                    .truncatedTo(ChronoUnit.MINUTES);
+            assertScalarFunction("DATE_TRUNC").withValues("minute", instant.toString())
+                    .withResult(Timestamp.valueOf(expected)).verify();
+        }
+
+        @SuppressWarnings("java:S8692") // Using current time to get current timezone offset
+        private ZoneOffset getCurrentExasolOffset() {
+            final ZoneId exasolTimeZone = EXASOL.getTimeZone().toZoneId();
+            return exasolTimeZone.getRules().getOffset(Instant.now());
         }
 
         @Test
@@ -959,7 +969,6 @@ class ElasticSearchSqlDialectIT {
         }
 
         @Test
-        @Disabled("https://github.com/exasol/elasticsearch-virtual-schema/issues/65")
         void testExtractSecond() {
             assertExtract("SECOND").withValues("2018-02-19T10:23:27Z").withResult(27).verify();
         }
@@ -971,8 +980,9 @@ class ElasticSearchSqlDialectIT {
 
         @Test
         void testHour() {
-            // DST sensitive test. See https://github.com/exasol/elasticsearch-virtual-schema/issues/84
-            assertScalarFunction("HOUR").withValues("2018-02-19T10:23:27Z").withResult(12).verify();
+            final Instant instant = Instant.parse("2018-02-19T10:23:27Z");
+            final LocalDateTime expected = LocalDateTime.ofInstant(instant, getCurrentExasolOffset());
+            assertScalarFunction("HOUR").withValues(instant.toString()).withResult(expected.getHour()).verify();
         }
 
         @Test
@@ -1074,14 +1084,18 @@ class ElasticSearchSqlDialectIT {
                 int fieldNumber = 0;
                 final JsonObjectBuilder objectBuilder = createObjectBuilder();
                 for (final Object value : this.values) {
-                    if (value instanceof String) {
-                        objectBuilder.add(TEST_FIELD + fieldNumber, (String) value);
-                    }
-                    if (value instanceof Integer) {
-                        objectBuilder.add(TEST_FIELD + fieldNumber, (Integer) value);
-                    }
-                    if (value instanceof Double) {
-                        objectBuilder.add(TEST_FIELD + fieldNumber, (Double) value);
+                    final String fieldName = TEST_FIELD + fieldNumber;
+                    if (value == null) {
+                        objectBuilder.addNull(fieldName);
+                    } else if (value instanceof String) {
+                        objectBuilder.add(fieldName, (String) value);
+                    } else if (value instanceof Integer) {
+                        objectBuilder.add(fieldName, (Integer) value);
+                    } else if (value instanceof Double) {
+                        objectBuilder.add(fieldName, (Double) value);
+                    } else {
+                        throw new IllegalArgumentException(
+                                String.format("Unsupported value %s of type %s for field %d", value, value.getClass().getName(), fieldNumber));
                     }
                     fieldNumber++;
                 }
