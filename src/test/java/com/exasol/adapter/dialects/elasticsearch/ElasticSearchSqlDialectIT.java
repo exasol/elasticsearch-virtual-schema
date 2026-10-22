@@ -951,9 +951,7 @@ class ElasticSearchSqlDialectIT {
         @Test
         void testDateTruncMinute() {
             final Instant instant = Instant.parse("2018-02-19T10:23:27Z");
-            final LocalDateTime expected = OffsetDateTime.ofInstant(instant, ZoneId.of("UTC"))
-                    .withOffsetSameInstant(getCurrentExasolOffset())
-                    .toLocalDateTime()
+            final LocalDateTime expected = LocalDateTime.ofInstant(instant, getCurrentExasolOffset())
                     .truncatedTo(ChronoUnit.MINUTES);
             assertScalarFunction("DATE_TRUNC").withValues("minute", instant.toString())
                     .withResult(Timestamp.valueOf(expected)).verify();
@@ -983,9 +981,7 @@ class ElasticSearchSqlDialectIT {
         @Test
         void testHour() {
             final Instant instant = Instant.parse("2018-02-19T10:23:27Z");
-            final LocalDateTime expected = OffsetDateTime.ofInstant(instant, ZoneId.of("UTC"))
-                    .withOffsetSameInstant(getCurrentExasolOffset())
-                    .toLocalDateTime();
+            final LocalDateTime expected = LocalDateTime.ofInstant(instant, getCurrentExasolOffset());
             assertScalarFunction("HOUR").withValues(instant.toString()).withResult(expected.getHour()).verify();
         }
 
